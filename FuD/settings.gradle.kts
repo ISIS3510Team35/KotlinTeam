@@ -13,7 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KotlinTeam"
+rootProject.name = "FuD"
 include(":app")
-include(":app")
- 
