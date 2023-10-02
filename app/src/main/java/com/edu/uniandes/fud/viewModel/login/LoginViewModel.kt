@@ -1,4 +1,4 @@
-package com.edu.uniandes.fud.viewModel.login
+package com.edu.uniandes.fud.viewmodel.login
 
 import android.util.Patterns
 import androidx.lifecycle.LiveData
@@ -28,6 +28,7 @@ class LoginViewModel : ViewModel() {
 	
 	
 	fun onLoginSelected() {
-		TODO("Not yet implemented")
+		//TODO("Not yet implemented")
+		
 	}
 }

@@ -18,3 +18,7 @@ val buttonBackground = Color(0xFFFF922D)
 
 val backgroundPrimary = Color(0xFFFFFFFF)
 val backgroundSecondary = Color(0xFFFFF7EB)
+
+val OrangeSoft = Color(0xFFFFF7EB)
+val Orange = Color(0xFFFF922D)
+val Gold = Color(0xFFCC9D24)

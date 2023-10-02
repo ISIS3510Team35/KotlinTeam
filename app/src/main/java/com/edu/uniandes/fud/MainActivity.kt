@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.edu.uniandes.fud.ui.login.LoginScreen
 import com.edu.uniandes.fud.ui.theme.MobileAppTheme
-import com.edu.uniandes.fud.viewModel.login.LoginViewModel
+import com.edu.uniandes.fud.viewmodel.login.LoginViewModel
 
 class MainActivity : ComponentActivity() {
     

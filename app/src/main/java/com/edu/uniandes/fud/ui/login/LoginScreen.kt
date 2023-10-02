@@ -19,7 +19,7 @@ import com.edu.uniandes.fud.ui.theme.buttonText
 import com.edu.uniandes.fud.ui.theme.textField
 import com.edu.uniandes.fud.ui.theme.textFieldBackground
 import com.edu.uniandes.fud.R
-import com.edu.uniandes.fud.viewModel.login.LoginViewModel
+import com.edu.uniandes.fud.viewmodel.login.LoginViewModel
 
 
 @Composable
