@@ -12,10 +12,11 @@ import com.edu.uniandes.fud.ui.login.LoginScreen
 import com.edu.uniandes.fud.ui.theme.MobileAppTheme
 import com.edu.uniandes.fud.viewmodel.login.LoginViewModel
 
-class MainActivity : ComponentActivity() {
+class LoginActivity : ComponentActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
         setContent {
             MobileAppTheme {
                 val viewModel = viewModel<LoginViewModel>()

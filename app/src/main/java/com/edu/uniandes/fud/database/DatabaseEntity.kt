@@ -6,6 +6,7 @@ import com.edu.uniandes.fud.domain.Dish
 import com.edu.uniandes.fud.domain.DishRestaurant
 import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.domain.RestaurantDish
+import com.edu.uniandes.fud.domain.User
 
 @Entity
 data class DatabaseRestaurant(
@@ -32,6 +33,14 @@ data class DatabaseDish(
     val waitingTime: Int,
     val thumbnail: String,
     val restaurantId: Int
+)
+
+@Entity
+data class DatabaseUser(
+    @PrimaryKey
+    val id: Int,
+    val username: String,
+    val password: String
 )
 // TODO: In the future add new dataClass for offers and prices independent to dishes
 
@@ -64,6 +73,17 @@ fun List<DatabaseDish>.asDomainModel(): List<Dish> {
             thumbnail = it.thumbnail,
             restaurantId = it.restaurantId
            )
+    }
+}
+
+@JvmName("userAsDomainModel")
+fun List<DatabaseUser>.asDomainModel(): List<User> {
+    return map {
+        User(
+            id = it.id,
+            username = it.username,
+            password = it.password
+        )
     }
 }
 
@@ -138,3 +158,75 @@ fun Map<DatabaseDish, DatabaseRestaurant>.asDomainModel(): List<DishRestaurant> 
         return result
     }
 }
+
+/*
+@JvmName("dishUserAsDomainModel")
+fun Map<DatabaseDish, DatabaseUser>.asDomainModel(): List<DishUser> {
+    return map {
+        val result = mutableListOf<DishUser>()
+        forEach { (dish, user) ->
+            val userObj = User(
+                id = user.id,
+                username = user.username,
+                password = user.password
+            )
+            
+            result.add(
+                DishUser(
+                    id = dish.id,
+                    name = dish.name,
+                    price = dish.price,
+                    newPrice = dish.newPrice,
+                    inOffer = dish.inOffer,
+                    rating = dish.rating,
+                    isVeggie = dish.isVeggie,
+                    isVegan = dish.isVegan,
+                    waitingTime = dish.waitingTime,
+                    thumbnail = dish.thumbnail,
+                    restaurantId = dish.restaurantId,
+                    userId = dish.userId,
+                    user = userObj
+                )
+            )
+        }
+        return result
+    }
+}
+ */
+
+/*
+@JvmName("userDishAsDomainModel")
+fun Map<DatabaseUser,List<DatabaseDish>>.asDomainModel(): List<UserDish> {
+    return map {
+        val result = mutableListOf<UserDish>()
+        forEach { (user, dishDatabases) ->
+            val dishes = dishDatabases.map { dishDb ->
+                Dish(
+                    id = dishDb.id,
+                    name = dishDb.name,
+                    price = dishDb.price,
+                    newPrice = dishDb.newPrice, // TODO: Should be OldPrice but needs to be consulted with FlutterTeam
+                    inOffer = dishDb.inOffer,
+                    rating = dishDb.rating,
+                    isVeggie = dishDb.isVeggie,
+                    isVegan = dishDb.isVegan,
+                    waitingTime = dishDb.waitingTime,
+                    thumbnail = dishDb.thumbnail,
+                    restaurantId = dishDb.restaurantId,
+                    userId = dishDb.userId
+                )
+            }
+            
+            result.add(
+                UserDish(
+                    id = user.id,
+                    username = user.username,
+                    password = user.password,
+                    dishes = dishes  // Include the associated list of dishes
+                )
+            )
+        }
+        return result
+    }
+}
+ */

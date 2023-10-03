@@ -2,9 +2,10 @@ package com.edu.uniandes.fud.network
 
 import com.edu.uniandes.fud.database.DatabaseDish
 import com.edu.uniandes.fud.database.DatabaseRestaurant
+import com.edu.uniandes.fud.database.DatabaseUser
 import com.edu.uniandes.fud.domain.Dish
 import com.edu.uniandes.fud.domain.Restaurant
-
+import com.edu.uniandes.fud.domain.User
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -34,6 +35,17 @@ data class NetworkDish(
     val waitingTime: Int,
     val thumbnail: String,
     val restaurantId: Int)
+
+
+@JsonClass(generateAdapter = true)
+data class NetworkUserContainer(val users: List<NetworkUser>)
+
+@JsonClass(generateAdapter = true)
+data class NetworkUser(
+    val id:Int,
+    val username:String,
+    val password:String
+)
 
 fun NetworkRestaurantContainer.asDomainModel(): List<Restaurant>{
     return restaurants.map {
@@ -92,6 +104,26 @@ fun NetworkDishContainer.asDomainModel(): List<Dish>{
             waitingTime = it.waitingTime,
             thumbnail = it.thumbnail,
             restaurantId = it.restaurantId
+        )
+    }
+}
+
+fun NetworkUserContainer.asDatabaseModel(): List<DatabaseUser> {
+    return users.map {
+        DatabaseUser(
+            id = it.id,
+            username = it.username,
+            password = it.password
+        )
+    }
+}
+
+fun NetworkUserContainer.asDomainModel(): List<User>{
+    return users.map {
+        User(
+            id = it.id,
+            username = it.username,
+            password = it.password
         )
     }
 }

@@ -1,6 +1,5 @@
 package com.edu.uniandes.fud.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import androidx.room.withTransaction
@@ -12,7 +11,6 @@ import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.domain.RestaurantDish
 import com.edu.uniandes.fud.network.FudNetService
 import com.edu.uniandes.fud.network.asDatabaseModel
-import kotlinx.coroutines.delay
 
 class DBRepository(private val database: DatabaseRoom) {
 
@@ -45,31 +43,13 @@ class DBRepository(private val database: DatabaseRoom) {
     val restaurantsDishes: LiveData<List<RestaurantDish>> = database.databaseDao.getRestaurantsDishes().map {
         originalList -> originalList.asDomainModel()
     }
-
+    
+    // Refresh data -> Restaurants Repository
     suspend fun refreshData() {
         database.withTransaction {
-
             val restaurantList = FudNetService.getRestaurantList()
-
-            Log.d("XD4",database.databaseDao.insertAllRestaurants(restaurantList.asDatabaseModel()).toString())
             val dishesList = FudNetService.getDishList()
-            Log.d("XD5",dishesList.asDatabaseModel().listIterator().toString())
-            database.databaseDao.insertAllDishes(dishesList.asDatabaseModel())
-
-                delay(4000)
-                Log.d("XD5",database.databaseDao.insertAllDishes(dishesList.asDatabaseModel()).size.toString())
-                Log.v("XD4",database.databaseDao.getRestaurants().value.toString())
-                Log.d("XD4",database.databaseDao.getDishesRestaurant().toString())
-                Log.d("XD4",database.databaseDao.getRestaurantsDishes().toString())
-                Log.d("XD3_DR",dishesRestaurant.toString())
-                Log.d("XD3_DR",dishesRestaurant.toString())
-                Log.d("XD3_R",restaurants.toString())
-                Log.d("XD3_D",dishes.toString())
-                Log.d("XD3_RD",restaurantsDishes.toString())
-
-
-
-
+            database.databaseDao.insertRestaurantsAndDishes(dishesList.asDatabaseModel(), restaurantList.asDatabaseModel())
         }
     }
 

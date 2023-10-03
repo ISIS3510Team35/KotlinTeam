@@ -17,7 +17,7 @@
         android:name=".FuDApplication"
         tools:targetApi="31" >
         <activity
-            android:name=".HomeActivity"
+            android:name=".LoginActivity"
             android:exported="true"
             android:label="fud"
             android:theme="@style/Theme.fud" >
