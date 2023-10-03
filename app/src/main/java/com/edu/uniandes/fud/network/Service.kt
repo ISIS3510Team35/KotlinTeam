@@ -65,6 +65,8 @@ interface FudNetService {
                                 id = dish_fb.data["id"].toString().toInt(),
                                 name = dish_fb.data["name"].toString(),
                                 price = dish_fb.data["price"].toString().toInt(),
+                                newPrice = dish_fb.data["newPrice"].toString().toInt(),
+                                inOffer = dish_fb.data["inOffer"].toString().toBoolean(),
                                 rating = dish_fb.data["rating"].toString().toDouble(),
                                 isVeggie = dish_fb.data["isVeggie"].toString().toBoolean(),
                                 isVegan = dish_fb.data["isVegan"].toString().toBoolean(),

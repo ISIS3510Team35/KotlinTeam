@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.domain.DishRestaurant
 import com.edu.uniandes.fud.ui.theme.Gold
 import com.edu.uniandes.fud.ui.theme.MobileAppTheme
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
@@ -36,8 +37,6 @@ import com.edu.uniandes.fud.viewmodel.home.HomeViewModel
 @Composable
 fun HomeScreen(viewModel: HomeViewModel){
 
-    val query: String by viewModel.query.observeAsState(initial = "")
-
     Scaffold (
         containerColor = Color.White,
         topBar = { CustomTopBar() }
@@ -46,16 +45,16 @@ fun HomeScreen(viewModel: HomeViewModel){
             modifier = Modifier.padding(innerPadding)
         ) {
             item{
-                SearchBar()
+                SearchBar(viewModel)
             }
             item{
-                CarousselMealType()
+                CarousselMealType(viewModel)
             }
             item {
-                CarousselCardDish()
+                CarousselTop3Dish(viewModel)
             }
             item{
-                CarousselRestaurants()
+                CarousselDishOffers(viewModel)
             }
         }
 
@@ -131,38 +130,12 @@ fun CustomTopBar(){
                         .fillMaxHeight(),
                     contentDescription = "FuD Logo"
                 )
-                /*Surface(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(vertical = 18.dp),
-                    shape = RoundedCornerShape(10.dp),
-                    shadowElevation = 5.dp,
-                    onClick = { }
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(5.dp)
-                            .fillMaxHeight(),
-                        horizontalArrangement = Arrangement.spacedBy(1.dp)
-                    ) {
-                        Image(
-                            modifier = Modifier.fillMaxHeight(),
-                            painter = painterResource(id = R.drawable.ic_location),
-                            contentDescription = "dashboard_search"
-                        )
-                        Image(
-                            modifier = Modifier.fillMaxHeight(),
-                            painter = painterResource(id = R.drawable.uniandes),
-                            contentDescription = "dashboard_search"
-                        )
-                    }
-                }*/
             }
         }
     )
 }
 
-//@Preview(showBackground = true)
+
 @Composable
 fun TopBarPreview() {
     MobileAppTheme {
@@ -172,7 +145,10 @@ fun TopBarPreview() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(){
+fun SearchBar(viewModel: HomeViewModel){
+
+    val query: String by viewModel.query.observeAsState(initial = "")
+
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -245,7 +221,7 @@ fun SearchBar(){
 // Diferentes
 
 @Composable
-fun CardDish(name : String, restaurant: String, price: String){
+fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: String, id: Int){
     Box (
         modifier = Modifier.width(220.dp),
         contentAlignment = Alignment.TopCenter
@@ -270,7 +246,7 @@ fun CardDish(name : String, restaurant: String, price: String){
                 .height(100.dp)
                 .fillMaxWidth())
             Text(
-                text = "Almuerzo del día",
+                text = name,
                 style = Typography.titleLarge,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -278,7 +254,7 @@ fun CardDish(name : String, restaurant: String, price: String){
                 textAlign = TextAlign.Center
             )
             Text(
-                text = "Cafetería Central Uniandes",
+                text = restaurantName,
                 style = Typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -286,7 +262,7 @@ fun CardDish(name : String, restaurant: String, price: String){
                 textAlign = TextAlign.Center
             )
             Text(
-                text = price,
+                text = price.toString()+"K",
                 style = Typography.labelMedium,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -314,7 +290,7 @@ fun CardDish(name : String, restaurant: String, price: String){
 }
 
 @Composable
-fun CardRestaurant(name: String, picture: Int, price_range: String, rating: String) {
+fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String, oldPrice: Int, newPrice: Int) {
     Card(
         modifier = Modifier
             .width(220.dp)
@@ -335,7 +311,7 @@ fun CardRestaurant(name: String, picture: Int, price_range: String, rating: Stri
                 .shadow(
                     elevation = 5.dp,
                 ),
-            painter = painterResource(picture),
+            painter = painterResource(R.drawable.breakfast),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
@@ -350,21 +326,23 @@ fun CardRestaurant(name: String, picture: Int, price_range: String, rating: Stri
                     .padding(2.dp),
                 textAlign = TextAlign.Center
             )
+
             Text(
-                text = price_range,
+                text = oldPrice.toString()+"K",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(2.dp),
                 textAlign = TextAlign.Center,
                 style = Typography.labelMedium
             )
+
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ){
 
                 Text(
-                    text = rating,
+                    text = rating.toString(),
                     modifier = Modifier
                         .padding(2.dp),
                     textAlign = TextAlign.Center
@@ -380,8 +358,10 @@ fun CardRestaurant(name: String, picture: Int, price_range: String, rating: Stri
 }
 
 @Composable
-//@Preview
-fun CarousselCardDish() {
+fun CarousselTop3Dish(viewModel: HomeViewModel) {
+
+    val top3Dishes: List<DishRestaurant> by viewModel.top3Dishes.observeAsState(initial = emptyList())
+
     Text(
         text = "Comida para ti",
         style = Typography.titleMedium,
@@ -391,27 +371,19 @@ fun CarousselCardDish() {
         item {
             Spacer(modifier = Modifier.width(10.dp))
         }
-        item {
+        /*
+        items(top3Dishes){
             CardDish(
-                name = "Almuerzo del día",
-                restaurant = "Cafetería central Uniandes",
-                price = "13.9K"
+                name = it.name,
+                restaurantName = "central",
+                //restaurantName = it.restaurant.name,
+                price = it.price,
+                thumbnail = it.thumbnail,
+                id = it.id
             )
         }
-        item {
-            CardDish(
-                name = "Almuerzo del día",
-                restaurant = "Cafetería central Uniandes",
-                price = "13.9K"
-            )
-        }
-        item {
-            CardDish(
-                name = "Almuerzo del día",
-                restaurant = "Cafetería central Uniandes",
-                price = "13.9K"
-            )
-        }
+        */
+
     }
 }
 
@@ -453,8 +425,7 @@ fun CardTypeMeal(title: String, picture: Int) {
 }
 
 @Composable
-//@Preview
-fun CarousselMealType() {
+fun CarousselMealType(viewModel: HomeViewModel) {
     Text(
         text = "Categorías",
         style = Typography.titleMedium,
@@ -480,9 +451,12 @@ fun CarousselMealType() {
 }
 
 @Composable
-fun CarousselRestaurants() {
+fun CarousselDishOffers(viewModel: HomeViewModel) {
+
+    val offerDishes : List<DishRestaurant> by viewModel.offerDishes.observeAsState(initial = emptyList())
+
     Text(
-        text = "Los mejores restaurantes",
+        text = "Las mejores ofertas",
         style = Typography.titleMedium,
         modifier = Modifier
             .padding(top = 5.dp)
@@ -492,14 +466,18 @@ fun CarousselRestaurants() {
         item {
             Spacer(modifier = Modifier.width(10.dp))
         }
-        item {
-            CardRestaurant("Hornitos CityU", R.drawable.breakfast,"13.9K - 25K", "4.8")
+        /*
+        items(offerDishes) {
+            CardDishOffer(
+                name = it.name,
+                id = it.id,
+                rating = it.rating,
+                restaurantName = "central",
+                oldPrice = it.price,
+                newPrice = it.newPrice
+            )
         }
-        item {
-            CardRestaurant("Hornitos CityU", R.drawable.breakfast,"13.9K - 25K", "4.8")
-        }
-        item {
-            CardRestaurant("Hornitos CityU", R.drawable.breakfast,"13.9K - 25K", "4.8")
-        }
+        */
+
     }
 }
