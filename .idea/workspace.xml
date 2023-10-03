@@ -10,25 +10,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="78c37400-0f62-4d7f-8a92-07a825ca247f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/logo.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/font/manrope.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/font/manrope_bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/font/manrope_extra_bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/font/manrope_extra_light.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/font/manrope_light.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/font/manrope_medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/font/manrope_regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/font/manrope_semi_bold.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/FuDApplication.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/HomeActivity.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/database/DatabaseEntity.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/database/Room.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/domain/Models.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/network/DataTransferObjects.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/network/Service.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/repository/RestaurantsRepository.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/home/HomeScreen.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/home/HomeViewModel.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/breakfast.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_location.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_menu.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_sliders.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/uniandes.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/login/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/login/LoginScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/theme/Color.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/theme/Color.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/theme/Type.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/theme/Type.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/login/LoginViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/login/LoginViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,19 +44,23 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Kotlin Class" />
         <option value="Class" />
+        <option value="Kotlin File" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="KotlinCodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2WBtgDqmfk5Z0PkowR5bEgpBUko" />
   <component name="ProjectViewState">
@@ -76,6 +80,10 @@
     "project.structure.side.proportion": "0.2"
   }
 }]]></component>
+  <component name="PsdUISettings">
+    <option name="MODULE_TAB" value="Properties" />
+    <option name="LAST_EDITED_SIGNING_CONFIG" value="debug" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Daniel\UNIANDES\7. SEMESTRE\Moviles\FuD\app\src\main\res\drawable" />
@@ -84,7 +92,15 @@
       <recent name="D:\Daniel\UNIANDES\7. SEMESTRE\Moviles\FuD\app" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Daniel\Documents\GitHub\ISIS3510_202310_Team\KotlinTeam\app\src\main\java\com\edu\uniandes\fud\ui\home" />
+      <recent name="C:\Users\Daniel\Documents\GitHub\ISIS3510_202310_Team\KotlinTeam\app\src\main\res\drawable" />
       <recent name="C:\Users\Daniel\Documents\GitHub\ISIS3510_202310_Team\KotlinTeam\app\src\main\res\font" />
+    </key>
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="com.edu.uniandes.fud.viewmodel.home" />
+    </key>
+    <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
+      <recent name="com.edu.uniandes.fud" />
     </key>
   </component>
   <component name="RunManager">
