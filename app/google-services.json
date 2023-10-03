@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1082934295760",
+    "project_id": "fud2-1c029",
+    "storage_bucket": "fud2-1c029.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1082934295760:android:84becfa75efc96127cb2d5",
+        "android_client_info": {
+          "package_name": "com.edu.uniandes.fud"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWt-MHknzdWuAGziQVhH2TPhfjo9J4jHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
