@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.database.getDataBase
 import com.edu.uniandes.fud.domain.Restaurant
-import com.edu.uniandes.fud.repository.RestaurantsRepository
+import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -15,9 +15,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _query = MutableLiveData<String>()
     val query: LiveData<String> = _query
 
-    private val restaurantsRepository = RestaurantsRepository(getDataBase(application))
+    private val dbRepository = DBRepository(getDataBase(application))
 
-    val restaurantList = restaurantsRepository.restaurants
+    val restaurantList = dbRepository.restaurants
 
     private val _restaurantList = MutableLiveData<List<Restaurant>>()
 
@@ -35,7 +35,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private fun refreshDataFromRepository() {
         viewModelScope.launch {
             try {
-                restaurantsRepository.refreshRestaurants()
+                dbRepository.refreshData()
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
 

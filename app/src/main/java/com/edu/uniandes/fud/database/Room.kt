@@ -5,26 +5,37 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
-interface RestaurantDao {
-    @Query("select * from databaserestaurant")
+interface DatabaseDao {
+    @Query("SELECT * FROM DatabaseRestaurant")
     fun getRestaurants(): LiveData<List<DatabaseRestaurant>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(restaurants: List<DatabaseRestaurant>)
+    fun insertAllRestaurants(restaurants: List<DatabaseRestaurant>)
+
+    @Query("SELECT * FROM DatabaseDish")
+    fun getDishes(): LiveData<List<DatabaseDish>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllDishes(dishes: List<DatabaseDish>)
+
+    @Query(
+        "SELECT * FROM DatabaseRestaurant JOIN DatabaseDish ON DatabaseRestaurant.id = DatabaseDish.restaurantId"
+    )
+    fun loadRestaurantsAndDishes() : LiveData<Map<DatabaseRestaurant,List<DatabaseDish>>>
 
 }
 
-@Database(entities = [DatabaseRestaurant::class], version = 2, exportSchema = false)
-abstract class RestaurantsDatabase: RoomDatabase(){
-    abstract val restaurantDao: RestaurantDao
+@Database(entities = [DatabaseRestaurant::class, DatabaseDish::class], version = 3, exportSchema = false)
+abstract class DatabaseRoom: RoomDatabase(){
+    abstract val databaseDao: DatabaseDao
 }
 
-private lateinit var INSTANCE: RestaurantsDatabase
-fun getDataBase(context: Context): RestaurantsDatabase{
-    synchronized(RestaurantsDatabase::class.java){
+private lateinit var INSTANCE: DatabaseRoom
+fun getDataBase(context: Context): DatabaseRoom{
+    synchronized(DatabaseRoom::class.java){
         if(!::INSTANCE.isInitialized) {
             INSTANCE = Room.databaseBuilder(context.applicationContext,
-                RestaurantsDatabase::class.java,
+                DatabaseRoom::class.java,
                 "restaurants").build()
         }
     }

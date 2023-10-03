@@ -2,16 +2,16 @@ package com.edu.uniandes.fud.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
-import com.edu.uniandes.fud.database.RestaurantsDatabase
+import com.edu.uniandes.fud.database.DatabaseRoom
 import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.network.FudNetService
 import com.edu.uniandes.fud.network.asDatabaseModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class RestaurantsRepository(private val database: RestaurantsDatabase) {
+class DBRepository(private val database: DatabaseRoom) {
 
-    val restaurants: LiveData<List<Restaurant>> = database.restaurantDao.getRestaurants().map { originalList ->
+    val restaurants: LiveData<List<Restaurant>> = database.databaseDao.getRestaurants().map { originalList ->
 
         val mappedList = originalList.map { restaurant ->
             val modifiedRestaurant = Restaurant(
@@ -28,11 +28,12 @@ class RestaurantsRepository(private val database: RestaurantsDatabase) {
         mappedList
     }
 
-    suspend fun refreshRestaurants() {
+    suspend fun refreshData() {
         withContext(Dispatchers.IO) {
-            // TODO: Change
             val restaurantList = FudNetService.getRestaurantList()
-            database.restaurantDao.insertAll(restaurantList.asDatabaseModel())
+            database.databaseDao.insertAllRestaurants(restaurantList.asDatabaseModel())
+            val dishesList = FudNetService.getDishList()
+            database.databaseDao.insertAllDishes(dishesList.asDatabaseModel())
         }
     }
 

@@ -25,9 +25,9 @@ interface FudNetService {
                         restaurants.add(
                             i,
                             NetworkRestaurant(
-                                id = 3,
+                                id = restaurant_fb.data["id"].toString().toInt(),
                                 name = restaurant_fb.data["name"].toString(),
-                                rating = restaurant_fb.data["rating"].toString(),
+                                rating = restaurant_fb.data["rating"].toString().toDouble(),
                                 lat = restaurant_fb.data["lat"].toString().toDouble(),
                                 long = restaurant_fb.data["long"].toString().toDouble(),
                                 thumbnail = restaurant_fb.data["thumbnail"].toString()
@@ -43,6 +43,46 @@ interface FudNetService {
                 condition.await()
                 Log.v("XD1",restaurants.toString())
                 return NetworkRestaurantContainer(restaurants)
+            }
+
+        }
+
+        suspend fun getDishList() : NetworkDishContainer{
+            val db = Firebase.firestore
+            val dishes : MutableList<NetworkDish> = mutableListOf()
+            val i = 0
+
+            val lock = ReentrantLock()
+            val condition = lock.newCondition()
+
+            db.collection("dishes")
+                .get()
+                .addOnSuccessListener { dishes_firebase ->
+                    for (dish_fb in dishes_firebase ) {
+                        dishes.add(
+                            i,
+                            NetworkDish(
+                                id = dish_fb.data["id"].toString().toInt(),
+                                name = dish_fb.data["name"].toString(),
+                                price = dish_fb.data["price"].toString().toInt(),
+                                rating = dish_fb.data["rating"].toString().toDouble(),
+                                isVeggie = dish_fb.data["isVeggie"].toString().toBoolean(),
+                                isVegan = dish_fb.data["isVegan"].toString().toBoolean(),
+                                waitingTime = dish_fb.data["waitingTime"].toString().toInt(),
+                                thumbnail = dish_fb.data["thumbnail"].toString(),
+                                restaurantId = dish_fb.data["restaurantId"].toString().toInt()
+                            )
+                        )
+                    }
+                    lock.withLock {
+                        condition.signal()
+                    }
+                }
+
+            lock.withLock {
+                condition.await()
+                Log.v("XD2",dishes.toString())
+                return NetworkDishContainer(dishes)
             }
 
         }
