@@ -1,5 +1,7 @@
 package com.edu.uniandes.fud.ui.home
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,6 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Search
@@ -15,18 +19,22 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.asLiveData
+import coil.compose.AsyncImage
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.SearchActivity
 import com.edu.uniandes.fud.domain.DishRestaurant
 import com.edu.uniandes.fud.ui.theme.Gold
 import com.edu.uniandes.fud.ui.theme.MobileAppTheme
@@ -35,9 +43,12 @@ import com.edu.uniandes.fud.ui.theme.Typography
 import com.edu.uniandes.fud.viewmodel.home.HomeViewModel
 
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: HomeViewModel){
+
+    val context = LocalContext.current
 
     Scaffold (
         containerColor = Color.White,
@@ -47,7 +58,7 @@ fun HomeScreen(viewModel: HomeViewModel){
             modifier = Modifier.padding(innerPadding)
         ) {
             item{
-                SearchBar(viewModel)
+                SearchBar(viewModel, context)
             }
             item{
                 CarousselMealType(viewModel)
@@ -145,11 +156,17 @@ fun TopBarPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun SearchBar(viewModel: HomeViewModel){
+fun SearchBar(viewModel: HomeViewModel, context: Context){
+
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     val query: String by viewModel.query.observeAsState(initial = "")
+
+
 
     Row (
         modifier = Modifier
@@ -160,7 +177,6 @@ fun SearchBar(viewModel: HomeViewModel){
             .height(IntrinsicSize.Min)
 
     ) {
-        var text by remember { mutableStateOf(TextFieldValue("")) }
         TextField(
             leadingIcon = {
                 Icon(
@@ -177,12 +193,25 @@ fun SearchBar(viewModel: HomeViewModel){
                     shape = RoundedCornerShape(8.dp)
                 )
                 .background(Color.White),
-            value = text,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = {
+
+                // Hide the keyboard after submitting the search
+                keyboardController?.hide()
+                //or hide keyboard
+                focusManager.clearFocus()
+
+                // cambio a query
+                val intent = Intent(context, SearchActivity::class.java)
+                intent.putExtra("query",query)
+                context.startActivity(intent)
+            }),
+            value = query,
             placeholder = {
                 Text(text="Busca tu comida de hoy")
             },
-            onValueChange = { newText ->
-                text = newText
+            onValueChange = {
+                viewModel.onSearchChange(it)
             },
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,
@@ -273,7 +302,8 @@ fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: Strin
             )
             Spacer(modifier = Modifier.height(10.dp))
         }
-        Image(
+        AsyncImage(
+            model = thumbnail,
             modifier = Modifier
                 .width(150.dp)
                 .height(150.dp)
@@ -283,7 +313,7 @@ fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: Strin
                     elevation = 5.dp,
                     shape = RoundedCornerShape(70.dp)
                 ),
-            painter = painterResource(R.drawable.breakfast),
+            placeholder = painterResource(R.drawable.loading),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
@@ -292,7 +322,7 @@ fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: Strin
 }
 
 @Composable
-fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String, oldPrice: Int, newPrice: Int) {
+fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String, oldPrice: Int, newPrice: Int, thumbnail: String ) {
     Card(
         modifier = Modifier
             .width(220.dp)
@@ -306,17 +336,23 @@ fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String,
             containerColor = Color.White
         )
     ){
-        Image(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .shadow(
                     elevation = 5.dp,
-                ),
-            painter = painterResource(R.drawable.breakfast),
-            contentDescription = null,
-            contentScale = ContentScale.Crop
-        )
+                )
+        ){
+            AsyncImage(
+                model = thumbnail,
+                modifier = Modifier
+                    .fillMaxSize(),
+                placeholder = painterResource(R.drawable.loading),
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+        }
         Column (
             modifier = Modifier.padding(5.dp)
         ) {
@@ -365,7 +401,7 @@ fun CarousselTop3Dish(viewModel: HomeViewModel) {
     val top3Dishes : List<DishRestaurant> by viewModel.top3Dishes.observeAsState(initial = emptyList())
 
     Text(
-        text = "Comida para ti",
+        text = "Top 3 restaurantes un tu zona",
         style = Typography.titleMedium,
         modifier = Modifier.padding(horizontal = 17.dp)
     )
@@ -377,8 +413,7 @@ fun CarousselTop3Dish(viewModel: HomeViewModel) {
         items(top3Dishes){
             CardDish(
                 name = it.name,
-                restaurantName = "central",
-                //restaurantName = it.restaurant.name,
+                restaurantName = it.restaurant.name,
                 price = it.price,
                 thumbnail = it.thumbnail,
                 id = it.id
@@ -441,10 +476,10 @@ fun CarousselMealType(viewModel: HomeViewModel) {
             CardTypeMeal("Desayuno", R.drawable.breakfast)
         }
         item {
-            CardTypeMeal("Desayuno", R.drawable.breakfast)
+            CardTypeMeal("Almuerzo", R.drawable.band_paisa)
         }
         item {
-            CardTypeMeal("Desayuno", R.drawable.breakfast)
+            CardTypeMeal("Cena", R.drawable.cena)
         }
         item {
             Spacer(modifier = Modifier.width(15.dp))
@@ -465,13 +500,6 @@ fun CarousselDishOffers(viewModel: HomeViewModel) {
             .padding(top = 5.dp)
             .padding(horizontal = 17.dp)
     )
-    Text(
-        text = viewModel.dbRepository.dishes.asLiveData().value.toString(),
-        style = Typography.titleMedium,
-        modifier = Modifier
-            .padding(top = 5.dp)
-            .padding(horizontal = 17.dp)
-    )
     LazyRow {
         item {
             Spacer(modifier = Modifier.width(10.dp))
@@ -485,7 +513,8 @@ fun CarousselDishOffers(viewModel: HomeViewModel) {
                 rating = it.rating,
                 restaurantName = "central",
                 oldPrice = it.price,
-                newPrice = it.newPrice
+                newPrice = it.newPrice,
+                thumbnail = it.thumbnail
             )
 
         }
