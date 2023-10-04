@@ -1,15 +1,17 @@
 package com.edu.uniandes.fud
 
 import android.app.Application
+import com.edu.uniandes.fud.database.DatabaseRoom
+import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 
 class FuDApplication : Application() {
-    companion object {
-        lateinit var instance: FuDApplication
-            private set
-    }
+    val applicationScope = CoroutineScope(SupervisorJob())
 
-    override fun onCreate() {
-        super.onCreate()
-        FuDApplication.instance = this
-    }
+    val database by lazy { DatabaseRoom.getDataBase(this, applicationScope) }
+    val repository by lazy { DBRepository(database) }
+
+
+
 }

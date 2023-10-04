@@ -11,36 +11,36 @@ import com.edu.uniandes.fud.domain.User
 @Entity
 data class DatabaseRestaurant(
     @PrimaryKey
-    val id: Int,
-    val name: String,
-    val rating: Double,
-    val lat: Double,
-    val long: Double,
-    val thumbnail: String
+    var id: Int = 0,
+    var name: String = "",
+    var rating: Double = 0.0,
+    var lat: Double = 0.0,
+    var long: Double = 0.0,
+    var thumbnail: String = ""
 )
 
 @Entity
 data class DatabaseDish(
     @PrimaryKey
-    val id: Int,
-    val name: String,
-    val price: Int,
-    val newPrice: Int,
-    val inOffer: Boolean,
-    val rating: Double,
-    val isVeggie: Boolean,
-    val isVegan: Boolean,
-    val waitingTime: Int,
-    val thumbnail: String,
-    val restaurantId: Int
+    var id: Int = 0,
+    var name: String = "",
+    var price: Int = 0,
+    var newPrice: Int = 0,
+    var inOffer: Boolean = false,
+    var rating: Double = 0.0,
+    var isVeggie: Boolean = false,
+    var isVegan: Boolean = false,
+    var waitingTime: Int = 0,
+    var thumbnail: String = "",
+    var restaurantId: Int = 0
 )
 
 @Entity
 data class DatabaseUser(
     @PrimaryKey
-    val id: Int,
-    val username: String,
-    val password: String
+    var id: Int = 0,
+    var username: String = "",
+    var password: String = ""
 )
 // TODO: In the future add new dataClass for offers and prices independent to dishes
 

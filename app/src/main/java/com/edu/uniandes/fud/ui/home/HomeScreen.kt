@@ -6,13 +6,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.livedata.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.asLiveData
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.domain.DishRestaurant
 import com.edu.uniandes.fud.ui.theme.Gold
@@ -360,7 +362,7 @@ fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String,
 @Composable
 fun CarousselTop3Dish(viewModel: HomeViewModel) {
 
-    val top3Dishes: List<DishRestaurant> by viewModel.top3Dishes.observeAsState(initial = emptyList())
+    val top3Dishes : List<DishRestaurant> by viewModel.top3Dishes.observeAsState(initial = emptyList())
 
     Text(
         text = "Comida para ti",
@@ -371,7 +373,7 @@ fun CarousselTop3Dish(viewModel: HomeViewModel) {
         item {
             Spacer(modifier = Modifier.width(10.dp))
         }
-        /*
+
         items(top3Dishes){
             CardDish(
                 name = it.name,
@@ -382,7 +384,7 @@ fun CarousselTop3Dish(viewModel: HomeViewModel) {
                 id = it.id
             )
         }
-        */
+
 
     }
 }
@@ -455,8 +457,16 @@ fun CarousselDishOffers(viewModel: HomeViewModel) {
 
     val offerDishes : List<DishRestaurant> by viewModel.offerDishes.observeAsState(initial = emptyList())
 
+
     Text(
         text = "Las mejores ofertas",
+        style = Typography.titleMedium,
+        modifier = Modifier
+            .padding(top = 5.dp)
+            .padding(horizontal = 17.dp)
+    )
+    Text(
+        text = viewModel.dbRepository.dishes.asLiveData().value.toString(),
         style = Typography.titleMedium,
         modifier = Modifier
             .padding(top = 5.dp)
@@ -466,7 +476,8 @@ fun CarousselDishOffers(viewModel: HomeViewModel) {
         item {
             Spacer(modifier = Modifier.width(10.dp))
         }
-        /*
+
+
         items(offerDishes) {
             CardDishOffer(
                 name = it.name,
@@ -476,8 +487,11 @@ fun CarousselDishOffers(viewModel: HomeViewModel) {
                 oldPrice = it.price,
                 newPrice = it.newPrice
             )
+
         }
-        */
+
+
+
 
     }
 }
