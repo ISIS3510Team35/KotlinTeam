@@ -1,5 +1,7 @@
 package com.edu.uniandes.fud.ui.login
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.text.KeyboardOptions
@@ -10,16 +12,18 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.edu.uniandes.fud.HomeActivity
 import com.edu.uniandes.fud.ui.theme.backgroundSecondary
 import com.edu.uniandes.fud.ui.theme.buttonBackground
 import com.edu.uniandes.fud.ui.theme.buttonText
 import com.edu.uniandes.fud.ui.theme.textField
 import com.edu.uniandes.fud.ui.theme.textFieldBackground
 import com.edu.uniandes.fud.R
-import com.edu.uniandes.fud.viewmodel.login.LoginViewModel
+import com.edu.uniandes.fud.viewModel.login.LoginViewModel
 
 
 @Composable
@@ -41,6 +45,7 @@ fun Login(align: Modifier, viewModel: LoginViewModel) {
 	val email: String by viewModel.email.observeAsState(initial = "")
 	val password: String by viewModel.password.observeAsState(initial = "")
 	val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
+	
 	
 	Column(
 		modifier = Modifier.fillMaxHeight(),
@@ -116,8 +121,12 @@ fun Passwordfield(password: String, onTextFieldChanged:(String) -> Unit) {
 
 @Composable
 fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
+	val context = LocalContext.current
 	Button(
-		onClick = { onLoginSelected() },
+		onClick = {
+			onLoginSelected()
+			context.startActivity(Intent(context, HomeActivity::class.java))
+				  },
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(vertical = 10.dp, horizontal = 50.dp),

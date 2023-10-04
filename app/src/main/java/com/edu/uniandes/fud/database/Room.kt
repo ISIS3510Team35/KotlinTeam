@@ -49,17 +49,10 @@ interface DatabaseDao {
         insertAllDishes(dishes)
         insertAllUsers(users)
     }
-
-    //T0DO: SOS Borrar funcion
-    @Transaction
-    fun insertRestaurantsAndDishes(dishes: List<DatabaseDish>, restaurants: List<DatabaseRestaurant>){
-        insertAllRestaurants(restaurants)
-        insertAllDishes(dishes)
-    }
     
     //User
     @Query("SELECT * FROM DatabaseUser")
-    fun getUsers(): LiveData<List<DatabaseUser>>
+    fun getUsers(): Flow<List<DatabaseUser>>
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllUsers(users: List<DatabaseUser>) : LongArray

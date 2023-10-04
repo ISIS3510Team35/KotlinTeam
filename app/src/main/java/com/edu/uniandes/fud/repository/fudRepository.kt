@@ -8,6 +8,7 @@ import com.edu.uniandes.fud.domain.Dish
 import com.edu.uniandes.fud.domain.DishRestaurant
 import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.domain.RestaurantDish
+import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.network.FudNetService
 import com.edu.uniandes.fud.network.asDatabaseModel
 import kotlinx.coroutines.flow.Flow
@@ -44,20 +45,16 @@ class DBRepository(private val database: DatabaseRoom) {
             originalList -> originalList.asDomainModel()
     }
     
-    // Refresh data -> Restaurants Repository
+    val users: Flow<List<User>> = database.databaseDao().getUsers().map { originalList -> originalList.asDomainModel() }
+    
+    // Refresh data -> Restaurants-Dishes
     suspend fun refreshData() {
         database.withTransaction {
             val restaurantList = FudNetService.getRestaurantList()
             val dishesList = FudNetService.getDishList()
-            // TODO: SOS PONER FUNCION
-            //val usersList =  FudNetService.g
-            // TODO: SOS LINEA BORRAR
-            database.databaseDao().insertRestaurantsAndDishes(dishesList.asDatabaseModel(), restaurantList.asDatabaseModel())
-            //database.databaseDao().insertRestaurantsAndDishesAndUser(dishesList.asDatabaseModel(), restaurantList.asDatabaseModel(), )
+            val userList =  FudNetService.getUserList()
+            database.databaseDao().insertRestaurantsAndDishesAndUser(dishesList.asDatabaseModel(), restaurantList.asDatabaseModel(), userList.asDatabaseModel())
         }
     }
-
-
-
-
+    
 }

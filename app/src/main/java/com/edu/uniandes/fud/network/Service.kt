@@ -88,6 +88,40 @@ interface FudNetService {
             }
 
         }
+    
+        suspend fun getUserList() : NetworkUserContainer{
+            val db = Firebase.firestore
+            val users : MutableList<NetworkUser> = mutableListOf()
+            val i = 0
+        
+            val lock = ReentrantLock()
+            val condition = lock.newCondition()
+        
+            db.collection("users")
+                .get()
+                .addOnSuccessListener { users_firebase ->
+                    for (user_fb in users_firebase ) {
+                        users.add(
+                            i,
+                            NetworkUser(
+                                id = user_fb.data["id"].toString().toInt(),
+                                username = user_fb.data["username"].toString(),
+                                password = user_fb.data["password"].toString()
+                            )
+                        )
+                    }
+                    lock.withLock {
+                        condition.signal()
+                    }
+                }
+        
+            lock.withLock {
+                condition.await()
+                Log.v("XD2",users.toString())
+                return NetworkUserContainer(users)
+            }
+        
+        }
     }
 }
 
