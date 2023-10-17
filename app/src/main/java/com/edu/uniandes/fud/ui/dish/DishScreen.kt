@@ -5,11 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -19,16 +21,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.domain.DishRestaurant
+import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.ui.theme.*
+import com.edu.uniandes.fud.viewModel.dish.DishViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun RestaurantScreen() {
+fun DishScreen(viewModel: DishViewModel) {
     Scaffold(
         topBar = { CustomTopBar() }
     ) { innerPadding ->
@@ -36,19 +40,13 @@ fun RestaurantScreen() {
             modifier = Modifier.padding(innerPadding)
         ) {
             item {
-                DishImg(restImg = R.drawable.almuerzo_dia)
+                DishImg(viewModel)
             }
             item {
-                DishNameDesc(
-                    "Almuerzo del día",
-                    "Cafetería Central Uniandes",
-                    4.3f,
-                    "13.9K",
-                    "Una entrada común en Colombia es la sopa. El \"ajiaco\" es una sopa espesa y reconfortante que se prepara con papas, pollo, maíz, alcaparras y crema de leche. Otra opción es la \"sopa de lentejas\" o la \"sopa de aguacate\", que son igualmente deliciosas. \n\nUno de los platos más emblemáticos de Colombia es la \"bandeja paisa\". Este plato abundante incluye arroz, frijoles, carne molida, chicharrón, chorizo, huevo frito, aguacate y plátano maduro frito. Otra opción popular es el \"ajiaco santafereño\", un guiso de pollo con papas y maíz que se sirve con arroz."
-                )
+                DishNameDesc(viewModel)
             }
             item {
-                CarousselOthers()
+                CarousselOthers(viewModel)
             }
         }
 
@@ -130,11 +128,29 @@ fun CustomTopBar() {
 }
 
 @Composable
-fun DishImg(restImg: Int) {
-    Image(
-        painter = painterResource(restImg),
+fun DishImg(viewModel: DishViewModel) {
+
+    val dish: DishRestaurant by viewModel.dish.observeAsState(
+        initial = DishRestaurant(
+            id = 0,
+            name = "",
+            price = 0,
+            newPrice = 0,
+            inOffer = false,
+            rating = 0.0,
+            isVeggie = false,
+            isVegan = false,
+            waitingTime = 0,
+            thumbnail = "",
+            restaurantId = 0,
+            Restaurant(id = 0, name = "", rating = 0.0, lat = 0.0, long = 0.0, thumbnail = "")
+        )
+    )
+
+    AsyncImage(
+        model = dish.thumbnail,
+        placeholder = painterResource(R.drawable.loading),
         contentDescription = null,
-        alpha = 0.9f,
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .padding(vertical = 10.dp)
@@ -145,19 +161,37 @@ fun DishImg(restImg: Int) {
 }
 
 @Composable
-fun DishNameDesc(dishName: String, dishRest: String, rating: Float, price: String, dishDesc: String) {
+fun DishNameDesc(viewModel: DishViewModel) {
+
+    val dish: DishRestaurant by viewModel.dish.observeAsState(
+        initial = DishRestaurant(
+            id = 0,
+            name = "",
+            price = 0,
+            newPrice = 0,
+            inOffer = false,
+            rating = 0.0,
+            isVeggie = false,
+            isVegan = false,
+            waitingTime = 0,
+            thumbnail = "",
+            restaurantId = 0,
+            Restaurant(id = 0, name = "", rating = 0.0, lat = 0.0, long = 0.0, thumbnail = "")
+        )
+    )
+
     Text(
-        text = dishName,
+        text = dish.name,
         style = Typography.titleLarge,
         modifier = Modifier.padding(horizontal = 25.dp)
     )
     Text(
-        text = dishRest,
+        text = dish.restaurant.name,
         style = Typography.headlineLarge,
         modifier = Modifier.padding(horizontal = 25.dp)
     )
     Text(
-        text = price,
+        text = dish.price.toString(),
         style = TextStyle(
             color = Orange,
             fontFamily = Manrope,
@@ -176,7 +210,7 @@ fun DishNameDesc(dishName: String, dishRest: String, rating: Float, price: Strin
     ) {
 
         Text(
-            text = rating.toString(),
+            text = dish.rating.toString(),
             modifier = Modifier
                 .padding(2.dp),
             textAlign = TextAlign.Center
@@ -203,7 +237,7 @@ fun DishNameDesc(dishName: String, dishRest: String, rating: Float, price: Strin
     ) {
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = dishDesc,
+            text = dish.name,
             style = Typography.bodyLarge,
             modifier = Modifier
                 .fillMaxWidth()
@@ -215,7 +249,7 @@ fun DishNameDesc(dishName: String, dishRest: String, rating: Float, price: Strin
 }
 
 @Composable
-fun CardOthers(name: String, picture: Int, price: String) {
+fun CardOthers(name: String, picture: String, price: String) {
     Card(
         modifier = Modifier
             .width(180.dp)
@@ -229,14 +263,11 @@ fun CardOthers(name: String, picture: Int, price: String) {
             containerColor = Color.White
         )
     ) {
-        Image(
+        AsyncImage(
+            model = picture,
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .shadow(
-                    elevation = 5.dp,
-                ),
-            painter = painterResource(picture),
+                .fillMaxSize(),
+            placeholder = painterResource(R.drawable.loading),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
@@ -265,7 +296,10 @@ fun CardOthers(name: String, picture: Int, price: String) {
 
 
 @Composable
-fun CarousselOthers() {
+fun CarousselOthers(viewModel: DishViewModel) {
+
+    val otherDishes : List<DishRestaurant> by viewModel.top3Dishes.observeAsState(initial = emptyList())
+
     Text(
         text = "Otros platos",
         style = Typography.titleMedium,
@@ -273,21 +307,16 @@ fun CarousselOthers() {
             .padding(top = 5.dp)
             .padding(horizontal = 17.dp)
     )
+
     LazyRow {
         item {
             Spacer(modifier = Modifier.width(10.dp))
         }
-        item {
-            CardOthers("Hamburguesa de lenteja", R.drawable.hamb_lent, "13.9K")
-        }
-        item {
-            CardOthers("Arroz picante mexicano", R.drawable.arroz_mex, "15.9K")
-        }
-        item {
-            CardOthers("Berenjenas tempura", R.drawable.b_temp, "10.9K")
-        }
-        item {
-            CardOthers("Bandeja paisa", R.drawable.band_paisa, "14.9K")
+        items(otherDishes) {
+            CardOthers(
+                name = it.name,
+                picture = it.thumbnail,
+                price = it.price.toString())
         }
     }
 }
