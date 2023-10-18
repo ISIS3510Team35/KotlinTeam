@@ -25,7 +25,7 @@ class DishViewModel(repository: DBRepository) : ViewModel() {
         viewModelScope.launch {
             repository.dishesRestaurant.collect() { dishesRestaurant ->
                 _dish.value = dishesRestaurant[0]
-                _top3Dishes.value = dishesRestaurant.sortedBy { it.rating }.subList(0, 3)
+                _top3Dishes.value = dishesRestaurant.sortedBy { it.rating } //.subList(0, 3)
             }
         }
     }
