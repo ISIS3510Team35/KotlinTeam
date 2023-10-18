@@ -1,14 +1,10 @@
 package com.edu.uniandes.fud.viewModel.login
 
-import android.content.Context
-import android.content.Intent
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.edu.uniandes.fud.HomeActivity
 import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -33,12 +29,16 @@ class LoginViewModel(repository: DBRepository) : ViewModel() {
 	val dbRepository = repository
 	
 	
+
 	init {
 		viewModelScope.launch {
 			repository.users.collect { users ->
 				// Update View with the latest favorite news
 				_usernameAuth.value = users[0].username
 				_passwordAuth.value = users[0].password
+				
+				println("usernameAuth: ${_usernameAuth.value}")
+				println("passwordAuth: ${_passwordAuth.value}")
 			}
 		}
 	}

@@ -1,7 +1,6 @@
 package com.edu.uniandes.fud.database
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.edu.uniandes.fud.repository.DBRepository
@@ -56,6 +55,7 @@ interface DatabaseDao {
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllUsers(users: List<DatabaseUser>) : LongArray
+    
     
     /*
     //User-List<Dish>

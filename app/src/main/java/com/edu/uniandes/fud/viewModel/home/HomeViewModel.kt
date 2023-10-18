@@ -33,8 +33,8 @@ class HomeViewModel(repository: DBRepository) : ViewModel() {
         viewModelScope.launch {
             repository.dishesRestaurant.collect { dishesRestaurant ->
                 // Update View with the latest favorite news
-                _top3Dishes.value = dishesRestaurant.sortedBy { it.rating }.subList(0,3)
-                _offerDishes.value = dishesRestaurant.sortedBy { it.price-it.newPrice }.subList(0,3)
+                _top3Dishes.value = dishesRestaurant.sortedBy { it.rating }.subList(0,2)
+                _offerDishes.value = dishesRestaurant.sortedBy { it.price-it.newPrice }.subList(0,2)
             }
         }
     }

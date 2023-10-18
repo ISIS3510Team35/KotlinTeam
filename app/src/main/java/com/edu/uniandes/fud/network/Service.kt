@@ -10,6 +10,7 @@ interface FudNetService {
     //@GET("restaurants")
     //suspend fun getRestaurantList(): NetworkRestaurantContainer
     companion object {
+        
         suspend fun getRestaurantList() : NetworkRestaurantContainer{
             val db = Firebase.firestore
             val restaurants : MutableList<NetworkRestaurant> = mutableListOf()
@@ -97,7 +98,7 @@ interface FudNetService {
             val lock = ReentrantLock()
             val condition = lock.newCondition()
         
-            db.collection("users")
+            db.collection("User")
                 .get()
                 .addOnSuccessListener { users_firebase ->
                     for (user_fb in users_firebase ) {
@@ -119,6 +120,40 @@ interface FudNetService {
                 condition.await()
                 Log.v("XD2",users.toString())
                 return NetworkUserContainer(users)
+            }
+        
+        }
+    
+        suspend fun setUser(id: Int, username: String, password: String) {
+
+            val db = Firebase.firestore
+
+            val lock = ReentrantLock()
+            val condition = lock.newCondition()
+
+            val user = hashMapOf(
+                "id" to id,
+                "username" to username,
+                "password" to password
+            )
+
+            db.collection("User")
+                .add(user)
+                .addOnSuccessListener { documentReference ->
+                    Log.d("XD", "DocumentSnapshot added with ID: ${documentReference.id}")
+                    lock.withLock {
+                        condition.signal()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.w("XD", "Error adding document", e)
+                    lock.withLock {
+                        condition.signal()
+                    }
+                }
+
+            lock.withLock {
+                condition.await()
             }
         
         }

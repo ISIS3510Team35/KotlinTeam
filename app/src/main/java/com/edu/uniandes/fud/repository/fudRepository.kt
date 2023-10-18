@@ -45,7 +45,16 @@ class DBRepository(private val database: DatabaseRoom) {
             originalList -> originalList.asDomainModel()
     }
     
-    val users: Flow<List<User>> = database.databaseDao().getUsers().map { originalList -> originalList.asDomainModel() }
+    val users: Flow<List<User>> = database.databaseDao().getUsers().map {
+            originalList -> originalList.asDomainModel()
+    }
+    
+    // Insert user
+    suspend fun insertUser(id: Int, username: String, password: String) {
+        FudNetService.setUser(id, username, password)
+    }
+    
+    
     
     // Refresh data -> Restaurants-Dishes
     suspend fun refreshData() {

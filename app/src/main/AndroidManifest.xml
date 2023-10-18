@@ -26,6 +26,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".HomeActivity"
+            android:exported="true"
+            android:label="fud"
+            android:theme="@style/Theme.fud" />
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="true"
+            android:label="fud"
+            android:theme="@style/Theme.fud" />
+        <activity
+            android:name=".DishActivity"
+            android:exported="true"
+            android:label="fud"
+            android:theme="@style/Theme.fud" />
+        <activity
+            android:name=".RestaurantActivity"
+            android:exported="true"
+            android:label="fud"
+            android:theme="@style/Theme.fud" />
     </application>
 
 </manifest>
