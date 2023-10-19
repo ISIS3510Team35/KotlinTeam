@@ -19,19 +19,18 @@ interface FudNetService {
             val lock = ReentrantLock()
             val condition = lock.newCondition()
 
-            db.collection("restaurants")
+            db.collection("Restaurant")
                 .get()
-                .addOnSuccessListener { restaurants_firebase ->
-                    for (restaurant_fb in restaurants_firebase ) {
+                .addOnSuccessListener { restaurantsFirebase ->
+                    for (restaurantFb in restaurantsFirebase ) {
                         restaurants.add(
                             i,
                             NetworkRestaurant(
-                                id = restaurant_fb.data["id"].toString().toInt(),
-                                name = restaurant_fb.data["name"].toString(),
-                                rating = restaurant_fb.data["rating"].toString().toDouble(),
-                                lat = restaurant_fb.data["lat"].toString().toDouble(),
-                                long = restaurant_fb.data["long"].toString().toDouble(),
-                                thumbnail = restaurant_fb.data["thumbnail"].toString()
+                                id = restaurantFb.data["id"].toString().toInt(),
+                                name = restaurantFb.data["name"].toString(),
+                                rating = restaurantFb.data["rating"].toString().toDouble(),
+                                location = restaurantFb.data["location"] as com.google.firebase.firestore.GeoPoint,
+                                image = restaurantFb.data["image"].toString()
                             )
                         )
                     }
@@ -48,32 +47,32 @@ interface FudNetService {
 
         }
 
-        suspend fun getDishList() : NetworkDishContainer{
+        suspend fun getProductList() : NetworkProductContainer{
             val db = Firebase.firestore
-            val dishes : MutableList<NetworkDish> = mutableListOf()
+            val products : MutableList<NetworkProduct> = mutableListOf()
             val i = 0
 
             val lock = ReentrantLock()
             val condition = lock.newCondition()
 
-            db.collection("dishes")
+            db.collection("Product")
                 .get()
-                .addOnSuccessListener { dishes_firebase ->
-                    for (dish_fb in dishes_firebase ) {
-                        dishes.add(
+                .addOnSuccessListener { productsFirebase ->
+                    for (productFb in productsFirebase ) {
+                        products.add(
                             i,
-                            NetworkDish(
-                                id = dish_fb.data["id"].toString().toInt(),
-                                name = dish_fb.data["name"].toString(),
-                                price = dish_fb.data["price"].toString().toInt(),
-                                newPrice = dish_fb.data["newPrice"].toString().toInt(),
-                                inOffer = dish_fb.data["inOffer"].toString().toBoolean(),
-                                rating = dish_fb.data["rating"].toString().toDouble(),
-                                isVeggie = dish_fb.data["isVeggie"].toString().toBoolean(),
-                                isVegan = dish_fb.data["isVegan"].toString().toBoolean(),
-                                waitingTime = dish_fb.data["waitingTime"].toString().toInt(),
-                                thumbnail = dish_fb.data["thumbnail"].toString(),
-                                restaurantId = dish_fb.data["restaurantId"].toString().toInt()
+                            NetworkProduct(
+                                id = productFb.data["id"].toString().toInt(),
+                                name = productFb.data["name"].toString(),
+                                description = productFb.data["description"].toString(),
+                                price = productFb.data["price"].toString().toInt(),
+                                offerPrice = productFb.data["offerPrice"].toString().toInt(),
+                                inOffer = productFb.data["inOffer"].toString().toBoolean(),
+                                rating = productFb.data["rating"].toString().toDouble(),
+                                type = productFb.data["type"].toString(),
+                                category = productFb.data["category"].toString(),
+                                image = productFb.data["image"].toString(),
+                                restaurantId = productFb.data["restaurantId"].toString().toInt()
                             )
                         )
                     }
@@ -84,8 +83,8 @@ interface FudNetService {
 
             lock.withLock {
                 condition.await()
-                Log.v("XD2",dishes.toString())
-                return NetworkDishContainer(dishes)
+                Log.v("XD2",products.toString())
+                return NetworkProductContainer(products)
             }
 
         }

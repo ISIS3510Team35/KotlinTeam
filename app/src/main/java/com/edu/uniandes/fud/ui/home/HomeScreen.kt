@@ -35,7 +35,7 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.SearchActivity
-import com.edu.uniandes.fud.domain.DishRestaurant
+import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.ui.theme.Gold
 import com.edu.uniandes.fud.ui.theme.MobileAppTheme
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
@@ -64,10 +64,10 @@ fun HomeScreen(viewModel: HomeViewModel){
                 CarousselMealType(viewModel)
             }
             item {
-                CarousselTop3Dish(viewModel)
+                CarousselTop3Product(viewModel)
             }
             item{
-                CarousselDishOffers(viewModel)
+                CarousselProductOffers(viewModel)
             }
         }
 
@@ -252,7 +252,7 @@ fun SearchBar(viewModel: HomeViewModel, context: Context){
 // Diferentes
 
 @Composable
-fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: String, id: Int){
+fun CardProduct(name : String, restaurantName: String, price: Int, image: String, id: Int){
     Box (
         modifier = Modifier.width(220.dp),
         contentAlignment = Alignment.TopCenter
@@ -303,7 +303,7 @@ fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: Strin
             Spacer(modifier = Modifier.height(10.dp))
         }
         AsyncImage(
-            model = thumbnail,
+            model = image,
             modifier = Modifier
                 .width(150.dp)
                 .height(150.dp)
@@ -322,7 +322,7 @@ fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: Strin
 }
 
 @Composable
-fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String, oldPrice: Int, newPrice: Int, thumbnail: String ) {
+fun CardProductOffer(name: String, id: Int, rating: Double, restaurantName: String, price: Int, offerPrice: Int, image: String ) {
     Card(
         modifier = Modifier
             .width(220.dp)
@@ -345,7 +345,7 @@ fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String,
                 )
         ){
             AsyncImage(
-                model = thumbnail,
+                model = image,
                 modifier = Modifier
                     .fillMaxSize(),
                 placeholder = painterResource(R.drawable.loading),
@@ -366,7 +366,7 @@ fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String,
             )
 
             Text(
-                text = oldPrice.toString()+"K",
+                text = price.toString()+"K",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(2.dp),
@@ -396,9 +396,9 @@ fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String,
 }
 
 @Composable
-fun CarousselTop3Dish(viewModel: HomeViewModel) {
+fun CarousselTop3Product(viewModel: HomeViewModel) {
 
-    val top3Dishes : List<DishRestaurant> by viewModel.top3Dishes.observeAsState(initial = emptyList())
+    val top3Products : List<ProductRestaurant> by viewModel.top3Products.observeAsState(initial = emptyList())
 
     Text(
         text = "Top 3 restaurantes un tu zona",
@@ -410,12 +410,12 @@ fun CarousselTop3Dish(viewModel: HomeViewModel) {
             Spacer(modifier = Modifier.width(10.dp))
         }
 
-        items(top3Dishes){
-            CardDish(
+        items(top3Products){
+            CardProduct(
                 name = it.name,
                 restaurantName = it.restaurant.name,
                 price = it.price,
-                thumbnail = it.thumbnail,
+                image = it.image,
                 id = it.id
             )
         }
@@ -488,9 +488,9 @@ fun CarousselMealType(viewModel: HomeViewModel) {
 }
 
 @Composable
-fun CarousselDishOffers(viewModel: HomeViewModel) {
+fun CarousselProductOffers(viewModel: HomeViewModel) {
 
-    val offerDishes : List<DishRestaurant> by viewModel.offerDishes.observeAsState(initial = emptyList())
+    val offerProducts : List<ProductRestaurant> by viewModel.offerProducts.observeAsState(initial = emptyList())
 
 
     Text(
@@ -506,15 +506,15 @@ fun CarousselDishOffers(viewModel: HomeViewModel) {
         }
 
 
-        items(offerDishes) {
-            CardDishOffer(
-                name = it.name,
+        items(offerProducts) {
+            CardProductOffer(
                 id = it.id,
+                name = it.name,
                 rating = it.rating,
                 restaurantName = "central",
-                oldPrice = it.price,
-                newPrice = it.newPrice,
-                thumbnail = it.thumbnail
+                price = it.price,
+                offerPrice = it.offerPrice,
+                image = it.image
             )
 
         }

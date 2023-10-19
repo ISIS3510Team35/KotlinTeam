@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.edu.uniandes.fud.domain.RestaurantDish
+import com.edu.uniandes.fud.domain.RestaurantProduct
 import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -15,8 +15,8 @@ class SearchViewModel(repository: DBRepository) : ViewModel() {
     private val _query = MutableLiveData<String>()
     val query: LiveData<String> = _query
 
-    private val _results = MutableLiveData<List<RestaurantDish>>()
-    val results: LiveData<List<RestaurantDish>> = _results
+    private val _results = MutableLiveData<List<RestaurantProduct>>()
+    val results: LiveData<List<RestaurantProduct>> = _results
 
 
     val dbRepository = repository
@@ -27,9 +27,9 @@ class SearchViewModel(repository: DBRepository) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            repository.dishesRestaurant.collect { dishesRestaurant ->
+            repository.productsRestaurant.collect { productsRestaurant ->
                 // Update View with the latest favorite news
-                //_results.value = dishesRestaurant.map{it.name}.filter{ it.startsWith(query.value) }
+                //_results.value = productsRestaurant.map{it.name}.filter{ it.startsWith(query.value) }
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.edu.uniandes.fud.ui.dish
+package com.edu.uniandes.fud.ui.product
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,14 +25,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.edu.uniandes.fud.R
-import com.edu.uniandes.fud.domain.DishRestaurant
+import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.ui.theme.*
-import com.edu.uniandes.fud.viewModel.dish.DishViewModel
+import com.edu.uniandes.fud.viewModel.product.ProductViewModel
+import com.google.firebase.firestore.GeoPoint
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DishScreen(viewModel: DishViewModel) {
+fun ProductScreen(viewModel: ProductViewModel) {
     Scaffold(
         topBar = { CustomTopBar() }
     ) { innerPadding ->
@@ -40,10 +41,10 @@ fun DishScreen(viewModel: DishViewModel) {
             modifier = Modifier.padding(innerPadding)
         ) {
             item {
-                DishImg(viewModel)
+                ProductImg(viewModel)
             }
             item {
-                DishNameDesc(viewModel)
+                ProductNameDesc(viewModel)
             }
             item {
                 CarousselOthers(viewModel)
@@ -128,27 +129,27 @@ fun CustomTopBar() {
 }
 
 @Composable
-fun DishImg(viewModel: DishViewModel) {
+fun ProductImg(viewModel: ProductViewModel) {
 
-    val dish: DishRestaurant by viewModel.dish.observeAsState(
-        initial = DishRestaurant(
+    val product: ProductRestaurant by viewModel.product.observeAsState(
+        initial = ProductRestaurant(
             id = 0,
             name = "",
+            description = "",
             price = 0,
-            newPrice = 0,
+            offerPrice = 0,
             inOffer = false,
             rating = 0.0,
-            isVeggie = false,
-            isVegan = false,
-            waitingTime = 0,
-            thumbnail = "",
+            type = "",
+            category = "",
+            image = "",
             restaurantId = 0,
-            Restaurant(id = 0, name = "", rating = 0.0, lat = 0.0, long = 0.0, thumbnail = "")
+            Restaurant(id = 0, name = "", rating = 0.0, location = GeoPoint(0.0,0.0), image = "")
         )
     )
 
     AsyncImage(
-        model = dish.thumbnail,
+        model = product.image,
         placeholder = painterResource(R.drawable.loading),
         contentDescription = null,
         contentScale = ContentScale.Crop,
@@ -161,37 +162,37 @@ fun DishImg(viewModel: DishViewModel) {
 }
 
 @Composable
-fun DishNameDesc(viewModel: DishViewModel) {
+fun ProductNameDesc(viewModel: ProductViewModel) {
 
-    val dish: DishRestaurant by viewModel.dish.observeAsState(
-        initial = DishRestaurant(
+    val product: ProductRestaurant by viewModel.product.observeAsState(
+        initial = ProductRestaurant(
             id = 0,
             name = "",
+            description = "",
             price = 0,
-            newPrice = 0,
+            offerPrice = 0,
             inOffer = false,
             rating = 0.0,
-            isVeggie = false,
-            isVegan = false,
-            waitingTime = 0,
-            thumbnail = "",
+            type = "",
+            category = "",
+            image = "",
             restaurantId = 0,
-            Restaurant(id = 0, name = "", rating = 0.0, lat = 0.0, long = 0.0, thumbnail = "")
+            Restaurant(id = 0, name = "", rating = 0.0, location = GeoPoint(0.0,0.0), image = "")
         )
     )
 
     Text(
-        text = dish.name,
+        text = product.name,
         style = Typography.titleLarge,
         modifier = Modifier.padding(horizontal = 25.dp)
     )
     Text(
-        text = dish.restaurant.name,
+        text = product.restaurant.name,
         style = Typography.headlineLarge,
         modifier = Modifier.padding(horizontal = 25.dp)
     )
     Text(
-        text = dish.price.toString(),
+        text = product.price.toString(),
         style = TextStyle(
             color = Orange,
             fontFamily = Manrope,
@@ -210,7 +211,7 @@ fun DishNameDesc(viewModel: DishViewModel) {
     ) {
 
         Text(
-            text = dish.rating.toString(),
+            text = product.rating.toString(),
             modifier = Modifier
                 .padding(2.dp),
             textAlign = TextAlign.Center
@@ -237,7 +238,7 @@ fun DishNameDesc(viewModel: DishViewModel) {
     ) {
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = dish.name,
+            text = product.name,
             style = Typography.bodyLarge,
             modifier = Modifier
                 .fillMaxWidth()
@@ -296,9 +297,9 @@ fun CardOthers(name: String, picture: String, price: String) {
 
 
 @Composable
-fun CarousselOthers(viewModel: DishViewModel) {
+fun CarousselOthers(viewModel: ProductViewModel) {
 
-    val otherDishes : List<DishRestaurant> by viewModel.top3Dishes.observeAsState(initial = emptyList())
+    val otherProducts : List<ProductRestaurant> by viewModel.top3Products.observeAsState(initial = emptyList())
 
     Text(
         text = "Otros platos",
@@ -312,10 +313,10 @@ fun CarousselOthers(viewModel: DishViewModel) {
         item {
             Spacer(modifier = Modifier.width(10.dp))
         }
-        items(otherDishes) {
+        items(otherProducts) {
             CardOthers(
                 name = it.name,
-                picture = it.thumbnail,
+                picture = it.image,
                 price = it.price.toString())
         }
     }
