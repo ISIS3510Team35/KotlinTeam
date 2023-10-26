@@ -5,7 +5,6 @@ import com.google.firebase.firestore.GeoPoint
 data class Restaurant(
     val id:Int,
     val name:String,
-    val rating: Double,
     val location: GeoPoint,
     val image: String,
 )
@@ -13,7 +12,6 @@ data class Restaurant(
 data class RestaurantProduct(
     val id:Int,
     val name:String,
-    val rating: Double,
     val location: GeoPoint,
     val image: String,
     val products: List<Product>

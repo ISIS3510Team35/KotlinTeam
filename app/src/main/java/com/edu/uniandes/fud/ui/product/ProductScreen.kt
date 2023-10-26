@@ -144,7 +144,7 @@ fun ProductImg(viewModel: ProductViewModel) {
             category = "",
             image = "",
             restaurantId = 0,
-            Restaurant(id = 0, name = "", rating = 0.0, location = GeoPoint(0.0,0.0), image = "")
+            Restaurant(id = 0, name = "", location = GeoPoint(0.0,0.0), image = "")
         )
     )
 
@@ -177,7 +177,7 @@ fun ProductNameDesc(viewModel: ProductViewModel) {
             category = "",
             image = "",
             restaurantId = 0,
-            Restaurant(id = 0, name = "", rating = 0.0, location = GeoPoint(0.0,0.0), image = "")
+            Restaurant(id = 0, name = "", location = GeoPoint(0.0,0.0), image = "")
         )
     )
 

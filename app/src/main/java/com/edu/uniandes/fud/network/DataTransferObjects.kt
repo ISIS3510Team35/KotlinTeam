@@ -16,7 +16,6 @@ data class NetworkRestaurantContainer(val restaurants: List<NetworkRestaurant>)
 data class NetworkRestaurant(
     val id: Int,
     val name: String,
-    val rating: Double,
     val location: GeoPoint,
     val image: String)
 
@@ -52,7 +51,6 @@ fun NetworkRestaurantContainer.asDomainModel(): List<Restaurant>{
         Restaurant(
             id = it.id,
             name = it.name,
-            rating = it.rating,
             location = GeoPoint(it.location.latitude, it.location.longitude),
             image = it.image)
     }
@@ -63,7 +61,6 @@ fun NetworkRestaurantContainer.asDatabaseModel(): List<DatabaseRestaurant>{
         DatabaseRestaurant(
             id = it.id,
             name = it.name,
-            rating = it.rating,
             latitude = it.location.latitude,
             longitude = it.location.longitude,
             image = it.image)

@@ -23,7 +23,6 @@ class DBRepository(private val database: DatabaseRoom) {
             val modifiedRestaurant = Restaurant(
                 id = restaurant.id,
                 name = restaurant.name,
-                rating = restaurant.rating,
                 location = GeoPoint(restaurant.latitude, restaurant.longitude),
                 image = restaurant.image)
             modifiedRestaurant

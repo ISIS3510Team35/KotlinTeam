@@ -28,7 +28,6 @@ interface FudNetService {
                             NetworkRestaurant(
                                 id = restaurantFb.data["id"].toString().toInt(),
                                 name = restaurantFb.data["name"].toString(),
-                                rating = restaurantFb.data["rating"].toString().toDouble(),
                                 location = restaurantFb.data["location"] as com.google.firebase.firestore.GeoPoint,
                                 image = restaurantFb.data["image"].toString()
                             )

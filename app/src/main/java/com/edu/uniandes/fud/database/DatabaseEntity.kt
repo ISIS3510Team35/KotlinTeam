@@ -14,7 +14,6 @@ data class DatabaseRestaurant(
     @PrimaryKey
     var id: Int = 0,
     var name: String = "",
-    var rating: Double = 0.0,
     var latitude: Double = 0.0,
     var longitude: Double = 0.0,
     var image: String = ""
@@ -51,7 +50,6 @@ fun List<DatabaseRestaurant>.asDomainModel(): List<Restaurant> {
         Restaurant(
             id = it.id,
             name = it.name,
-            rating = it.rating,
             location = GeoPoint(it.latitude, it.longitude),
             image = it.image)
     }
@@ -112,7 +110,6 @@ fun Map<DatabaseRestaurant,List<DatabaseProduct>>.asDomainModel(): List<Restaura
                 RestaurantProduct(
                     id = restaurant.id,
                     name = restaurant.name,
-                    rating = restaurant.rating,
                     location = GeoPoint(restaurant.latitude, restaurant.longitude),
                     image = restaurant.image,
                     products = products  // Include the associated list of products
@@ -131,7 +128,6 @@ fun Map<DatabaseProduct, DatabaseRestaurant>.asDomainModel(): List<ProductRestau
             val restaurantObj = Restaurant(
                 id = restaurant.id,
                 name = restaurant.name,
-                rating = restaurant.rating,
                 location = GeoPoint(restaurant.latitude, restaurant.longitude),
                 image = restaurant.image
             )

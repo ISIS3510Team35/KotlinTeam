@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -30,19 +31,23 @@ class LoginViewModel(repository: DBRepository) : ViewModel() {
 	val dbRepository = repository
 	
 	
-
 	init {
 		viewModelScope.launch {
+			delay(15000) // Retraso de 5 segundos (5000 milisegundos)
 			repository.users.collect { users ->
-				// Update View with the latest favorite news
-				_usernameAuth.value = users[0].username
-				_passwordAuth.value = users[0].password
-				
-				Log.d("XD_login","usernameAuth: ${_usernameAuth.value}")
-				Log.d("XD_login","passwordAuth: ${_passwordAuth.value}")
+				if (users.isNotEmpty()) {
+					_usernameAuth.value = users[0].username
+					_passwordAuth.value = users[0].password
+					Log.d("XD_login", "usernameAuth: ${_usernameAuth.value}")
+					Log.d("XD_login", "passwordAuth: ${_passwordAuth.value}")
+				} else {
+					// Manejar la lista de usuarios vacía de acuerdo con la lógica de tu aplicación
+					Log.d("XD_login", "FSIMA")
+				}
 			}
 		}
 	}
+
 	
 	fun onLoginChanged(email: String, password: String) {
 		_email.value = email
