@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.HomeActivity
+import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -29,6 +30,9 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 	
 	private val _loginEnable = MutableLiveData<Boolean>()
 	val loginEnable: LiveData<Boolean> = _loginEnable
+
+	private val _allUsers = MutableLiveData<List<User>>()
+	val allUsers: LiveData<List<User>> = _allUsers
 	
 	private val _usernameAuth = MutableLiveData<String>()
 	val usernameAuth: LiveData<String> = _usernameAuth
@@ -42,13 +46,11 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 	init {
 		viewModelScope.launch {
 			while (true) {
-				delay(1000) // Retraso de 5 segundos (5000 milisegundos)
+				delay(1000) // Retraso de 1 segundo (1000 milisegundos)
 				val users = repository.users.first()
+				_allUsers.value = users
 				if (users.isNotEmpty()) {
-					_usernameAuth.value = users[0].username
-					_passwordAuth.value = users[0].password
-					Log.d("XD_login", "usernameAuth: ${_usernameAuth.value}")
-					Log.d("XD_login", "passwordAuth: ${_passwordAuth.value}")
+					Log.d("XD_login", "Users: ${_allUsers.value}")
 					break
 				} else {
 					Log.d("XD_login", "FSIMA")
@@ -62,7 +64,7 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 	fun onLoginChanged(email: String, password: String) {
 		_email.value = email
 		_password.value = password
-		_loginEnable.value = isValidEmail(email) && isValidPassword(password)
+		_loginEnable.value = isValidUser(email, password)
 	}
 	
 	private fun isValidPassword(password: String?): Boolean {
@@ -71,6 +73,10 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 	
 	private fun isValidEmail(email: String?): Boolean {
 		return email == usernameAuth.value
+	}
+
+	private fun isValidUser(email: String?, password: String?): Boolean {
+		return _allUsers.value?.any { it.username == email && it.password == password } ?: false
 	}
 	
 	fun onLoginSelected() {

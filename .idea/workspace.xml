@@ -10,15 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="78c37400-0f62-4d7f-8a92-07a825ca247f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/HomeActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/HomeActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/LoginActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/LoginActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/home/HomeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/home/HomeScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/login/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/login/LoginScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/home/HomeViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/home/HomeViewModel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/login/LoginViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/login/LoginViewModel.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
