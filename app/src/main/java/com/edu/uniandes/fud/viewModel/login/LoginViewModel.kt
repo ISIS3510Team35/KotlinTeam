@@ -1,5 +1,6 @@
 package com.edu.uniandes.fud.viewModel.login
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -37,8 +38,8 @@ class LoginViewModel(repository: DBRepository) : ViewModel() {
 				_usernameAuth.value = users[0].username
 				_passwordAuth.value = users[0].password
 				
-				println("usernameAuth: ${_usernameAuth.value}")
-				println("passwordAuth: ${_passwordAuth.value}")
+				Log.d("XD_login","usernameAuth: ${_usernameAuth.value}")
+				Log.d("XD_login","passwordAuth: ${_passwordAuth.value}")
 			}
 		}
 	}

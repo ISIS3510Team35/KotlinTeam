@@ -1,4 +1,4 @@
-package com.edu.uniandes.fud.viewmodel.search
+package com.edu.uniandes.fud.viewModel.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,6 +22,10 @@ class SearchViewModel(repository: DBRepository) : ViewModel() {
     val dbRepository = repository
 
     fun onSearchChange(query: String) {
+        _query.value = query
+    }
+
+    fun setInitialQuery(query: String) {
         _query.value = query
     }
 

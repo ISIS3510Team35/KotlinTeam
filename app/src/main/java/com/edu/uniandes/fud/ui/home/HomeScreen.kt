@@ -2,6 +2,7 @@ package com.edu.uniandes.fud.ui.home
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,7 +41,7 @@ import com.edu.uniandes.fud.ui.theme.Gold
 import com.edu.uniandes.fud.ui.theme.MobileAppTheme
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
 import com.edu.uniandes.fud.ui.theme.Typography
-import com.edu.uniandes.fud.viewmodel.home.HomeViewModel
+import com.edu.uniandes.fud.viewModel.home.HomeViewModel
 
 
 
@@ -163,10 +164,8 @@ fun SearchBar(viewModel: HomeViewModel, context: Context){
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
+    val iconRight: Int by viewModel.iconRight.observeAsState(initial = R.drawable.ic_sliders)
     val query: String by viewModel.query.observeAsState(initial = "")
-
-
 
     Row (
         modifier = Modifier
@@ -236,10 +235,19 @@ fun SearchBar(viewModel: HomeViewModel, context: Context){
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = Color.White
             ),
-            onClick = { }
+            onClick = {
+                if(viewModel.isReadyToChange()){
+                    val intent = Intent(context, SearchActivity::class.java)
+                    intent.putExtra("query",viewModel.getQuery())
+                    context.startActivity(intent)
+                }
+                else{
+                    Toast.makeText(context, "Realice una búsqueda primero antes de filtrar el contenido", Toast.LENGTH_LONG).show()
+                }
+            }
         ) {
             Icon(
-                painterResource(id = R.drawable.ic_sliders),
+                painterResource(id = iconRight),
                 modifier = Modifier.padding(2.dp),
                 contentDescription = null
             )
@@ -419,8 +427,6 @@ fun CarousselTop3Product(viewModel: HomeViewModel) {
                 id = it.id
             )
         }
-
-
     }
 }
 

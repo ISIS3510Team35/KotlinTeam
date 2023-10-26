@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.edu.uniandes.fud.ui.home.HomeScreen
 import com.edu.uniandes.fud.ui.theme.MobileAppTheme
-import com.edu.uniandes.fud.viewmodel.home.HomeViewModel
-import com.edu.uniandes.fud.viewmodel.home.HomeViewModelFactory
+import com.edu.uniandes.fud.viewModel.home.HomeViewModel
+import com.edu.uniandes.fud.viewModel.home.HomeViewModelFactory
 
 class HomeActivity : ComponentActivity() {
 

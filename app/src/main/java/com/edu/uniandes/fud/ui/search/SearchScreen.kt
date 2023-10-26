@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,18 +19,23 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import coil.compose.AsyncImage
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.ui.theme.Gold
 import com.edu.uniandes.fud.ui.theme.Orange
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
 import com.edu.uniandes.fud.ui.theme.Typography
-import com.edu.uniandes.fud.viewmodel.search.SearchViewModel
+import com.edu.uniandes.fud.viewModel.search.SearchViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -133,13 +139,9 @@ fun CustomTopBar(){
 @Composable
 fun SearchBar(viewModel: SearchViewModel, context: Context){
 
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
     val query: String by viewModel.query.observeAsState(initial = "")
-
-
 
     Row (
         modifier = Modifier
@@ -222,7 +224,7 @@ fun Filter(){
     Column (
         modifier = Modifier
             .fillMaxWidth()
-            .offset(y=(-10).dp)
+            .offset(y = (-10).dp)
             .background(Color.White)
             .padding(10.dp)
             .shadow(
@@ -250,8 +252,7 @@ fun SliderMinimalExample(t1: String, t2: String) {
 
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     Row (
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth()
     ){
         Text(text = t1,style= Typography.headlineMedium)
         Slider(
@@ -269,6 +270,154 @@ fun SliderMinimalExample(t1: String, t2: String) {
             valueRange = 0f..50f
         )
         Text(text = t2, style= Typography.headlineMedium)
+    }
+}
+
+@Composable
+@Preview
+fun ElementoBusqueda() {
+
+    var image : String = "https://tofuu.getjusto.com/orioneat-local/resized2/o5jB2P6ZFSsaAFMJL-200-x.webp"
+    var restaurantName : String = "Hervíboros"
+    var restaurantAdress : String = "Cra. 8 # 45-87"
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+    ){
+        Column () {
+            Row (
+                modifier = Modifier
+                    .padding(10.dp)
+                    .height(120.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    model = image,
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(100.dp)
+                        .padding(10.dp)
+                        .zIndex(1f)
+                        .shadow(
+                            elevation = 5.dp,
+                            shape = RoundedCornerShape(70.dp)
+                        ),
+                    placeholder = painterResource(R.drawable.loading),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(5.dp),
+                    verticalArrangement = Arrangement.Center
+                ){
+                    Text(text = restaurantName, style= Typography.headlineMedium)
+                    Text(text = restaurantAdress, style= Typography.headlineSmall)
+                }
+
+            }
+            Row {
+                CardProduct(
+                    id = 1,
+                    name = "Hamburg",
+                    rating = 3.4,
+                    restaurantName = "central",
+                    price = 3400,
+                    offerPrice = 3400,
+                    image = "xd"
+                )
+            }
+            Row {
+                Button(onClick = { },
+                    colors = ButtonDefaults.buttonColors(containerColor = Orange))
+                {
+                    Text("Aplicar Filtros")
+                }
+                Button(onClick = { },
+                    colors = ButtonDefaults.buttonColors(containerColor = Orange))
+                {
+                    Text("Aplicar Filtros")
+                }
+            }
+        }
+
+    }
+}
+
+
+@Composable
+fun CardProduct(name: String, id: Int, rating: Double, restaurantName: String, price: Int, offerPrice: Int, image: String ) {
+    Card(
+        modifier = Modifier
+            .width(220.dp)
+            .height(230.dp)
+            .padding(10.dp)
+            .shadow(
+                elevation = 5.dp,
+                shape = RoundedCornerShape(10.dp)
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ){
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .shadow(
+                    elevation = 5.dp,
+                )
+        ){
+            AsyncImage(
+                model = image,
+                modifier = Modifier
+                    .fillMaxSize(),
+                placeholder = painterResource(R.drawable.loading),
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+        }
+        Column (
+            modifier = Modifier.padding(5.dp)
+        ) {
+            Text(
+                text = name,
+                style = Typography.headlineLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(2.dp),
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = price.toString()+"K",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(2.dp),
+                textAlign = TextAlign.Center,
+                style = Typography.labelMedium
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ){
+
+                Text(
+                    text = rating.toString(),
+                    modifier = Modifier
+                        .padding(2.dp),
+                    textAlign = TextAlign.Center
+                )
+                Icon(
+                    imageVector = Icons.Filled.Star,
+                    contentDescription = null,
+                    tint = Gold
+                )
+            }
+        }
     }
 }
 
