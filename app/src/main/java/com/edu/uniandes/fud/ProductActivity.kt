@@ -18,6 +18,7 @@ class ProductActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        productViewModel.setInitialProduct(this.intent.getStringExtra("productId").orEmpty().toInt())
         setContent {
             MobileAppTheme {
                 ProductScreen(productViewModel)
