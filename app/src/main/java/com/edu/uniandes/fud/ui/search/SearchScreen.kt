@@ -1,11 +1,14 @@
 package com.edu.uniandes.fud.ui.search
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -32,12 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.edu.uniandes.fud.R
-import com.edu.uniandes.fud.domain.ProductRestaurant
+import com.edu.uniandes.fud.domain.Product
+import com.edu.uniandes.fud.domain.RestaurantProduct
 import com.edu.uniandes.fud.ui.theme.Gold
 import com.edu.uniandes.fud.ui.theme.Orange
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
 import com.edu.uniandes.fud.ui.theme.Typography
 import com.edu.uniandes.fud.viewModel.search.SearchViewModel
+import kotlin.math.*
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +50,7 @@ import com.edu.uniandes.fud.viewModel.search.SearchViewModel
 fun SearchScreen(viewModel: SearchViewModel){
 
     val context = LocalContext.current
-    val results : List<ProductRestaurant> by viewModel.results.observeAsState(initial = emptyList())
+    val results : List<RestaurantProduct> by viewModel.results.observeAsState(initial = emptyList())
 
     Scaffold (
         containerColor = Color.White,
@@ -59,14 +64,14 @@ fun SearchScreen(viewModel: SearchViewModel){
             LazyColumn {
                 items(results) {
                     ElementSearch(
-                        restaurantName = it.restaurant.name,
-                        restaurantAdress = it.restaurant.id.toString(),
-                        restaurantImage = it.restaurant.image,
-                        dishId = it.id,
-                        dishName = it.name,
-                        dishRating = it.rating,
-                        dishPrice = it.price,
-                        dishImage = it.image
+                        restaurantName = it.name,
+                        restaurantAdress = it.name,
+                        restaurantImage = it.image,
+                        dishList = it.products,
+                        restaurantLat = it.location.latitude,
+                        restaurantLong = it.location.longitude,
+                        context,
+                        viewModel
                     )
                 }
             }
@@ -318,9 +323,12 @@ fun SliderMinimalExample(t1: String, t2: String, viewModel: SearchViewModel) {
     }
 }
 
-
+//dishId: Int, dishName: String, dishRating: Double, dishPrice: Double, dishImage: String
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ElementSearch(restaurantName: String, restaurantAdress: String, restaurantImage: String, dishId: Int, dishName: String, dishRating: Double, dishPrice: Double, dishImage: String){
+fun ElementSearch(restaurantName: String, restaurantAdress: String, restaurantImage: String, dishList: List<Product>, restaurantLat: Double, restaurantLong: Double, context: Context, viewModel: SearchViewModel){
+
+    val location by viewModel.myLocation.observeAsState(initial = null)
 
     Card(
         modifier = Modifier
@@ -329,6 +337,9 @@ fun ElementSearch(restaurantName: String, restaurantAdress: String, restaurantIm
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
+        onClick = {
+
+        }
 
     ){
         Column () {
@@ -361,23 +372,31 @@ fun ElementSearch(restaurantName: String, restaurantAdress: String, restaurantIm
                     verticalArrangement = Arrangement.Center
                 ){
                     Text(text = restaurantName, style= Typography.headlineMedium)
-                    Text(text = restaurantAdress, style= Typography.headlineSmall)
+                    if(location!=null){
+                        var metros = calculateDistance(restaurantLat, restaurantLong, location!!.latitude, location!!.longitude)
+                        Text(text = "A $metros metros", style= Typography.headlineSmall)
+                    }
+                    else{
+                        Text(text = "Calculando cercanía", style= Typography.headlineSmall)
+                    }
                 }
 
             }
-            Row (
+            LazyRow (
                 modifier = Modifier
                     .padding(5.dp)
             )
             {
-                CardProduct(
-                    id = dishId,
-                    name = dishName,
-                    rating = dishRating,
-                    restaurantName = "central",
-                    price = dishPrice,
-                    image = dishImage
-                )
+                items(dishList) {
+                    CardProduct(
+                        id = it.id,
+                        name = it.name,
+                        rating = it.rating,
+                        restaurantName = "central",
+                        price = it.price,
+                        image = it.image
+                    )
+                }
             }
             Row {
                 Button(onClick = { },
@@ -388,7 +407,9 @@ fun ElementSearch(restaurantName: String, restaurantAdress: String, restaurantIm
                 {
                     Text("Añadir Favorito")
                 }
-                Button(onClick = { },
+                Button(onClick = {
+                                 openGoogleMapsWithGeopoint(restaurantLat, restaurantLong, context)
+                },
                     modifier = Modifier
                         .weight(1f)
                         .padding(10.dp),
@@ -400,6 +421,30 @@ fun ElementSearch(restaurantName: String, restaurantAdress: String, restaurantIm
         }
 
     }
+}
+
+fun openGoogleMapsWithGeopoint(latitude: Double, longitude: Double, context: Context) {
+    val geoUri = "geo:$latitude,$longitude"
+    val mapIntent = Intent(Intent.ACTION_VIEW, Uri.parse(geoUri))
+    //mapIntent.setPackage("com.google.android.apps.maps")
+    context.startActivity(mapIntent)
+    /*
+    if (mapIntent.resolveActivity(context.getPa) != null) {
+        Toast.makeText(
+            context,
+            "Coordenadas: Long $longitude Lat $latitude",
+            Toast.LENGTH_LONG
+        ).show()
+        context.startActivity(mapIntent)
+
+    } else {
+        Toast.makeText(
+            context,
+            "Google Maps no está instalado. Coordenadas: Long $longitude Lat $latitude",
+            Toast.LENGTH_LONG
+        ).show()
+    }*/
+
 }
 
 @Composable
@@ -476,6 +521,8 @@ fun CardProduct(name: String, id: Int, rating: Double, restaurantName: String, p
     }
 }
 
+
+
 @Composable
 fun FilledButtonExample(onClick: () -> Unit) {
     Button(onClick = { onClick() },
@@ -484,5 +531,27 @@ fun FilledButtonExample(onClick: () -> Unit) {
         Text("Aplicar Filtros")
     }
 }
+
+
+fun calculateDistance(
+    lat1: Double, lon1: Double,
+    lat2: Double, lon2: Double
+): Int {
+    val radiusOfEarth = 6371000.0 // Earth's radius in meters
+
+    val lat1Rad = Math.toRadians(lat1)
+    val lon1Rad = Math.toRadians(lon1)
+    val lat2Rad = Math.toRadians(lat2)
+    val lon2Rad = Math.toRadians(lon2)
+
+    val dLat = lat2Rad - lat1Rad
+    val dLon = lon2Rad - lon1Rad
+
+    val a = sin(dLat / 2).pow(2) + cos(lat1Rad) * cos(lat2Rad) * sin(dLon / 2).pow(2)
+    val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    return (radiusOfEarth * c).roundToInt()
+}
+
 
 

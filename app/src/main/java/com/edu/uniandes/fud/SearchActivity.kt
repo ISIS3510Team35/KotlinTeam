@@ -14,8 +14,10 @@ class SearchActivity : ComponentActivity() {
     private val searchViewModel: SearchViewModel by viewModels {
         SearchViewModelFactory((application as FuDApplication).repository)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        searchViewModel.setActivity(this.application)
         searchViewModel.setInitialQuery(this.intent.getStringExtra("query").orEmpty())
         setContent {
             MobileAppTheme {
@@ -23,6 +25,8 @@ class SearchActivity : ComponentActivity() {
             }
         }
     }
+
+
 
 
 
