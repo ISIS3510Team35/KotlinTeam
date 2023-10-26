@@ -46,6 +46,11 @@
             android:exported="true"
             android:label="fud"
             android:theme="@style/Theme.fud" />
+        <activity
+            android:name=".ProductActivity"
+            android:exported="true"
+            android:label="fud"
+            android:theme="@style/Theme.fud" />
     </application>
 
 </manifest>

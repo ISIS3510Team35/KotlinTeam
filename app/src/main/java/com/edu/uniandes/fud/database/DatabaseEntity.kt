@@ -21,18 +21,18 @@ data class DatabaseRestaurant(
 
 @Entity
 data class DatabaseProduct(
-    @PrimaryKey
-    var id: Int = 0,
-    var name: String = "",
-    var description: String = "",
-    var price: Int = 0,
-    var offerPrice: Int = 0,
-    var inOffer: Boolean = false,
-    var rating: Double = 0.0,
-    var type: String = "",
-    var category: String = "",
-    var image: String = "",
-    var restaurantId: Int = 0
+	@PrimaryKey
+	var id: Int = 0,
+	var name: String = "",
+	var description: String = "",
+	var price: Double = 0.0,
+	var offerPrice: Double = 0.0,
+	var inOffer: Boolean = false,
+	var rating: Double = 0.0,
+	var type: String = "",
+	var category: String = "",
+	var image: String = "",
+	var restaurantId: Int = 0
 )
 
 @Entity

@@ -33,20 +33,22 @@ class LoginViewModel(repository: DBRepository) : ViewModel() {
 	
 	init {
 		viewModelScope.launch {
-			delay(15000) // Retraso de 5 segundos (5000 milisegundos)
-			repository.users.collect { users ->
+			while (true) {
+				delay(5000) // Retraso de 5 segundos (5000 milisegundos)
+				val users = repository.users.first()
 				if (users.isNotEmpty()) {
 					_usernameAuth.value = users[0].username
 					_passwordAuth.value = users[0].password
 					Log.d("XD_login", "usernameAuth: ${_usernameAuth.value}")
 					Log.d("XD_login", "passwordAuth: ${_passwordAuth.value}")
+					break
 				} else {
-					// Manejar la lista de usuarios vacía de acuerdo con la lógica de tu aplicación
 					Log.d("XD_login", "FSIMA")
 				}
 			}
 		}
 	}
+
 
 	
 	fun onLoginChanged(email: String, password: String) {

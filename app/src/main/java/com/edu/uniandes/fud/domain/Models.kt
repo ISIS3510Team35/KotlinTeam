@@ -18,32 +18,32 @@ data class RestaurantProduct(
 )
 
 data class Product(
-    val id:Int,
-    val name:String,
-    val description:String,
-    val price: Int,
-    val offerPrice: Int,
-    val inOffer: Boolean,
-    val rating: Double,
-    val type: String,
-    val category: String,
-    val image: String,
-    val restaurantId: Int,
+	val id:Int,
+	val name:String,
+	val description:String,
+	val price: Double,
+	val offerPrice: Double,
+	val inOffer: Boolean,
+	val rating: Double,
+	val type: String,
+	val category: String,
+	val image: String,
+	val restaurantId: Int,
 )
 
 data class ProductRestaurant(
-    val id:Int,
-    val name:String,
-    val description:String,
-    val price: Int,
-    val offerPrice: Int,
-    val inOffer: Boolean,
-    val rating: Double,
-    val type: String,
-    val category: String,
-    val image: String,
-    val restaurantId: Int,
-    val restaurant: Restaurant
+	val id:Int,
+	val name:String,
+	val description:String,
+	val price: Double,
+	val offerPrice: Double,
+	val inOffer: Boolean,
+	val rating: Double,
+	val type: String,
+	val category: String,
+	val image: String,
+	val restaurantId: Int,
+	val restaurant: Restaurant
 )
 /*
 data class ProductUser(

@@ -260,7 +260,7 @@ fun SearchBar(viewModel: HomeViewModel, context: Context){
 // Diferentes
 
 @Composable
-fun CardProduct(name : String, restaurantName: String, price: Int, image: String, id: Int){
+fun CardProduct(name: String, restaurantName: String, price: Double, image: String, id: Int){
     Box (
         modifier = Modifier.width(220.dp),
         contentAlignment = Alignment.TopCenter
@@ -330,7 +330,7 @@ fun CardProduct(name : String, restaurantName: String, price: Int, image: String
 }
 
 @Composable
-fun CardProductOffer(name: String, id: Int, rating: Double, restaurantName: String, price: Int, offerPrice: Int, image: String ) {
+fun CardProductOffer(name: String, id: Int, rating: Double, restaurantName: String, price: Double, offerPrice: Double, image: String ) {
     Card(
         modifier = Modifier
             .width(220.dp)
