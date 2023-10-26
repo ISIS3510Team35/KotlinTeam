@@ -1,5 +1,6 @@
 package com.edu.uniandes.fud.ui.product
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -7,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
@@ -17,7 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.RestaurantActivity
 import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.ui.theme.*
@@ -144,7 +149,7 @@ fun ProductImg(viewModel: ProductViewModel) {
             category = "",
             image = "",
             restaurantId = 0,
-            Restaurant(id = 0, name = "", location = GeoPoint(0.0,0.0), image = "")
+            Restaurant(id = 0, name = "", location = GeoPoint(0.0, 0.0), image = "")
         )
     )
 
@@ -177,17 +182,23 @@ fun ProductNameDesc(viewModel: ProductViewModel) {
             category = "",
             image = "",
             restaurantId = 0,
-            Restaurant(id = 0, name = "", location = GeoPoint(0.0,0.0), image = "")
+            Restaurant(id = 0, name = "", location = GeoPoint(0.0, 0.0), image = "")
         )
     )
+
+    val context = LocalContext.current
 
     Text(
         text = product.name,
         style = Typography.titleLarge,
         modifier = Modifier.padding(horizontal = 25.dp)
     )
-    Text(
-        text = product.restaurant.name,
+    ClickableText(
+        text = AnnotatedString(product.restaurant.name),
+        onClick = {
+            val intent = Intent(context, RestaurantActivity::class.java)
+            context.startActivity(intent)
+        },
         style = Typography.headlineLarge,
         modifier = Modifier.padding(horizontal = 25.dp)
     )
@@ -238,7 +249,7 @@ fun ProductNameDesc(viewModel: ProductViewModel) {
     ) {
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = product.name,
+            text = product.description,
             style = Typography.bodyLarge,
             modifier = Modifier
                 .fillMaxWidth()
@@ -264,14 +275,23 @@ fun CardOthers(name: String, picture: String, price: String) {
             containerColor = Color.White
         )
     ) {
-        AsyncImage(
-            model = picture,
+        Box(
             modifier = Modifier
-                .fillMaxSize(),
-            placeholder = painterResource(R.drawable.loading),
-            contentDescription = null,
-            contentScale = ContentScale.Crop
-        )
+                .fillMaxWidth()
+                .weight(1f)
+                .shadow(
+                    elevation = 5.dp,
+                )
+        ) {
+            AsyncImage(
+                model = picture,
+                modifier = Modifier
+                    .fillMaxSize(),
+                placeholder = painterResource(R.drawable.loading),
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+        }
         Column(
             modifier = Modifier.padding(5.dp)
         ) {
@@ -284,7 +304,7 @@ fun CardOthers(name: String, picture: String, price: String) {
                 textAlign = TextAlign.Center
             )
             Text(
-                text = price,
+                text = price + "K",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(2.dp),
@@ -299,7 +319,7 @@ fun CardOthers(name: String, picture: String, price: String) {
 @Composable
 fun CarousselOthers(viewModel: ProductViewModel) {
 
-    val otherProducts : List<ProductRestaurant> by viewModel.top3Products.observeAsState(initial = emptyList())
+    val otherProducts: List<ProductRestaurant> by viewModel.top3Products.observeAsState(initial = emptyList())
 
     Text(
         text = "Otros platos",
@@ -317,7 +337,8 @@ fun CarousselOthers(viewModel: ProductViewModel) {
             CardOthers(
                 name = it.name,
                 picture = it.image,
-                price = it.price.toString())
+                price = it.price.toString()
+            )
         }
     }
 }

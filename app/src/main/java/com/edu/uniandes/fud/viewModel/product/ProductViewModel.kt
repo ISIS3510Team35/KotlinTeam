@@ -18,13 +18,19 @@ class ProductViewModel(repository: DBRepository) : ViewModel() {
     private val _top3Products = MutableLiveData<List<ProductRestaurant>>()
     val top3Products: LiveData<List<ProductRestaurant>> = _top3Products
 
+    private val _productId = MutableLiveData<Int>()
+
     val dbRepository = repository
 
+    fun setInitialProduct(productId: Int) {
+        _productId.value = productId
+    }
 
     init {
         viewModelScope.launch {
             repository.productsRestaurant.collect() { productsRestaurant ->
-                _product.value = productsRestaurant[0]
+                // _product.value = findProduct(productId.value.toString(), productsRestaurant)
+                _product.value = productsRestaurant.find { prod -> _productId.value == prod.id }
                 _top3Products.value = productsRestaurant.sortedBy { it.rating } //.subList(0, 3)
             }
         }
