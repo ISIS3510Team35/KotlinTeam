@@ -5,13 +5,11 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -268,6 +266,7 @@ fun SearchBar(viewModel: HomeViewModel, context: Context) {
 
 // Diferentes
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardProduct(name: String, restaurantName: String, price: Double, image: String, id: Int) {
     Box(
@@ -284,24 +283,23 @@ fun CardProduct(name: String, restaurantName: String, price: Double, image: Stri
                 .shadow(
                     elevation = 5.dp,
                     shape = RoundedCornerShape(20.dp)
-                )
-                .clickable { },
+                ),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White
-            )
+            ),
+            onClick = {
+                val intent = Intent(context, ProductActivity::class.java)
+                intent.putExtra("productId", id.toString())
+                context.startActivity(intent)
+            },
         ) {
             Spacer(
                 modifier = Modifier
                     .height(100.dp)
                     .fillMaxWidth()
             )
-            ClickableText(
+            Text(
                 text = AnnotatedString(name),
-                onClick = {
-                    val intent = Intent(context, ProductActivity::class.java)
-                    intent.putExtra("productId", id.toString())
-                    context.startActivity(intent)
-                },
                 style = TextStyle(
                     fontFamily = Manrope,
                     fontWeight = FontWeight.Bold,
@@ -352,6 +350,7 @@ fun CardProduct(name: String, restaurantName: String, price: Double, image: Stri
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardProductOffer(
     name: String,
@@ -374,7 +373,12 @@ fun CardProductOffer(
             ),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
-        )
+        ),
+        onClick = {
+            val intent = Intent(context, ProductActivity::class.java)
+            intent.putExtra("productId", id.toString())
+            context.startActivity(intent)
+        },
     ) {
         Box(
             modifier = Modifier
@@ -396,13 +400,8 @@ fun CardProductOffer(
         Column(
             modifier = Modifier.padding(5.dp)
         ) {
-            ClickableText(
+            Text(
                 text = AnnotatedString(name),
-                onClick = {
-                    val intent = Intent(context, ProductActivity::class.java)
-                    intent.putExtra("productId", id.toString())
-                    context.startActivity(intent)
-                },
                 style = TextStyle(
                     fontFamily = Manrope,
                     fontWeight = FontWeight.ExtraLight,

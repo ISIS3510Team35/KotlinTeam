@@ -16,7 +16,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.edu.uniandes.fud.ui.theme.Typography
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,12 +24,16 @@ import androidx.compose.ui.zIndex
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.ui.theme.Manrope
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
+import com.edu.uniandes.fud.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun RestaurantScreen() {
     Scaffold(
+        containerColor = Color.White,
+        modifier = Modifier
+            .background(color = Color.White),
         topBar = { CustomTopBar() }
     ) { innerPadding ->
         LazyColumn(

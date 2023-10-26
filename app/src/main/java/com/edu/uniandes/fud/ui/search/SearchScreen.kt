@@ -34,7 +34,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import com.edu.uniandes.fud.ProductActivity
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.RestaurantActivity
 import com.edu.uniandes.fud.domain.Product
 import com.edu.uniandes.fud.domain.RestaurantProduct
 import com.edu.uniandes.fud.ui.theme.Gold
@@ -338,7 +340,8 @@ fun ElementSearch(restaurantName: String, restaurantAdress: String, restaurantIm
             containerColor = Color.White,
         ),
         onClick = {
-
+            val intent = Intent(context, RestaurantActivity::class.java)
+            context.startActivity(intent)
         }
 
     ){
@@ -394,7 +397,8 @@ fun ElementSearch(restaurantName: String, restaurantAdress: String, restaurantIm
                         rating = it.rating,
                         restaurantName = "central",
                         price = it.price,
-                        image = it.image
+                        image = it.image,
+                        context = context
                     )
                 }
             }
@@ -447,8 +451,9 @@ fun openGoogleMapsWithGeopoint(latitude: Double, longitude: Double, context: Con
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardProduct(name: String, id: Int, rating: Double, restaurantName: String, price: Double, image: String ) {
+fun CardProduct(name: String, id: Int, rating: Double, restaurantName: String, price: Double, image: String, context: Context ) {
     Card(
         modifier = Modifier
             .width(220.dp)
@@ -460,7 +465,12 @@ fun CardProduct(name: String, id: Int, rating: Double, restaurantName: String, p
             ),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
-        )
+        ),
+        onClick = {
+            val intent = Intent(context, ProductActivity::class.java)
+            intent.putExtra("productId", id.toString())
+            context.startActivity(intent)
+        }
     ){
         Box(
             modifier = Modifier

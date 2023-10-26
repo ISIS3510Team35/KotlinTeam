@@ -40,6 +40,9 @@ import com.google.firebase.firestore.GeoPoint
 @Composable
 fun ProductScreen(viewModel: ProductViewModel) {
     Scaffold(
+        containerColor = Color.White,
+        modifier = Modifier
+            .background(color = Color.White),
         topBar = { CustomTopBar() }
     ) { innerPadding ->
         LazyColumn(
@@ -159,7 +162,7 @@ fun ProductImg(viewModel: ProductViewModel) {
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = Modifier
-            .padding(vertical = 10.dp)
+            .padding(bottom = 10.dp)
             .fillMaxWidth()
             .height(200.dp)
     )
@@ -236,7 +239,6 @@ fun ProductNameDesc(viewModel: ProductViewModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min)
             .padding(top = 10.dp)
             .padding(horizontal = 25.dp)
             .shadow(
