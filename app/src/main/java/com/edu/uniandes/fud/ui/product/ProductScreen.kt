@@ -203,7 +203,7 @@ fun ProductNameDesc(viewModel: ProductViewModel) {
         modifier = Modifier.padding(horizontal = 25.dp)
     )
     Text(
-        text = product.price.toString(),
+        text = product.price.toString() + "K",
         style = TextStyle(
             color = Orange,
             fontFamily = Manrope,

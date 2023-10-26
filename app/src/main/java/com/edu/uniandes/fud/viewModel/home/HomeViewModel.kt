@@ -67,7 +67,7 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                 if(productsRestaurant.size < 3) {
                    max =  productsRestaurant.size
                 }
-                _top3Products.value = productsRestaurant.sortedBy { it.rating }.subList(0,max)
+                _top3Products.value = productsRestaurant.sortedBy { it.rating }.asReversed().subList(0,max)
                 _offerProducts.value = productsRestaurant.sortedBy { it.price-it.offerPrice }.subList(0,max)
             }
         }

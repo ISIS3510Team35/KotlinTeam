@@ -45,7 +45,6 @@ import com.edu.uniandes.fud.SearchActivity
 import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.ui.theme.Gold
 import com.edu.uniandes.fud.ui.theme.Manrope
-import com.edu.uniandes.fud.ui.theme.MobileAppTheme
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
 import com.edu.uniandes.fud.ui.theme.Typography
 import com.edu.uniandes.fud.viewModel.home.HomeViewModel
@@ -60,8 +59,8 @@ fun HomeScreen(viewModel: HomeViewModel) {
     Scaffold(
         containerColor = Color.White,
         topBar = { CustomTopBar(viewModel) }
-    ){ innerPadding ->
-        LazyColumn (
+    ) { innerPadding ->
+        LazyColumn(
             modifier = Modifier.padding(innerPadding)
         ) {
             item {
@@ -84,7 +83,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopBar(viewModel: HomeViewModel){
+fun CustomTopBar(viewModel: HomeViewModel) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = OrangeSoft),
         navigationIcon = {
@@ -276,7 +275,6 @@ fun CardProduct(name: String, restaurantName: String, price: Double, image: Stri
         contentAlignment = Alignment.TopCenter
     ) {
         val context = LocalContext.current
-        var enabled by remember { mutableStateOf(true) }
         Card(
             modifier = Modifier
                 .width(220.dp)
@@ -364,6 +362,7 @@ fun CardProductOffer(
     offerPrice: Double,
     image: String
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .width(220.dp)
@@ -397,13 +396,24 @@ fun CardProductOffer(
         Column(
             modifier = Modifier.padding(5.dp)
         ) {
-            Text(
-                text = name,
-                style = Typography.headlineLarge,
+            ClickableText(
+                text = AnnotatedString(name),
+                onClick = {
+                    val intent = Intent(context, ProductActivity::class.java)
+                    intent.putExtra("productId", id.toString())
+                    context.startActivity(intent)
+                },
+                style = TextStyle(
+                    fontFamily = Manrope,
+                    fontWeight = FontWeight.ExtraLight,
+                    fontSize = 22.sp,
+                    lineHeight = 28.sp,
+                    letterSpacing = (-0.5).sp,
+                    textAlign = TextAlign.Center
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(2.dp),
-                textAlign = TextAlign.Center
+                    .padding(2.dp)
             )
 
             Text(

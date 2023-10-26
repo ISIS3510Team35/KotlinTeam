@@ -29,7 +29,6 @@ class ProductViewModel(repository: DBRepository) : ViewModel() {
     init {
         viewModelScope.launch {
             repository.productsRestaurant.collect() { productsRestaurant ->
-                // _product.value = findProduct(productId.value.toString(), productsRestaurant)
                 _product.value = productsRestaurant.find { prod -> _productId.value == prod.id }
                 _top3Products.value = productsRestaurant.sortedBy { it.rating } //.subList(0, 3)
             }
