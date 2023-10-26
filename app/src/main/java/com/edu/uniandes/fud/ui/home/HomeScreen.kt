@@ -56,7 +56,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
     Scaffold(
         containerColor = Color.White,
-        topBar = { CustomTopBar(viewModel) }
+        topBar = { CustomTopBar(viewModel, context) }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding)
@@ -81,7 +81,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopBar(viewModel: HomeViewModel) {
+fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = OrangeSoft),
         navigationIcon = {
@@ -134,6 +134,7 @@ fun CustomTopBar(viewModel: HomeViewModel) {
                                 painter = painterResource(id = R.drawable.uniandes),
                                 contentDescription = "dashboard_search"
                             )
+
                         }
                     }
                 }

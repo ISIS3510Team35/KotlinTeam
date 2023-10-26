@@ -7,6 +7,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -107,10 +108,19 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                 val longitude = location.longitude
                 val currentLocationInRange = checkLocationInRange(latitude, longitude)
                 if (currentLocationInRange != previousLocationInRange) {
+                    if(_isLocationInRange.value != currentLocationInRange && currentLocationInRange) {
+                        Toast.makeText(
+                            context,
+                            "Entraste a la zona de la Universidad de los Andes",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                     _isLocationInRange.value = currentLocationInRange
                     // Loguea el cambio de ubicación
                     Log.d("XD_Location", "Location changed: ${isLocationInRange.value}")
                     previousLocationInRange = currentLocationInRange
+
+
                 }
             }
         }
@@ -119,7 +129,7 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
     private fun checkLocationInRange(latitude: Double, longitude: Double): Boolean {
         val latDiff = Math.abs(latitude - rangeLatitud)
         val lonDiff = Math.abs(longitude - rangeLongitud)
-        val threshold = 0.004 // Cambia el valor según la precisión deseada
+        val threshold = 0.05 // Cambia el valor según la precisión deseada
         return latDiff < threshold && lonDiff < threshold
     }
 }
