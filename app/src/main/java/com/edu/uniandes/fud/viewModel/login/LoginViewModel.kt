@@ -1,17 +1,25 @@
 package com.edu.uniandes.fud.viewModel.login
 
+import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.edu.uniandes.fud.HomeActivity
 import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class LoginViewModel(repository: DBRepository) : ViewModel() {
+class LoginViewModel(private val context: Context, repository: DBRepository) : ViewModel() {
 	
 	private val _email = MutableLiveData<String>()
 	val email: LiveData<String> = _email
@@ -34,7 +42,7 @@ class LoginViewModel(repository: DBRepository) : ViewModel() {
 	init {
 		viewModelScope.launch {
 			while (true) {
-				delay(5000) // Retraso de 5 segundos (5000 milisegundos)
+				delay(1000) // Retraso de 5 segundos (5000 milisegundos)
 				val users = repository.users.first()
 				if (users.isNotEmpty()) {
 					_usernameAuth.value = users[0].username
@@ -66,15 +74,32 @@ class LoginViewModel(repository: DBRepository) : ViewModel() {
 	}
 	
 	fun onLoginSelected() {
-	
+		if(ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+			
+			requestLocationPermission()
+		}
+		else {
+			context.startActivity(Intent(context, HomeActivity::class.java))
+		}
 	}
+
+	private fun requestLocationPermission() {
+		if(ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, Manifest.permission.ACCESS_FINE_LOCATION)){
+			
+		}
+		else {
+			ActivityCompat.requestPermissions(context, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 777)
+		}
+	}
+	
+	
 }
 
-class LoginViewModelFactory(private val repository: DBRepository) : ViewModelProvider.Factory {
+class LoginViewModelFactory(private val context: Context, private val repository: DBRepository) : ViewModelProvider.Factory {
 	override fun <T : ViewModel> create(modelClass: Class<T>): T {
 		if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
 			@Suppress("UNCHECKED_CAST")
-			return LoginViewModel(repository) as T
+			return LoginViewModel(context, repository) as T
 		}
 		throw IllegalArgumentException("Unknown ViewModel class")
 	}

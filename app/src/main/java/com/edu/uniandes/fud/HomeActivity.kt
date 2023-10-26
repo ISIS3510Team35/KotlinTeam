@@ -13,7 +13,7 @@ class HomeActivity : ComponentActivity() {
 
     private val newWordActivityRequestCode = 1
     private val homeViewModel: HomeViewModel by viewModels {
-        HomeViewModelFactory((application as FuDApplication).repository)
+        HomeViewModelFactory(this, (application as FuDApplication).repository)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

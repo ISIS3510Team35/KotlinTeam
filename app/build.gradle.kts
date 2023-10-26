@@ -79,6 +79,8 @@ dependencies {
 	implementation("com.google.firebase:firebase-database-ktx:20.2.2")
 	implementation("com.google.firebase:firebase-firestore-ktx")
 	implementation("com.google.firebase:firebase-analytics-ktx")
+	
+	implementation("com.google.android.gms:play-services-location:21.0.1")
 
 	implementation("com.squareup.retrofit2:retrofit:2.9.0")
 	implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")

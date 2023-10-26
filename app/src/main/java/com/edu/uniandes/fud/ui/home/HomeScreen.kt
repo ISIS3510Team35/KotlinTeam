@@ -38,7 +38,6 @@ import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.SearchActivity
 import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.ui.theme.Gold
-import com.edu.uniandes.fud.ui.theme.MobileAppTheme
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
 import com.edu.uniandes.fud.ui.theme.Typography
 import com.edu.uniandes.fud.viewModel.home.HomeViewModel
@@ -53,7 +52,7 @@ fun HomeScreen(viewModel: HomeViewModel){
 
     Scaffold (
         containerColor = Color.White,
-        topBar = { CustomTopBar() }
+        topBar = { CustomTopBar(viewModel) }
     ){ innerPadding ->
         LazyColumn (
             modifier = Modifier.padding(innerPadding)
@@ -78,7 +77,7 @@ fun HomeScreen(viewModel: HomeViewModel){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopBar(){
+fun CustomTopBar(viewModel: HomeViewModel){
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = OrangeSoft),
         navigationIcon = {
@@ -118,11 +117,20 @@ fun CustomTopBar(){
                             painter = painterResource(id = R.drawable.ic_location),
                             contentDescription = "dashboard_search"
                         )
-                        Image(
-                            modifier = Modifier.fillMaxHeight(),
-                            painter = painterResource(id = R.drawable.uniandes),
-                            contentDescription = "dashboard_search"
-                        )
+                        val isLocationInRange = remember { mutableStateOf(false) }
+    
+                        viewModel.isLocationInRange.observeAsState().value?.let {
+                            isLocationInRange.value = it
+                        }
+                        
+                        if (isLocationInRange.value) {
+                            Image(
+                                modifier = Modifier
+                                    .fillMaxHeight(),
+                                painter = painterResource(id = R.drawable.uniandes),
+                                contentDescription = "dashboard_search"
+                            )
+                        }
                     }
                 }
             }},
@@ -147,14 +155,6 @@ fun CustomTopBar(){
             }
         }
     )
-}
-
-
-@Composable
-fun TopBarPreview() {
-    MobileAppTheme {
-        CustomTopBar()
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)

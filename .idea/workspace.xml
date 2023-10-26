@@ -10,14 +10,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="78c37400-0f62-4d7f-8a92-07a825ca247f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/database/DatabaseEntity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/database/DatabaseEntity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/domain/Models.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/domain/Models.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/network/DataTransferObjects.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/network/DataTransferObjects.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/network/Service.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/network/Service.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/HomeActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/HomeActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/LoginActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/LoginActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/home/HomeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/home/HomeScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/product/ProductScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/product/ProductScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/login/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/login/LoginScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/home/HomeViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/home/HomeViewModel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/login/LoginViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/login/LoginViewModel.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,7 +26,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[825119d1]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\danie\.android\avd\Pixel_3a_API_34_extension_level_7_x86_64.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
