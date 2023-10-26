@@ -70,7 +70,14 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                 _top3Products.value = productsRestaurant.sortedBy { it.rating }.asReversed().subList(0,max)
                 _offerProducts.value = productsRestaurant.sortedBy { it.price-it.offerPrice }.subList(0,max)
             }
+
+
         }
+        viewModelScope.launch {
+            Log.d("XD1","called0")
+            repository.refreshData()
+        }
+
         startLocationUpdates()
     }
     

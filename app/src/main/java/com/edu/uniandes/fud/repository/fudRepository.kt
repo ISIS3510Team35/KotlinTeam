@@ -1,5 +1,6 @@
 package com.edu.uniandes.fud.repository
 
+import android.util.Log
 import androidx.room.withTransaction
 import com.edu.uniandes.fud.database.DatabaseRestaurant
 import com.edu.uniandes.fud.database.DatabaseRoom
@@ -57,6 +58,7 @@ class DBRepository(private val database: DatabaseRoom) {
     
     // Refresh data -> Restaurants-Products
     suspend fun refreshData() {
+        Log.d("XD1","called1")
         database.withTransaction {
             val restaurantList = FudNetService.getRestaurantList()
             val productsList = FudNetService.getProductList()

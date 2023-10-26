@@ -189,6 +189,10 @@ class SearchViewModel(repository: DBRepository) : ViewModel() {
             }
             getLastKnownLocation()
         }
+        viewModelScope.launch {
+            Log.d("XD2","called0")
+            repository.refreshData()
+        }
     }
 }
 

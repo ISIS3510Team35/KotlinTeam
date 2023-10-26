@@ -15,6 +15,7 @@ interface FudNetService {
     companion object {
         
         suspend fun getRestaurantList() : NetworkRestaurantContainer{
+            Log.v("XD1","CALLED")
             val db = Firebase.firestore
             val restaurants : MutableList<NetworkRestaurant> = mutableListOf()
             val i = 0
