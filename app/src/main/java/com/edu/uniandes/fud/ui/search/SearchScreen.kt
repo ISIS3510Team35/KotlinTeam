@@ -1,10 +1,12 @@
 package com.edu.uniandes.fud.ui.search
 
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,11 +28,11 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.ui.theme.Gold
 import com.edu.uniandes.fud.ui.theme.Orange
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
@@ -43,18 +45,32 @@ import com.edu.uniandes.fud.viewModel.search.SearchViewModel
 fun SearchScreen(viewModel: SearchViewModel){
 
     val context = LocalContext.current
+    val results : List<ProductRestaurant> by viewModel.results.observeAsState(initial = emptyList())
 
     Scaffold (
         containerColor = Color.White,
         topBar = { CustomTopBar() }
     ){ innerPadding ->
-        LazyColumn (
+        Column (
             modifier = Modifier.padding(innerPadding)
         ) {
-            item{
-                SearchBar(viewModel, context)
-                Filter()
+            SearchBar(viewModel, context)
+            Filter(viewModel)
+            LazyColumn {
+                items(results) {
+                    ElementSearch(
+                        restaurantName = it.restaurant.name,
+                        restaurantAdress = it.restaurant.id.toString(),
+                        restaurantImage = it.restaurant.image,
+                        dishId = it.id,
+                        dishName = it.name,
+                        dishRating = it.rating,
+                        dishPrice = it.price,
+                        dishImage = it.image
+                    )
+                }
             }
+
         }
 
     }
@@ -138,11 +154,13 @@ fun CustomTopBar(){
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SearchBar(viewModel: SearchViewModel, context: Context){
-
+    val visibleFilters by viewModel.visibleFilters.observeAsState(initial = false)
+    val colorTintIcon by viewModel.colorTintIcon.observeAsState(initial = Color.Black)
+    val colorBackIcon by viewModel.colorBackIcon.observeAsState(initial = Color.White)
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val query: String by viewModel.query.observeAsState(initial = "")
-
+    val context = LocalContext.current
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -150,6 +168,7 @@ fun SearchBar(viewModel: SearchViewModel, context: Context){
             .shadow(5.dp)
             .background(OrangeSoft)
             .height(IntrinsicSize.Min)
+            .zIndex(39F)
 
     ) {
         TextField(
@@ -205,13 +224,16 @@ fun SearchBar(viewModel: SearchViewModel, context: Context){
                 )
                 .aspectRatio(1f),
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = Color.White
+                containerColor = colorBackIcon
             ),
-            onClick = { }
+            onClick = {
+                viewModel.toggleFilter()
+            }
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_sliders),
                 modifier = Modifier.padding(2.dp),
+                tint = colorTintIcon,
                 contentDescription = null
             )
         }
@@ -219,38 +241,61 @@ fun SearchBar(viewModel: SearchViewModel, context: Context){
 }
 
 @Composable
-@Preview
-fun Filter(){
-    Column (
-        modifier = Modifier
-            .fillMaxWidth()
-            .offset(y = (-10).dp)
-            .background(Color.White)
-            .padding(10.dp)
-            .shadow(
-                elevation = 0.dp,
-                shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
+fun Filter(viewModel: SearchViewModel){
+
+    val visibleFilters by viewModel.visibleFilters.observeAsState(initial = false)
+    val veggieBoolean by viewModel.veggieBoolean.observeAsState(initial = false)
+    val veganBoolean by viewModel.veganBoolean.observeAsState(initial = false)
+    val context = LocalContext.current
+    AnimatedVisibility(visibleFilters) {
+        Box(
+            modifier = Modifier
+                .zIndex(0F)
+                .offset(0.dp, (-22).dp)
+                .fillMaxWidth()
+                .background(Color.White)
+                .shadow(
+                    elevation = 2.dp,
+                    shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+                )
+
+            //.border(1.dp, Color.Black, shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+        ) {
+            Column(
+                modifier = Modifier.padding(20.dp)
+            )
+            {
+                Text(text = "Filtrar por precio")
+                SliderMinimalExample("$1K", "$100K", viewModel)
+                Text(text = "Filtrar por tipo de comida")
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(
+                        checked = veggieBoolean,
+                        onCheckedChange = { isChecked -> viewModel.onChangeVeggieFilter(isChecked) }
+                    )
+                    Text(text = "Vegetariano", style = Typography.bodyLarge)
+                    Checkbox(
+                        checked = veganBoolean,
+                        onCheckedChange = { isChecked -> viewModel.onChangeVeganFilter(isChecked) }
+                    )
+                    Text(text = "Vegano", style = Typography.bodyLarge)
+                }
 
 
-    ){
-        Text(text = "Filtrar por precio")
-        SliderMinimalExample("$1K","$100K")
-        Text(text = "Filtrar por mínimo timepo")
-        SliderMinimalExample("15min","60min")
-        Text(text = "Filtrar por lejanía")
-        SliderMinimalExample("10m","100m")
-        FilledButtonExample {
+                FilledButtonExample {
+                    viewModel.applyFilters(context)
+                }
+            }
 
         }
     }
 }
 
 @Composable
-fun SliderMinimalExample(t1: String, t2: String) {
+fun SliderMinimalExample(t1: String, t2: String, viewModel: SearchViewModel) {
 
-    var sliderPosition by remember { mutableFloatStateOf(0f) }
+    val sliderPosition by viewModel.pricePosition.observeAsState(initial = 0f)
+
     Row (
         modifier = Modifier.fillMaxWidth()
     ){
@@ -260,7 +305,7 @@ fun SliderMinimalExample(t1: String, t2: String) {
                 .weight(1f)
                 .padding(horizontal = 10.dp),
             value = sliderPosition,
-            onValueChange = { sliderPosition = it },
+            onValueChange = { viewModel.onChangePriceFilter(it) },
             colors = SliderDefaults.colors(
                 thumbColor = OrangeSoft,
                 activeTrackColor = Orange,
@@ -273,27 +318,29 @@ fun SliderMinimalExample(t1: String, t2: String) {
     }
 }
 
-@Composable
-@Preview
-fun ElementoBusqueda() {
 
-    var image : String = "https://tofuu.getjusto.com/orioneat-local/resized2/o5jB2P6ZFSsaAFMJL-200-x.webp"
-    var restaurantName : String = "Hervíboros"
-    var restaurantAdress : String = "Cra. 8 # 45-87"
+@Composable
+fun ElementSearch(restaurantName: String, restaurantAdress: String, restaurantImage: String, dishId: Int, dishName: String, dishRating: Double, dishPrice: Double, dishImage: String){
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+        ),
+
     ){
         Column () {
             Row (
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(10.dp, 10.dp, 10.dp, 0.dp)
                     .height(120.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AsyncImage(
-                    model = image,
+                    model = restaurantImage,
                     modifier = Modifier
                         .width(100.dp)
                         .height(100.dp)
@@ -318,27 +365,36 @@ fun ElementoBusqueda() {
                 }
 
             }
-            Row {
+            Row (
+                modifier = Modifier
+                    .padding(5.dp)
+            )
+            {
                 CardProduct(
-                    id = 1,
-                    name = "Hamburg",
-                    rating = 3.4,
+                    id = dishId,
+                    name = dishName,
+                    rating = dishRating,
                     restaurantName = "central",
-                    price = 3400,
-                    offerPrice = 3400,
-                    image = "xd"
+                    price = dishPrice,
+                    image = dishImage
                 )
             }
             Row {
                 Button(onClick = { },
-                    colors = ButtonDefaults.buttonColors(containerColor = Orange))
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(10.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red))
                 {
-                    Text("Aplicar Filtros")
+                    Text("Añadir Favorito")
                 }
                 Button(onClick = { },
-                    colors = ButtonDefaults.buttonColors(containerColor = Orange))
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(10.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red))
                 {
-                    Text("Aplicar Filtros")
+                    Text("¿Como llegar?")
                 }
             }
         }
@@ -346,9 +402,8 @@ fun ElementoBusqueda() {
     }
 }
 
-
 @Composable
-fun CardProduct(name: String, id: Int, rating: Double, restaurantName: String, price: Int, offerPrice: Int, image: String ) {
+fun CardProduct(name: String, id: Int, rating: Double, restaurantName: String, price: Double, image: String ) {
     Card(
         modifier = Modifier
             .width(220.dp)

@@ -1,8 +1,11 @@
 package com.edu.uniandes.fud.network
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.Date
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
@@ -154,6 +157,31 @@ interface FudNetService {
                 condition.await()
             }
         
+        }
+
+        suspend fun sendReport(veggie : Boolean, vegan : Boolean, price : Boolean, context: Context){
+            val db = Firebase.firestore
+            val report = hashMapOf(
+                "Price" to price,
+                "Vegano" to vegan,
+                "Vegetariano" to veggie,
+                "Provider" to "KotlinTeam",
+                "Date" to Date().time
+            )
+            db.collection("Filter_Analytics")
+                .add(report)
+                .addOnSuccessListener { Toast.makeText(
+                    context,
+                    "Reporte (Filter_Analytics) Enviado Exitosamente",
+                    Toast.LENGTH_LONG
+                ).show() }
+                .addOnFailureListener { e ->
+                    Toast.makeText(
+                        context,
+                        "Fallo en el envío del reporte (Filter_Analytics) $e",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
         }
     }
 }
