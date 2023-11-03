@@ -164,7 +164,7 @@ class SearchViewModel(repository: DBRepository) : ViewModel() {
 
     fun applyFilters(context: Context) {
         viewModelScope.launch {
-            com.edu.uniandes.fud.network.FudNetService.sendReport(
+            com.edu.uniandes.fud.network.FudNetService.sendFilterReport(
                 veggieStats,
                 veganStats,
                 priceStats,

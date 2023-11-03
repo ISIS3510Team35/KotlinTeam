@@ -160,7 +160,7 @@ interface FudNetService {
         
         }
 
-        suspend fun sendReport(veggie : Boolean, vegan : Boolean, price : Boolean, context: Context){
+        suspend fun sendFilterReport(veggie : Boolean, vegan : Boolean, price : Boolean, context: Context){
             val db = Firebase.firestore
             val report = hashMapOf(
                 "Price" to price,
@@ -180,6 +180,30 @@ interface FudNetService {
                     Toast.makeText(
                         context,
                         "Fallo en el envío del reporte (Filter_Analytics) $e",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+        }
+    
+        suspend fun sendFavPromoReport(favourite : Boolean, promotion : Boolean, context: Context){
+            val db = Firebase.firestore
+            val report = hashMapOf(
+                "favourite" to favourite,
+                "promotion" to promotion,
+                "Provider" to "KotlinTeam",
+                "Date" to Date().time
+            )
+            db.collection("Fav_Promo_Analytics")
+                .add(report)
+                .addOnSuccessListener { Toast.makeText(
+                    context,
+                    "Reporte (Fav_Promo_Analytics) Enviado Exitosamente",
+                    Toast.LENGTH_LONG
+                ).show() }
+                .addOnFailureListener { e ->
+                    Toast.makeText(
+                        context,
+                        "Fallo en el envío del reporte (Fav_Promo_Analytics) $e",
                         Toast.LENGTH_LONG
                     ).show()
                 }

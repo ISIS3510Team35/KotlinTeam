@@ -41,6 +41,9 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
     private var previousLocationInRange = false
     private val rangeLatitud = 4.6025
     private val rangeLongitud = -74.0648
+    
+    private var favouriteStats = false
+    private var promotionStats = false
 
 
     fun onSearchChange(query: String) {
@@ -131,6 +134,32 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
         val lonDiff = Math.abs(longitude - rangeLongitud)
         val threshold = 0.05 // Cambia el valor según la precisión deseada
         return latDiff < threshold && lonDiff < threshold
+    }
+    
+    fun sendPromoReport(context: Context) {
+        viewModelScope.launch {
+            promotionStats = true
+            com.edu.uniandes.fud.network.FudNetService.sendFavPromoReport(
+                favouriteStats,
+                promotionStats,
+                context
+            )
+        }
+        favouriteStats = false
+        promotionStats = false
+    }
+    
+    fun sendFavReport(context: Context) {
+        viewModelScope.launch {
+            favouriteStats = true
+            com.edu.uniandes.fud.network.FudNetService.sendFavPromoReport(
+                favouriteStats,
+                promotionStats,
+                context
+            )
+        }
+        favouriteStats = false
+        promotionStats = false
     }
 }
 

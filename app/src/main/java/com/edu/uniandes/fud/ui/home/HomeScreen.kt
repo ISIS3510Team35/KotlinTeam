@@ -360,7 +360,8 @@ fun CardProductOffer(
     restaurantName: String,
     price: Double,
     offerPrice: Double,
-    image: String
+    image: String,
+    viewModel: HomeViewModel
 ) {
     val context = LocalContext.current
     Card(
@@ -376,6 +377,7 @@ fun CardProductOffer(
             containerColor = Color.White
         ),
         onClick = {
+            viewModel.sendPromoReport(context)
             val intent = Intent(context, ProductActivity::class.java)
             intent.putExtra("productId", id.toString())
             context.startActivity(intent)
@@ -563,7 +565,8 @@ fun CarousselProductOffers(viewModel: HomeViewModel) {
                 restaurantName = "central",
                 price = it.price,
                 offerPrice = it.offerPrice,
-                image = it.image
+                image = it.image,
+                viewModel = viewModel
             )
 
         }
