@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -196,15 +198,29 @@ fun ProductNameDesc(viewModel: ProductViewModel) {
         style = Typography.titleLarge,
         modifier = Modifier.padding(horizontal = 25.dp)
     )
-    ClickableText(
-        text = AnnotatedString(product.restaurant.name),
-        onClick = {
-            val intent = Intent(context, RestaurantActivity::class.java)
-            context.startActivity(intent)
-        },
-        style = Typography.headlineLarge,
-        modifier = Modifier.padding(horizontal = 25.dp)
-    )
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 25.dp)
+    ) {
+        ClickableText(
+            text = AnnotatedString(product.restaurant.name),
+            onClick = {
+                val intent = Intent(context, RestaurantActivity::class.java)
+                intent.putExtra("restaurantId", product.restaurant.id.toString())
+                context.startActivity(intent)
+            },
+            style = Typography.headlineLarge.copy(
+                textDecoration = TextDecoration.Underline
+            )
+        )
+        Icon(
+            imageVector = Icons.Filled.KeyboardArrowRight,
+            contentDescription = null
+        )
+    }
     Text(
         text = product.price.toString() + "K",
         style = TextStyle(
@@ -219,6 +235,7 @@ fun ProductNameDesc(viewModel: ProductViewModel) {
     )
     Row(
         horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp)
