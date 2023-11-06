@@ -2,9 +2,9 @@ package com.edu.uniandes.fud.ui.home
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -28,46 +28,50 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import com.edu.uniandes.fud.ProductActivity
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.SearchActivity
-import com.edu.uniandes.fud.domain.DishRestaurant
+import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.ui.theme.Gold
-import com.edu.uniandes.fud.ui.theme.MobileAppTheme
+import com.edu.uniandes.fud.ui.theme.Manrope
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
 import com.edu.uniandes.fud.ui.theme.Typography
-import com.edu.uniandes.fud.viewmodel.home.HomeViewModel
-
+import com.edu.uniandes.fud.viewModel.home.HomeViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel){
+fun HomeScreen(viewModel: HomeViewModel) {
 
     val context = LocalContext.current
 
-    Scaffold (
+    Scaffold(
         containerColor = Color.White,
-        topBar = { CustomTopBar() }
-    ){ innerPadding ->
-        LazyColumn (
+        topBar = { CustomTopBar(viewModel, context) }
+    ) { innerPadding ->
+        LazyColumn(
             modifier = Modifier.padding(innerPadding)
         ) {
-            item{
+            item {
                 SearchBar(viewModel, context)
             }
-            item{
+            item {
                 CarousselMealType(viewModel)
             }
             item {
-                CarousselTop3Dish(viewModel)
+                CarousselTop3Product(viewModel)
             }
-            item{
-                CarousselDishOffers(viewModel)
+            item {
+                CarousselProductOffers(viewModel)
             }
         }
 
@@ -77,7 +81,7 @@ fun HomeScreen(viewModel: HomeViewModel){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopBar(){
+fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = OrangeSoft),
         navigationIcon = {
@@ -96,7 +100,7 @@ fun CustomTopBar(){
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-            ){
+            ) {
                 Surface(
                     modifier = Modifier
                         .align(Alignment.Center)
@@ -117,14 +121,25 @@ fun CustomTopBar(){
                             painter = painterResource(id = R.drawable.ic_location),
                             contentDescription = "dashboard_search"
                         )
-                        Image(
-                            modifier = Modifier.fillMaxHeight(),
-                            painter = painterResource(id = R.drawable.uniandes),
-                            contentDescription = "dashboard_search"
-                        )
+                        val isLocationInRange = remember { mutableStateOf(false) }
+
+                        viewModel.isLocationInRange.observeAsState().value?.let {
+                            isLocationInRange.value = it
+                        }
+
+                        if (isLocationInRange.value) {
+                            Image(
+                                modifier = Modifier
+                                    .fillMaxHeight(),
+                                painter = painterResource(id = R.drawable.uniandes),
+                                contentDescription = "dashboard_search"
+                            )
+
+                        }
                     }
                 }
-            }},
+            }
+        },
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
@@ -148,27 +163,17 @@ fun CustomTopBar(){
     )
 }
 
-
-@Composable
-fun TopBarPreview() {
-    MobileAppTheme {
-        CustomTopBar()
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun SearchBar(viewModel: HomeViewModel, context: Context){
+fun SearchBar(viewModel: HomeViewModel, context: Context) {
 
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
+    val iconRight: Int by viewModel.iconRight.observeAsState(initial = R.drawable.ic_sliders)
     val query: String by viewModel.query.observeAsState(initial = "")
 
-
-
-    Row (
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 15.dp)
@@ -203,12 +208,12 @@ fun SearchBar(viewModel: HomeViewModel, context: Context){
 
                 // cambio a query
                 val intent = Intent(context, SearchActivity::class.java)
-                intent.putExtra("query",query)
+                intent.putExtra("query", query)
                 context.startActivity(intent)
             }),
             value = query,
             placeholder = {
-                Text(text="Busca tu comida de hoy")
+                Text(text = "Busca tu comida de hoy")
             },
             onValueChange = {
                 viewModel.onSearchChange(it)
@@ -236,10 +241,22 @@ fun SearchBar(viewModel: HomeViewModel, context: Context){
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = Color.White
             ),
-            onClick = { }
+            onClick = {
+                if (viewModel.isReadyToChange()) {
+                    val intent = Intent(context, SearchActivity::class.java)
+                    intent.putExtra("query", viewModel.getQuery())
+                    context.startActivity(intent)
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Realice una búsqueda primero antes de filtrar el contenido",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
         ) {
             Icon(
-                painterResource(id = R.drawable.ic_sliders),
+                painterResource(id = iconRight),
                 modifier = Modifier.padding(2.dp),
                 contentDescription = null
             )
@@ -248,12 +265,12 @@ fun SearchBar(viewModel: HomeViewModel, context: Context){
 }
 
 
-
 // Diferentes
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: String, id: Int){
-    Box (
+fun CardProduct(name: String, restaurantName: String, price: Double, image: String, id: Int) {
+    Box(
         modifier = Modifier.width(220.dp),
         contentAlignment = Alignment.TopCenter
     ) {
@@ -267,22 +284,35 @@ fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: Strin
                 .shadow(
                     elevation = 5.dp,
                     shape = RoundedCornerShape(20.dp)
-                )
-                .clickable { },
+                ),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White
-            )
+            ),
+            onClick = {
+                val intent = Intent(context, ProductActivity::class.java)
+                intent.putExtra("productId", id.toString())
+                context.startActivity(intent)
+            },
         ) {
-            Spacer(modifier = Modifier
-                .height(100.dp)
-                .fillMaxWidth())
+            Spacer(
+                modifier = Modifier
+                    .height(100.dp)
+                    .fillMaxWidth()
+            )
             Text(
-                text = name,
-                style = Typography.titleLarge,
+                text = AnnotatedString(name),
+                style = TextStyle(
+                    fontFamily = Manrope,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp,
+                    lineHeight = 28.sp,
+                    letterSpacing = (-0.5).sp,
+                    textAlign = TextAlign.Center
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 30.dp),
-                textAlign = TextAlign.Center
+                // textAlign = TextAlign.Center
             )
             Text(
                 text = restaurantName,
@@ -293,7 +323,7 @@ fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: Strin
                 textAlign = TextAlign.Center
             )
             Text(
-                text = price.toString()+"K",
+                text = price.toString() + "K",
                 style = Typography.labelMedium,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -303,7 +333,7 @@ fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: Strin
             Spacer(modifier = Modifier.height(10.dp))
         }
         AsyncImage(
-            model = thumbnail,
+            model = image,
             modifier = Modifier
                 .width(150.dp)
                 .height(150.dp)
@@ -321,8 +351,19 @@ fun CardDish(name : String, restaurantName: String, price: Int, thumbnail: Strin
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String, oldPrice: Int, newPrice: Int, thumbnail: String ) {
+fun CardProductOffer(
+    name: String,
+    id: Int,
+    rating: Double,
+    restaurantName: String,
+    price: Double,
+    offerPrice: Double,
+    image: String,
+    viewModel: HomeViewModel
+) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .width(220.dp)
@@ -334,8 +375,14 @@ fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String,
             ),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
-        )
-    ){
+        ),
+        onClick = {
+            viewModel.sendPromoReport(context)
+            val intent = Intent(context, ProductActivity::class.java)
+            intent.putExtra("productId", id.toString())
+            context.startActivity(intent)
+        },
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -343,9 +390,9 @@ fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String,
                 .shadow(
                     elevation = 5.dp,
                 )
-        ){
+        ) {
             AsyncImage(
-                model = thumbnail,
+                model = image,
                 modifier = Modifier
                     .fillMaxSize(),
                 placeholder = painterResource(R.drawable.loading),
@@ -353,20 +400,26 @@ fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String,
                 contentScale = ContentScale.Crop
             )
         }
-        Column (
+        Column(
             modifier = Modifier.padding(5.dp)
         ) {
             Text(
-                text = name,
-                style = Typography.headlineLarge,
+                text = AnnotatedString(name),
+                style = TextStyle(
+                    fontFamily = Manrope,
+                    fontWeight = FontWeight.ExtraLight,
+                    fontSize = 22.sp,
+                    lineHeight = 28.sp,
+                    letterSpacing = (-0.5).sp,
+                    textAlign = TextAlign.Center
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(2.dp),
-                textAlign = TextAlign.Center
+                    .padding(2.dp)
             )
 
             Text(
-                text = oldPrice.toString()+"K",
+                text = price.toString() + "K",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(2.dp),
@@ -377,7 +430,7 @@ fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String,
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
 
                 Text(
                     text = rating.toString(),
@@ -396,9 +449,9 @@ fun CardDishOffer(name: String, id: Int, rating: Double, restaurantName: String,
 }
 
 @Composable
-fun CarousselTop3Dish(viewModel: HomeViewModel) {
+fun CarousselTop3Product(viewModel: HomeViewModel) {
 
-    val top3Dishes : List<DishRestaurant> by viewModel.top3Dishes.observeAsState(initial = emptyList())
+    val top3Products: List<ProductRestaurant> by viewModel.top3Products.observeAsState(initial = emptyList())
 
     Text(
         text = "Top 3 restaurantes un tu zona",
@@ -410,17 +463,15 @@ fun CarousselTop3Dish(viewModel: HomeViewModel) {
             Spacer(modifier = Modifier.width(10.dp))
         }
 
-        items(top3Dishes){
-            CardDish(
+        items(top3Products) {
+            CardProduct(
                 name = it.name,
                 restaurantName = it.restaurant.name,
                 price = it.price,
-                thumbnail = it.thumbnail,
+                image = it.image,
                 id = it.id
             )
         }
-
-
     }
 }
 
@@ -438,7 +489,7 @@ fun CardTypeMeal(title: String, picture: Int) {
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         )
-    ){
+    ) {
         Text(
             text = title,
             modifier = Modifier
@@ -466,7 +517,7 @@ fun CarousselMealType(viewModel: HomeViewModel) {
     Text(
         text = "Categorías",
         style = Typography.titleMedium,
-        modifier = Modifier.padding(horizontal=17.dp)
+        modifier = Modifier.padding(horizontal = 17.dp)
     )
     LazyRow {
         item {
@@ -488,9 +539,9 @@ fun CarousselMealType(viewModel: HomeViewModel) {
 }
 
 @Composable
-fun CarousselDishOffers(viewModel: HomeViewModel) {
+fun CarousselProductOffers(viewModel: HomeViewModel) {
 
-    val offerDishes : List<DishRestaurant> by viewModel.offerDishes.observeAsState(initial = emptyList())
+    val offerProducts: List<ProductRestaurant> by viewModel.offerProducts.observeAsState(initial = emptyList())
 
 
     Text(
@@ -506,20 +557,19 @@ fun CarousselDishOffers(viewModel: HomeViewModel) {
         }
 
 
-        items(offerDishes) {
-            CardDishOffer(
-                name = it.name,
+        items(offerProducts) {
+            CardProductOffer(
                 id = it.id,
+                name = it.name,
                 rating = it.rating,
                 restaurantName = "central",
-                oldPrice = it.price,
-                newPrice = it.newPrice,
-                thumbnail = it.thumbnail
+                price = it.price,
+                offerPrice = it.offerPrice,
+                image = it.image,
+                viewModel = viewModel
             )
 
         }
-
-
 
 
     }

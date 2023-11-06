@@ -1,5 +1,6 @@
-package com.edu.uniandes.fud.ui.login
+package com.edu.uniandes.fud.ui.register
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,34 +15,35 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.edu.uniandes.fud.HomeActivity
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.ui.theme.backgroundSecondary
 import com.edu.uniandes.fud.ui.theme.buttonBackground
 import com.edu.uniandes.fud.ui.theme.buttonText
 import com.edu.uniandes.fud.ui.theme.textField
 import com.edu.uniandes.fud.ui.theme.textFieldBackground
-import com.edu.uniandes.fud.viewModel.login.LoginViewModel
+import com.edu.uniandes.fud.viewModel.register.RegisterViewModel
 
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel) {
+fun RegisterScreen(viewModel: RegisterViewModel) {
 	Box(
 		modifier = Modifier
 			.fillMaxSize()
 			.background(backgroundSecondary)
 			.padding(horizontal = 50.dp)
 	) {
-		Login(Modifier.align(Alignment.Center), viewModel)
+		Register(Modifier.align(Alignment.Center), viewModel)
 	}
 	
 }
 
 @Composable
-fun Login(align: Modifier, viewModel: LoginViewModel) {
+fun Register(align: Modifier, viewModel: RegisterViewModel) {
 	
 	val email: String by viewModel.email.observeAsState(initial = "")
 	val password: String by viewModel.password.observeAsState(initial = "")
-	val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
+	val registerEnable: Boolean by viewModel.registerEnable.observeAsState(initial = false)
 	
 	
 	Column(
@@ -51,11 +53,11 @@ fun Login(align: Modifier, viewModel: LoginViewModel) {
 	) {
 		HeaderImage(Modifier.align(Alignment.CenterHorizontally))
 		Spacer(modifier = Modifier.padding(16.dp))
-		EmailField(email) { viewModel.onLoginChanged(it, password) }
+		EmailField(email) { viewModel.onRegisterChanged(it, password) }
 		Spacer(modifier = Modifier.padding(16.dp))
-		Passwordfield(password) { viewModel.onLoginChanged(email, it) }
+		Passwordfield(password) { viewModel.onRegisterChanged(email, it) }
 		Spacer(modifier = Modifier.padding(32.dp))
-		LoginButton(loginEnable) { viewModel.onLoginSelected() }
+		RegisterButton(registerEnable) { viewModel.onRegisterSelected() }
 	}
 }
 
@@ -117,11 +119,12 @@ fun Passwordfield(password: String, onTextFieldChanged:(String) -> Unit) {
 
 
 @Composable
-fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
+fun RegisterButton(registerEnable: Boolean, onRegisterSelected: () -> Unit) {
 	val context = LocalContext.current
 	Button(
 		onClick = {
-			onLoginSelected()
+			onRegisterSelected()
+			context.startActivity(Intent(context, HomeActivity::class.java))
 				  },
 		modifier = Modifier
 			.fillMaxWidth()
@@ -129,8 +132,8 @@ fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
 		colors = ButtonDefaults.buttonColors(
 			containerColor = buttonBackground,
 			contentColor = buttonText
-		), enabled = loginEnable
+		), enabled = registerEnable
 	) {
-		Text(text = "LOG IN")
+		Text(text = "REGISTER")
 	}
 }

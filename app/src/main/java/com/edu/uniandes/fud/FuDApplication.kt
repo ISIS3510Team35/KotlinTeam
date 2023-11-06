@@ -10,7 +10,5 @@ class FuDApplication : Application() {
     val applicationScope = CoroutineScope(SupervisorJob())
     val database by lazy { DatabaseRoom.getDataBase(this, applicationScope) }
     val repository by lazy { DBRepository(database) }
-
-
-
+    
 }

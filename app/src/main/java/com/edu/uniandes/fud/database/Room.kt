@@ -1,7 +1,6 @@
 package com.edu.uniandes.fud.database
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.edu.uniandes.fud.repository.DBRepository
@@ -19,34 +18,34 @@ interface DatabaseDao {
     @Query("SELECT * FROM DatabaseRestaurant")
     fun getRestaurants(): Flow<List<DatabaseRestaurant>>
     
-    //Restaurant-List<Dish>
-    @Query("SELECT * FROM DatabaseRestaurant JOIN DatabaseDish ON DatabaseRestaurant.id = DatabaseDish.restaurantId")
-    fun getRestaurantsDishes() : Flow<Map<DatabaseRestaurant, List<DatabaseDish>>>
+    //Restaurant-List<Product>
+    @Query("SELECT * FROM DatabaseRestaurant JOIN DatabaseProduct ON DatabaseRestaurant.id = DatabaseProduct.restaurantId")
+    fun getRestaurantsProducts() : Flow<Map<DatabaseRestaurant, List<DatabaseProduct>>>
     
 
 
-    //Dish
-    @Query("SELECT * FROM DatabaseDish")
-    fun getDishes(): Flow<List<DatabaseDish>>
+    //Product
+    @Query("SELECT * FROM DatabaseProduct")
+    fun getProducts(): Flow<List<DatabaseProduct>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllDishes(dishes: List<DatabaseDish>) : LongArray
+    fun insertAllProducts(products: List<DatabaseProduct>) : LongArray
     
-    //Dish-List<Restaurant>
-    @Query("SELECT * FROM DatabaseDish JOIN DatabaseRestaurant ON DatabaseRestaurant.id = DatabaseDish.restaurantId")
-    fun getDishesRestaurant() : Flow<Map<DatabaseDish,DatabaseRestaurant>>
+    //Product-List<Restaurant>
+    @Query("SELECT * FROM DatabaseProduct JOIN DatabaseRestaurant ON DatabaseRestaurant.id = DatabaseProduct.restaurantId")
+    fun getProductsRestaurant() : Flow<Map<DatabaseProduct,DatabaseRestaurant>>
     
     /*
-    //Dish-List<User>
-    @Query("SELECT * FROM DatabaseDish JOIN DatabaseUser ON DatabaseUser.id = DatabaseDish.userId")
-    fun getDishesUser() : LiveData<Map<DatabaseDish,DatabaseUser>>
+    //Product-List<User>
+    @Query("SELECT * FROM DatabaseProduct JOIN DatabaseUser ON DatabaseUser.id = DatabaseProduct.userId")
+    fun getProductsUser() : LiveData<Map<DatabaseProduct,DatabaseUser>>
      */
     
-    //Dish-Restaurant
+    //Product-Restaurant
     @Transaction
-    fun insertRestaurantsAndDishesAndUser(dishes: List<DatabaseDish>, restaurants: List<DatabaseRestaurant>, users: List<DatabaseUser>){
+    fun insertRestaurantsAndProductsAndUser(products: List<DatabaseProduct>, restaurants: List<DatabaseRestaurant>, users: List<DatabaseUser>){
         insertAllRestaurants(restaurants)
-        insertAllDishes(dishes)
+        insertAllProducts(products)
         insertAllUsers(users)
     }
     
@@ -57,17 +56,18 @@ interface DatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllUsers(users: List<DatabaseUser>) : LongArray
     
+    
     /*
-    //User-List<Dish>
-    @Query("SELECT * FROM DatabaseUser JOIN DatabaseDish ON DatabaseUser.id = DatabaseDish.userId")
-    fun getUsersDishes() : LiveData<Map<DatabaseUser,List<DatabaseDish>>>
+    //User-List<Product>
+    @Query("SELECT * FROM DatabaseUser JOIN DatabaseProduct ON DatabaseUser.id = DatabaseProduct.userId")
+    fun getUsersProducts() : LiveData<Map<DatabaseUser,List<DatabaseProduct>>>
      */
     
 
 
 }
 
-@Database(entities = arrayOf(DatabaseRestaurant::class,DatabaseDish::class,DatabaseUser::class), version = 6)
+@Database(entities = arrayOf(DatabaseRestaurant::class,DatabaseProduct::class,DatabaseUser::class), version = 7)
 abstract class DatabaseRoom: RoomDatabase(){
     abstract fun databaseDao(): DatabaseDao
     private class RoomDatabaseCallback( private val scope: CoroutineScope) : RoomDatabase.Callback() {

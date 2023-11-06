@@ -1,11 +1,12 @@
 package com.edu.uniandes.fud.network
 
-import com.edu.uniandes.fud.database.DatabaseDish
+import com.edu.uniandes.fud.database.DatabaseProduct
 import com.edu.uniandes.fud.database.DatabaseRestaurant
 import com.edu.uniandes.fud.database.DatabaseUser
-import com.edu.uniandes.fud.domain.Dish
+import com.edu.uniandes.fud.domain.Product
 import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.domain.User
+import com.google.firebase.firestore.GeoPoint
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -15,25 +16,23 @@ data class NetworkRestaurantContainer(val restaurants: List<NetworkRestaurant>)
 data class NetworkRestaurant(
     val id: Int,
     val name: String,
-    val rating: Double,
-    val lat: Double,
-    val long: Double,
-    val thumbnail: String)
+    val location: GeoPoint,
+    val image: String)
 
 @JsonClass(generateAdapter = true)
-data class NetworkDishContainer(val dishes: List<NetworkDish>)
+data class NetworkProductContainer(val products: List<NetworkProduct>)
 @JsonClass(generateAdapter = true)
-data class NetworkDish(
+data class NetworkProduct(
     val id:Int,
     val name:String,
-    val price: Int,
-    val newPrice: Int,
+    val description:String,
+    val price: Double,
+    val offerPrice: Double,
     val inOffer: Boolean,
     val rating: Double,
-    val isVeggie: Boolean,
-    val isVegan: Boolean,
-    val waitingTime: Int,
-    val thumbnail: String,
+    val type: String,
+    val category: String,
+    val image: String,
     val restaurantId: Int)
 
 
@@ -52,10 +51,8 @@ fun NetworkRestaurantContainer.asDomainModel(): List<Restaurant>{
         Restaurant(
             id = it.id,
             name = it.name,
-            rating = it.rating,
-            lat = it.lat,
-            long = it.long,
-            thumbnail = it.thumbnail)
+            location = GeoPoint(it.location.latitude, it.location.longitude),
+            image = it.image)
     }
 }
 
@@ -64,45 +61,44 @@ fun NetworkRestaurantContainer.asDatabaseModel(): List<DatabaseRestaurant>{
         DatabaseRestaurant(
             id = it.id,
             name = it.name,
-            rating = it.rating,
-            lat = it.lat,
-            long = it.long,
-            thumbnail = it.thumbnail)
+            latitude = it.location.latitude,
+            longitude = it.location.longitude,
+            image = it.image)
     }
 }
 
 
-fun NetworkDishContainer.asDatabaseModel(): List<DatabaseDish>{
-    return dishes.map {
-        DatabaseDish(
+fun NetworkProductContainer.asDatabaseModel(): List<DatabaseProduct>{
+    return products.map {
+        DatabaseProduct(
             id = it.id,
             name = it.name,
+            description = it.description,
             price = it.price,
-            newPrice = it.newPrice,
+            offerPrice = it.offerPrice,
             inOffer = it.inOffer,
             rating = it.rating,
-            isVeggie = it.isVeggie,
-            isVegan = it.isVegan,
-            waitingTime = it.waitingTime,
-            thumbnail = it.thumbnail,
+            type = it.type,
+            category = it.category,
+            image = it.image,
             restaurantId = it.restaurantId
         )
     }
 }
 
-fun NetworkDishContainer.asDomainModel(): List<Dish>{
-    return dishes.map {
-        Dish(
+fun NetworkProductContainer.asDomainModel(): List<Product>{
+    return products.map {
+        Product(
             id = it.id,
             name = it.name,
+            description = it.description,
             price = it.price,
-            newPrice = it.newPrice,
+            offerPrice = it.offerPrice,
             inOffer = it.inOffer,
             rating = it.rating,
-            isVeggie = it.isVeggie,
-            isVegan = it.isVegan,
-            waitingTime = it.waitingTime,
-            thumbnail = it.thumbnail,
+            type = it.type,
+            category = it.category,
+            image = it.image,
             restaurantId = it.restaurantId
         )
     }

@@ -1,16 +1,18 @@
 package com.edu.uniandes.fud.repository
 
+import android.util.Log
 import androidx.room.withTransaction
 import com.edu.uniandes.fud.database.DatabaseRestaurant
 import com.edu.uniandes.fud.database.DatabaseRoom
 import com.edu.uniandes.fud.database.asDomainModel
-import com.edu.uniandes.fud.domain.Dish
-import com.edu.uniandes.fud.domain.DishRestaurant
+import com.edu.uniandes.fud.domain.Product
+import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.domain.Restaurant
-import com.edu.uniandes.fud.domain.RestaurantDish
+import com.edu.uniandes.fud.domain.RestaurantProduct
 import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.network.FudNetService
 import com.edu.uniandes.fud.network.asDatabaseModel
+import com.google.firebase.firestore.GeoPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -22,10 +24,8 @@ class DBRepository(private val database: DatabaseRoom) {
             val modifiedRestaurant = Restaurant(
                 id = restaurant.id,
                 name = restaurant.name,
-                rating = restaurant.rating,
-                lat = restaurant.lat,
-                long = restaurant.long,
-                thumbnail = restaurant.thumbnail)
+                location = GeoPoint(restaurant.latitude, restaurant.longitude),
+                image = restaurant.image)
             modifiedRestaurant
         }
 
@@ -33,27 +33,37 @@ class DBRepository(private val database: DatabaseRoom) {
         mappedList
     }
 
-    val dishes: Flow<List<Dish>> = database.databaseDao().getDishes().map { originalList ->
+    val products: Flow<List<Product>> = database.databaseDao().getProducts().map { originalList ->
         originalList.asDomainModel()
     }
 
-    var dishesRestaurant: Flow<List<DishRestaurant>> = database.databaseDao().getDishesRestaurant().map {
+    var productsRestaurant: Flow<List<ProductRestaurant>> = database.databaseDao().getProductsRestaurant().map {
             originalList -> originalList.asDomainModel()
     }
 
-    val restaurantsDishes: Flow<List<RestaurantDish>> = database.databaseDao().getRestaurantsDishes().map {
+    val restaurantsProducts: Flow<List<RestaurantProduct>> = database.databaseDao().getRestaurantsProducts().map {
             originalList -> originalList.asDomainModel()
     }
     
-    val users: Flow<List<User>> = database.databaseDao().getUsers().map { originalList -> originalList.asDomainModel() }
+    val users: Flow<List<User>> = database.databaseDao().getUsers().map {
+            originalList -> originalList.asDomainModel()
+    }
     
-    // Refresh data -> Restaurants-Dishes
+    // Insert user
+    suspend fun insertUser(id: Int, username: String, password: String) {
+        FudNetService.setUser(id, username, password)
+    }
+    
+    
+    
+    // Refresh data -> Restaurants-Products
     suspend fun refreshData() {
+        Log.d("XD1","called1")
         database.withTransaction {
             val restaurantList = FudNetService.getRestaurantList()
-            val dishesList = FudNetService.getDishList()
+            val productsList = FudNetService.getProductList()
             val userList =  FudNetService.getUserList()
-            database.databaseDao().insertRestaurantsAndDishesAndUser(dishesList.asDatabaseModel(), restaurantList.asDatabaseModel(), userList.asDatabaseModel())
+            database.databaseDao().insertRestaurantsAndProductsAndUser(productsList.asDatabaseModel(), restaurantList.asDatabaseModel(), userList.asDatabaseModel())
         }
     }
     

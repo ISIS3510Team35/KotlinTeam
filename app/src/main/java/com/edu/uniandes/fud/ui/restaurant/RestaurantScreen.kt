@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -16,31 +18,33 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.edu.uniandes.fud.ui.theme.Typography
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import coil.compose.AsyncImage
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.domain.RestaurantProduct
 import com.edu.uniandes.fud.ui.theme.Manrope
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
+import com.edu.uniandes.fud.ui.theme.Typography
+import com.edu.uniandes.fud.viewModel.restaurant.RestaurantViewModel
+import com.google.firebase.firestore.GeoPoint
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun RestaurantScreen() {
+fun RestaurantScreen(viewModel: RestaurantViewModel) {
     Scaffold(
+        containerColor = Color.White,
+        modifier = Modifier
+            .background(color = Color.White),
         topBar = { CustomTopBar() }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding)
         ) {
             item {
-                RestaurantImgName(
-                    restaurant = "Cafetería Central Uniandes",
-                    restImg = R.drawable.cafeteria_central
-                )
+                RestaurantImgName(viewModel)
             }
             item {
                 CarousselCardDish()
@@ -128,14 +132,26 @@ fun CustomTopBar() {
 }
 
 @Composable
-fun RestaurantImgName(restaurant: String, restImg: Int) {
+fun RestaurantImgName(viewModel: RestaurantViewModel) {
+
+    val restaurant: RestaurantProduct by viewModel.restaurant.observeAsState(
+        initial = RestaurantProduct(
+            id = 0,
+            name = "",
+            location = GeoPoint(0.0, 0.0),
+            image = "",
+            products = emptyList()
+        )
+    )
+
     Box(
         modifier = Modifier
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(restImg),
+        AsyncImage(
+            model = restaurant.image,
+            placeholder = painterResource(R.drawable.loading),
             contentDescription = null,
             alpha = 0.9f,
             contentScale = ContentScale.Crop,
@@ -146,7 +162,7 @@ fun RestaurantImgName(restaurant: String, restImg: Int) {
         )
 
         Text(
-            text = restaurant,
+            text = restaurant.name,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp),

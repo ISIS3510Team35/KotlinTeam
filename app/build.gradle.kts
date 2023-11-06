@@ -74,10 +74,14 @@ android {
 dependencies {
 
 	implementation("io.coil-kt:coil-compose:2.4.0")
-
+	
 	implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+	implementation("com.google.firebase:firebase-database-ktx:20.2.2")
 	implementation("com.google.firebase:firebase-firestore-ktx")
 	implementation("com.google.firebase:firebase-analytics-ktx")
+	
+	implementation("com.google.android.gms:play-services-location:21.0.1")
+
 	implementation("com.squareup.retrofit2:retrofit:2.9.0")
 	implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
 	implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
@@ -98,7 +102,7 @@ dependencies {
 	implementation("androidx.compose.runtime:runtime-livedata:1.5.2")
 	implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 	implementation("androidx.compose.ui:ui-text-android:1.5.2")
-
+	
 	val room_version = "2.5.0"
 	implementation("androidx.room:room-runtime:$room_version")
 	annotationProcessor("androidx.room:room-compiler:$room_version")
