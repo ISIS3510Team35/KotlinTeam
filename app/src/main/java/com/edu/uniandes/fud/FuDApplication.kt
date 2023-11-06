@@ -17,6 +17,34 @@ class FuDApplication : Application(), ImageLoaderFactory {
     val database by lazy { DatabaseRoom.getDataBase(this, applicationScope) }
     val repository by lazy { DBRepository(database) }
 
+    companion object {
+        private var timeStart: Long = 0
+        private var reportSent: Boolean = false
+        fun getTimeStart(): Long {
+            return timeStart;
+        }
+
+        fun setTimeStart(millis: Long) {
+            timeStart = millis
+        }
+
+        fun reportSent() {
+            reportSent = true
+        }
+
+        fun getReportStatus() : Boolean{
+            return reportSent
+        }
+    }
+
+
+
+    override fun onCreate() {
+        setTimeStart(System.currentTimeMillis())
+        super.onCreate()
+
+    }
+
     override fun newImageLoader(): ImageLoader {
         return ImageLoader(this).newBuilder()
             .memoryCachePolicy(CachePolicy.ENABLED)
