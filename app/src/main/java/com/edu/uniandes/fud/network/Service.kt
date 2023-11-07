@@ -125,6 +125,39 @@ interface FudNetService {
             }
         
         }
+
+        suspend fun getFavoritesList() : NetworkFavoriteContainer{
+            val db = Firebase.firestore
+            val favorites : MutableList<NetworkFavorite> = mutableListOf()
+            val i = 0
+
+            val lock = ReentrantLock()
+            val condition = lock.newCondition()
+
+            db.collection("User")
+                .get()
+                .addOnSuccessListener { favorites_firebase ->
+                    for (favorite_fb in favorites_firebase ) {
+                        favorites.add(
+                            i,
+                            NetworkFavorite(
+                                userId = favorite_fb.data["user_id"].toString().toInt(),
+                                productId = favorite_fb.data["product_id"].toString().toInt()
+                            )
+                        )
+                    }
+                    lock.withLock {
+                        condition.signal()
+                    }
+                }
+
+            lock.withLock {
+                condition.await()
+                Log.v("XD2",favorites.toString())
+                return NetworkFavoriteContainer(favorites)
+            }
+
+        }
     
         suspend fun setUser(id: Int, username: String, password: String) {
 
@@ -158,6 +191,28 @@ interface FudNetService {
                 condition.await()
             }
         
+        }
+
+        suspend fun sendFavorite(userId: Int, productId: Int, context: Context){
+            val db = Firebase.firestore
+            val favoriteMap = hashMapOf(
+                "product_id" to productId,
+                "user_id" to userId
+            )
+            db.collection("Favourites")
+                .add(favoriteMap)
+                .addOnSuccessListener { Toast.makeText(
+                    context,
+                    "¡Añadido a favoritos!",
+                    Toast.LENGTH_LONG
+                ).show() }
+                .addOnFailureListener { e ->
+                    Toast.makeText(
+                        context,
+                        "Fallo al agregar a favoritos $e",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
         }
 
         suspend fun sendFilterReport(veggie : Boolean, vegan : Boolean, price : Boolean, context: Context){

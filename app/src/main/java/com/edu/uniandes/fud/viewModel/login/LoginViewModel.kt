@@ -79,13 +79,17 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 		return _allUsers.value?.any { it.username == email && it.password == password } ?: false
 	}
 	
-	fun onLoginSelected() {
+	fun onLoginSelected(email: String) {
 		if(ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
 			
 			requestLocationPermission()
 		}
 		else {
-			context.startActivity(Intent(context, HomeActivity::class.java))
+			val intent = Intent(context, HomeActivity::class.java)
+			var userFilter = allUsers.value?.first { it.username == email }
+			intent.putExtra("userId", userFilter?.id.toString())
+			context.startActivity(intent)
+
 		}
 	}
 

@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.domain.Favorite
 import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.channels.Channel
@@ -31,6 +32,9 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
     private val _offerProducts = MutableLiveData<List<ProductRestaurant>>()
     val offerProducts: LiveData<List<ProductRestaurant>> = _offerProducts
 
+    private val _favoriteProducts = MutableLiveData<List<Favorite>>()
+    val favoriteProducts: LiveData<List<Favorite>> = _favoriteProducts
+
     private val _iconRight = MutableLiveData<Int>()
     val iconRight: LiveData<Int> = _iconRight
 
@@ -44,6 +48,9 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
     
     private var favouriteStats = false
     private var promotionStats = false
+
+    private var _userId = 0
+    private var favoriteDishes = mutableListOf<ProductRestaurant>()
 
 
     fun onSearchChange(query: String) {
@@ -62,8 +69,15 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
         return _query.value.orEmpty()
     }
 
+    fun setInitialUserId(userId: Int) {
+        _userId = userId
+    }
+
     init {
         viewModelScope.launch {
+            repository.favorites.collect() { favorites ->
+                _favoriteProducts.value = favorites.filter { it.userId == _userId }
+            }
             repository.productsRestaurant.collect { productsRestaurant ->
                 // Update View with the latest favorite news
                 var max = 3
@@ -73,8 +87,12 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                 }
                 _top3Products.value = productsRestaurant.sortedBy { it.rating }.asReversed().subList(0,max)
                 _offerProducts.value = productsRestaurant.sortedBy { it.price-it.offerPrice }.subList(0,max)
+                for (prod in favoriteProducts.value!!) {
+                    for (dish in productsRestaurant) {
+                        favoriteDishes.add( productsRestaurant.first{ prod.productId == dish.id })
+                    }
+                }
             }
-
 
         }
         viewModelScope.launch {

@@ -17,6 +17,7 @@ class HomeActivity : ComponentActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        homeViewModel.setInitialUserId(this.intent.getStringExtra("userId").orEmpty().toInt())
         setContent {
             MobileAppTheme {
                 HomeScreen(homeViewModel)

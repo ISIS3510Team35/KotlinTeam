@@ -68,6 +68,11 @@ data class User(
 
 }
 
+data class Favorite(
+	val userId: Int,
+	val productId: Int
+)
+
 /*
 data class UserProduct(
     val id: Int,

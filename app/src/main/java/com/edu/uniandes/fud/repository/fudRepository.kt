@@ -5,6 +5,7 @@ import androidx.room.withTransaction
 import com.edu.uniandes.fud.database.DatabaseRestaurant
 import com.edu.uniandes.fud.database.DatabaseRoom
 import com.edu.uniandes.fud.database.asDomainModel
+import com.edu.uniandes.fud.domain.Favorite
 import com.edu.uniandes.fud.domain.Product
 import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.domain.Restaurant
@@ -48,13 +49,20 @@ class DBRepository(private val database: DatabaseRoom) {
     val users: Flow<List<User>> = database.databaseDao().getUsers().map {
             originalList -> originalList.asDomainModel()
     }
+
+    val favorites: Flow<List<Favorite>> = database.databaseDao().getFavorites().map {
+            originalList -> originalList.asDomainModel()
+    }
     
     // Insert user
     suspend fun insertUser(id: Int, username: String, password: String) {
         FudNetService.setUser(id, username, password)
     }
     
-    
+    // Insert favorite
+    /*suspend fun insertFavorite(userId: Int, productId: Int) {
+        FudNetService.sendFavorite(userId, productId)
+    }*/
     
     // Refresh data -> Restaurants-Products
     suspend fun refreshData() {
@@ -63,7 +71,8 @@ class DBRepository(private val database: DatabaseRoom) {
             val restaurantList = FudNetService.getRestaurantList()
             val productsList = FudNetService.getProductList()
             val userList =  FudNetService.getUserList()
-            database.databaseDao().insertRestaurantsAndProductsAndUser(productsList.asDatabaseModel(), restaurantList.asDatabaseModel(), userList.asDatabaseModel())
+            val favoritesList = FudNetService.getFavoritesList()
+            database.databaseDao().insertRestaurantsAndProductsAndUserAndFavorites(productsList.asDatabaseModel(), restaurantList.asDatabaseModel(), userList.asDatabaseModel(), favoritesList.asDatabaseModel())
         }
     }
     

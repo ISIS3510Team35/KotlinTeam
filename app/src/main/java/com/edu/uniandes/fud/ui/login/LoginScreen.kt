@@ -55,7 +55,7 @@ fun Login(align: Modifier, viewModel: LoginViewModel) {
 		Spacer(modifier = Modifier.padding(16.dp))
 		Passwordfield(password) { viewModel.onLoginChanged(email, it) }
 		Spacer(modifier = Modifier.padding(32.dp))
-		LoginButton(loginEnable) { viewModel.onLoginSelected() }
+		LoginButton(loginEnable) { viewModel.onLoginSelected(email) }
 	}
 }
 

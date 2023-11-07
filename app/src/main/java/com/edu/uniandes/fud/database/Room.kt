@@ -43,10 +43,11 @@ interface DatabaseDao {
     
     //Product-Restaurant
     @Transaction
-    fun insertRestaurantsAndProductsAndUser(products: List<DatabaseProduct>, restaurants: List<DatabaseRestaurant>, users: List<DatabaseUser>){
+    fun insertRestaurantsAndProductsAndUserAndFavorites(products: List<DatabaseProduct>, restaurants: List<DatabaseRestaurant>, users: List<DatabaseUser>, favorites: List<DatabaseFavorite>){
         insertAllRestaurants(restaurants)
         insertAllProducts(products)
         insertAllUsers(users)
+        insertAllFavorites(favorites)
     }
     
     //User
@@ -62,7 +63,13 @@ interface DatabaseDao {
     @Query("SELECT * FROM DatabaseUser JOIN DatabaseProduct ON DatabaseUser.id = DatabaseProduct.userId")
     fun getUsersProducts() : LiveData<Map<DatabaseUser,List<DatabaseProduct>>>
      */
-    
+
+    // Favorite
+    @Query("SELECT * FROM DatabaseFavorite")
+    fun getFavorites(): Flow<List<DatabaseFavorite>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllFavorites(favorites: List<DatabaseFavorite>) : LongArray
 
 
 }
