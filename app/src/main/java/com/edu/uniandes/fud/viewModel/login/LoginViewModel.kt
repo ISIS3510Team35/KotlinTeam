@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
@@ -66,30 +67,29 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 		_password.value = password
 		_loginEnable.value = isValidUser(email, password)
 	}
-	
-	private fun isValidPassword(password: String?): Boolean {
-		return password == passwordAuth.value
-	}
-	
-	private fun isValidEmail(email: String?): Boolean {
-		return email == usernameAuth.value
-	}
 
 	private fun isValidUser(email: String?, password: String?): Boolean {
 		return _allUsers.value?.any { it.username == email && it.password == password } ?: false
 	}
 	
-	fun onLoginSelected(email: String) {
-		if(ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-			
-			requestLocationPermission()
-		}
-		else {
-			val intent = Intent(context, HomeActivity::class.java)
-			var userFilter = allUsers.value?.first { it.username == email }
-			intent.putExtra("userId", userFilter?.id.toString())
-			context.startActivity(intent)
+	fun onLoginSelected() {
+		if (isValidUser(_email.value, _password.value)) {
+			if (ContextCompat.checkSelfPermission(
+					context,
+					Manifest.permission.ACCESS_FINE_LOCATION
+				) != PackageManager.PERMISSION_GRANTED
+			) {
 
+				requestLocationPermission()
+			} else {
+				context.startActivity(Intent(context, HomeActivity::class.java))
+			}
+		} else {
+			Toast.makeText(
+				context,
+				"Incorrect username or password",
+				Toast.LENGTH_SHORT
+			).show()
 		}
 	}
 
