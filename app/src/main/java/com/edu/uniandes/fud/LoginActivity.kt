@@ -64,6 +64,9 @@ class LoginActivity : ComponentActivity() {
             }
         }
 
+        // Test CrashLytics
+        //throw RuntimeException("Test Crash")
+
     }
     
 }
