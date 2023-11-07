@@ -5,6 +5,7 @@ plugins {
 	id("com.google.devtools.ksp")
 	// Add the Google services Gradle plugin
 	id("com.google.gms.google-services")
+	id("com.google.firebase.crashlytics")
 
 }
 
@@ -73,6 +74,9 @@ android {
 
 dependencies {
 
+	implementation("com.google.firebase:firebase-crashlytics-ktx")
+	implementation("com.google.firebase:firebase-analytics-ktx")
+
 	implementation("io.coil-kt:coil-compose:2.4.0")
 	
 	implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
@@ -138,4 +142,6 @@ dependencies {
 	androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 	debugImplementation("androidx.compose.ui:ui-tooling")
 	debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+
 }
