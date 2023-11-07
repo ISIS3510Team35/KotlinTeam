@@ -1,8 +1,10 @@
 package com.edu.uniandes.fud.network
 
+import com.edu.uniandes.fud.database.DatabaseFavorite
 import com.edu.uniandes.fud.database.DatabaseProduct
 import com.edu.uniandes.fud.database.DatabaseRestaurant
 import com.edu.uniandes.fud.database.DatabaseUser
+import com.edu.uniandes.fud.domain.Favorite
 import com.edu.uniandes.fud.domain.Product
 import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.domain.User
@@ -44,6 +46,15 @@ data class NetworkUser(
     val id:Int,
     val username:String,
     val password:String
+)
+
+@JsonClass(generateAdapter = true)
+data class NetworkFavoriteContainer(val favorites: List<NetworkFavorite>)
+
+@JsonClass(generateAdapter = true)
+data class NetworkFavorite(
+    val userId: Int,
+    val productId: Int
 )
 
 fun NetworkRestaurantContainer.asDomainModel(): List<Restaurant>{
@@ -124,3 +135,20 @@ fun NetworkUserContainer.asDomainModel(): List<User>{
     }
 }
 
+fun NetworkFavoriteContainer.asDatabaseModel(): List<DatabaseFavorite> {
+    return favorites.map {
+        DatabaseFavorite(
+            userId = it.userId,
+            productId = it.productId
+        )
+    }
+}
+
+fun NetworkFavoriteContainer.asDomainModel(): List<Favorite>{
+    return favorites.map {
+        Favorite(
+            userId = it.userId,
+            productId = it.productId
+        )
+    }
+}

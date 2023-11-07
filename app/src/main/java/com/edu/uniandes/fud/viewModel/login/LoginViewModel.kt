@@ -79,10 +79,13 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 					Manifest.permission.ACCESS_FINE_LOCATION
 				) != PackageManager.PERMISSION_GRANTED
 			) {
-				
+
 				requestLocationPermission()
 			} else {
-				context.startActivity(Intent(context, HomeActivity::class.java))
+				val intent = Intent(context, HomeActivity::class.java)
+				var currentUser = allUsers.value?.first{ it.username == _email.value }
+				intent.putExtra("userId", currentUser?.id.toString())
+				context.startActivity(intent)
 			}
 		} else {
 			Toast.makeText(

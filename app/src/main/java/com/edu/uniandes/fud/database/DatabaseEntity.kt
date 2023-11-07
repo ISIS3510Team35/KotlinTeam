@@ -2,6 +2,7 @@ package com.edu.uniandes.fud.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.edu.uniandes.fud.domain.Favorite
 import com.edu.uniandes.fud.domain.Product
 import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.domain.Restaurant
@@ -42,6 +43,13 @@ data class DatabaseUser(
     var username: String = "",
     var password: String = ""
 )
+
+@Entity(primaryKeys = ["userId", "productId"])
+data class DatabaseFavorite(
+    val userId: Int = 0,
+    val productId: Int = 0
+)
+
 // TODO: In the future add new dataClass for offers and prices independent to products
 
 @JvmName("restaurantAsDomainModel")
@@ -150,6 +158,17 @@ fun Map<DatabaseProduct, DatabaseRestaurant>.asDomainModel(): List<ProductRestau
             )
         }
         return result
+    }
+}
+
+
+@JvmName("favoriteAsDomainModel")
+fun List<DatabaseFavorite>.asDomainModel(): List<Favorite> {
+    return map {
+        Favorite(
+            userId = it.userId,
+            productId = it.productId
+        )
     }
 }
 
