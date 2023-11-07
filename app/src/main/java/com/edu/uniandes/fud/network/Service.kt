@@ -208,6 +208,32 @@ interface FudNetService {
                     ).show()
                 }
         }
+
+        suspend fun sendStartingApplicationTime(timeElapsed : Long, now: Long, context: Context){
+            val db = Firebase.firestore
+            val report = hashMapOf(
+                "time" to timeElapsed,
+                "now" to now,
+                "provider" to "KotlinTeam",
+                "Date" to Date().time
+            )
+
+            db.collection("StartingTime")
+                .add(report)
+                .addOnSuccessListener { Toast.makeText(
+                    context,
+                    "Starting Time "+timeElapsed+"ms",
+                    Toast.LENGTH_SHORT
+                ).show() }
+                .addOnFailureListener { e ->
+                    Toast.makeText(
+                        context,
+                        "Fallo en el envío del reporte (Starting Time) $e",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+        }
     }
 }
 
