@@ -134,7 +134,7 @@ interface FudNetService {
             val lock = ReentrantLock()
             val condition = lock.newCondition()
 
-            db.collection("User")
+            db.collection("Favourites")
                 .get()
                 .addOnSuccessListener { favorites_firebase ->
                     for (favorite_fb in favorites_firebase ) {

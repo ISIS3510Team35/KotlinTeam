@@ -44,7 +44,7 @@ data class DatabaseUser(
     var password: String = ""
 )
 
-@Entity(primaryKeys = ["user_id", "product_id"])
+@Entity(primaryKeys = ["userId", "productId"])
 data class DatabaseFavorite(
     val userId: Int = 0,
     val productId: Int = 0

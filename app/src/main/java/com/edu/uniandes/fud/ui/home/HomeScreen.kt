@@ -73,6 +73,9 @@ fun HomeScreen(viewModel: HomeViewModel) {
             item {
                 CarousselProductOffers(viewModel)
             }
+            item {
+                CarousselFavorites(viewModel)
+            }
         }
 
     }
@@ -572,5 +575,32 @@ fun CarousselProductOffers(viewModel: HomeViewModel) {
         }
 
 
+    }
+}
+
+@Composable
+fun CarousselFavorites(viewModel: HomeViewModel) {
+
+    val favoriteList: List<ProductRestaurant> by viewModel.favoriteDishes.observeAsState(initial = emptyList())
+
+    Text(
+        text = "Tus favoritos",
+        style = Typography.titleMedium,
+        modifier = Modifier.padding(horizontal = 17.dp)
+    )
+    LazyRow {
+        item {
+            Spacer(modifier = Modifier.width(10.dp))
+        }
+
+        items(favoriteList) {
+            CardProduct(
+                name = it.name,
+                restaurantName = it.restaurant.name,
+                price = it.price,
+                image = it.image,
+                id = it.id
+            )
+        }
     }
 }

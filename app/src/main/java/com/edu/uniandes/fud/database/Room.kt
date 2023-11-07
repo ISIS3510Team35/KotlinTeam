@@ -74,7 +74,7 @@ interface DatabaseDao {
 
 }
 
-@Database(entities = arrayOf(DatabaseRestaurant::class,DatabaseProduct::class,DatabaseUser::class), version = 7)
+@Database(entities = arrayOf(DatabaseRestaurant::class,DatabaseProduct::class,DatabaseUser::class,DatabaseFavorite::class), version = 7)
 abstract class DatabaseRoom: RoomDatabase(){
     abstract fun databaseDao(): DatabaseDao
     private class RoomDatabaseCallback( private val scope: CoroutineScope) : RoomDatabase.Callback() {

@@ -82,7 +82,10 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 
 				requestLocationPermission()
 			} else {
-				context.startActivity(Intent(context, HomeActivity::class.java))
+				val intent = Intent(context, HomeActivity::class.java)
+				var currentUser = allUsers.value?.first{ it.username == _email.value }
+				intent.putExtra("userId", currentUser?.id.toString())
+				context.startActivity(intent)
 			}
 		} else {
 			Toast.makeText(
