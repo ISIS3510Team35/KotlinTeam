@@ -16,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.domain.Favorite
 import com.edu.uniandes.fud.domain.ProductRestaurant
+import com.edu.uniandes.fud.network.FudNetService.Companion.getRecommendedCriteria
 import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -43,6 +44,9 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
 
     private val _favoriteDishes = MutableLiveData<List<ProductRestaurant>>()
     val favoriteDishes: LiveData<List<ProductRestaurant>> = _favoriteDishes
+
+    private val _recommendedDishes = MutableLiveData<List<ProductRestaurant>>()
+    val recommendedDishes: LiveData<List<ProductRestaurant>> = _recommendedDishes
 
     private var previousLocationInRange = false
     private val rangeLatitud = 4.6025
@@ -84,15 +88,21 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                 if (productsRestaurant.size < 3) {
                     max = productsRestaurant.size
                 }
+                _top3Products.value =
+                    productsRestaurant.sortedBy { it.rating }.asReversed().subList(0, max)
+
+                _offerProducts.value =
+                    productsRestaurant.sortedBy { it.price - it.offerPrice }.subList(0, max)
+
                 val favorites = repository.favorites.first().filter { it.userId == _userId.value }
                 for (prod in favorites) {
                     favList.add(productsRestaurant.first { prod.productId == it.id })
                 }
                 _favoriteDishes.postValue(favList.distinct())
-                _top3Products.value =
-                    productsRestaurant.sortedBy { it.rating }.asReversed().subList(0, max)
-                _offerProducts.value =
-                    productsRestaurant.sortedBy { it.price - it.offerPrice }.subList(0, max)
+
+                val recCriteria = _userId.value?.let { getRecommendedCriteria(it) }
+                _recommendedDishes.postValue(productsRestaurant.filter { it.type == recCriteria }.sortedBy { it.rating }.asReversed().subList(0, max))
+
             }
 
         }
