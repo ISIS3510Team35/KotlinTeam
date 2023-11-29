@@ -102,14 +102,17 @@ interface FudNetService {
         
             db.collection("User")
                 .get()
-                .addOnSuccessListener { users_firebase ->
-                    for (user_fb in users_firebase ) {
+                .addOnSuccessListener { usersFirebase ->
+                    for (userFb in usersFirebase ) {
                         users.add(
                             i,
                             NetworkUser(
-                                id = user_fb.data["id"].toString().toInt(),
-                                username = user_fb.data["username"].toString(),
-                                password = user_fb.data["password"].toString()
+                                id = userFb.data["id"].toString().toInt(),
+                                username = userFb.data["username"].toString(),
+                                name = userFb.data["name"].toString(),
+                                number = userFb.data["number"].toString(),
+                                password = userFb.data["password"].toString(),
+                                documentId = userFb.id
                             )
                         )
                     }
@@ -159,40 +162,69 @@ interface FudNetService {
 
         }
     
-        suspend fun setUser(id: Int, username: String, password: String) {
+        suspend fun setUser(id: Int, username: String, name: String, number: String, password: String, documentId: String, context: Context) {
 
             val db = Firebase.firestore
-
-            val lock = ReentrantLock()
-            val condition = lock.newCondition()
 
             val user = hashMapOf(
                 "id" to id,
                 "username" to username,
-                "password" to password
+                "name" to name,
+                "number" to number,
+                "password" to password,
+                "documentId" to documentId
             )
 
             db.collection("User")
-                .add(user)
-                .addOnSuccessListener { documentReference ->
-                    Log.d("XD", "DocumentSnapshot added with ID: ${documentReference.id}")
-                    lock.withLock {
-                        condition.signal()
-                    }
+                .document(documentId)
+                .set(user)
+                .addOnSuccessListener { Toast.makeText(
+                    context,
+                    "Usuario Creado Exitosamente",
+                    Toast.LENGTH_LONG
+                ).show() }
+                .addOnFailureListener { e ->
+                    Toast.makeText(
+                        context,
+                        "Fallo en la creacion del usuario",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+        }
+    
+        suspend fun updateUser(id: Int, username: String, name: String, number: String, password: String, documentId: String, context: Context) {
+        
+            val db = Firebase.firestore
+        
+            val updatedUser = hashMapOf(
+                "id" to id,
+                "username" to username,
+                "name" to name,
+                "number" to number,
+                "password" to password,
+                "documentId" to documentId
+            )
+        
+            db.collection("User")
+                .document(documentId)
+                .set(updatedUser)
+                .addOnSuccessListener {
+                    Toast.makeText(
+                        context,
+                        "Usuario Actualizado Exitosamente",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
                 .addOnFailureListener { e ->
-                    Log.w("XD", "Error adding document", e)
-                    lock.withLock {
-                        condition.signal()
-                    }
+                    Toast.makeText(
+                        context,
+                        "Fallo en la actualización del usuario",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
-
-            lock.withLock {
-                condition.await()
-            }
-        
         }
-
+    
+    
         suspend fun sendFavorite(userId: Int, productId: Int, context: Context){
             val db = Firebase.firestore
             val favoriteMap = hashMapOf(
@@ -258,7 +290,7 @@ interface FudNetService {
                 .addOnFailureListener { e ->
                     Toast.makeText(
                         context,
-                        "Fallo en el envío del reporte (Fav_Promo_Analytics) $e",
+                        "Fallo en la creación del usuario",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -289,7 +321,32 @@ interface FudNetService {
                 }
 
         }
-    }
+	
+		fun sendTimeSpent(duration: Long, screen: String, context: Context) {
+            val db = Firebase.firestore
+            val report = hashMapOf(
+                "time" to duration,
+                "screen" to screen,
+                "provider" to "KotlinTeam",
+            )
+            
+            db.collection("Time_Spent_Analytics")
+                .add(report)
+                .addOnSuccessListener { Toast.makeText(
+                    context,
+                    "Time spent: "+duration+"ms",
+                    Toast.LENGTH_SHORT
+                )}
+                .addOnFailureListener { e ->
+                    Toast.makeText(
+                        context,
+                        "Fallo el envío del reporte (Time Spent) $e",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            
+        }
+	}
 }
 
 // Single entry point with Firebase does not make much sense
