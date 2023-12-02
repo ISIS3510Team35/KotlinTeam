@@ -45,7 +45,10 @@ data class NetworkUserContainer(val users: List<NetworkUser>)
 data class NetworkUser(
     val id:Int,
     val username:String,
-    val password:String
+    val name:String,
+    val number:String,
+    val password:String,
+    val documentId:String
 )
 
 @JsonClass(generateAdapter = true)
@@ -120,7 +123,10 @@ fun NetworkUserContainer.asDatabaseModel(): List<DatabaseUser> {
         DatabaseUser(
             id = it.id,
             username = it.username,
-            password = it.password
+            name = it.name,
+            number = it.number,
+            password = it.password,
+            documentId = it.documentId
         )
     }
 }
@@ -130,7 +136,10 @@ fun NetworkUserContainer.asDomainModel(): List<User>{
         User(
             id = it.id,
             username = it.username,
-            password = it.password
+            name = it.name,
+            number = it.number,
+            password = it.password,
+            documentId = it.documentId
         )
     }
 }

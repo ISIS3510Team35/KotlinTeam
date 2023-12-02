@@ -1,5 +1,6 @@
 package com.edu.uniandes.fud
 
+
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -7,18 +8,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.edu.uniandes.fud.ui.register.RegisterScreen
+import com.edu.uniandes.fud.ui.forgotPW.ForgotPWScreen
 import com.edu.uniandes.fud.ui.theme.MobileAppTheme
-import com.edu.uniandes.fud.viewModel.register.RegisterViewModel
-import com.edu.uniandes.fud.viewModel.register.RegisterViewModelFactory
+import com.edu.uniandes.fud.viewModel.forgotPW.ForgotPWViewModel
+import com.edu.uniandes.fud.viewModel.forgotPW.ForgotPWViewModelFactory
 import kotlinx.coroutines.launch
 
-class RegisterActivity : ComponentActivity() {
+
+class ForgotPWActivity : ComponentActivity() {
     
     private var startTime: Long = 0
     
-    private val registerViewModel: RegisterViewModel by viewModels {
-        RegisterViewModelFactory(this, (application as FuDApplication).repository)
+    private val forgotPWViewModel: ForgotPWViewModel by viewModels {
+        ForgotPWViewModelFactory(this, (application as FuDApplication).repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +28,7 @@ class RegisterActivity : ComponentActivity() {
         
         setContent {
             MobileAppTheme {
-                RegisterScreen(registerViewModel)
+                ForgotPWScreen(forgotPWViewModel)
             }
         }
     }
@@ -48,7 +50,7 @@ class RegisterActivity : ComponentActivity() {
         lifecycleScope.launch {
             com.edu.uniandes.fud.network.FudNetService.sendTimeSpent(
                 duration,
-                "Register Screen",
+                "ForgotPW Screen",
                 context
             )
         }
@@ -62,12 +64,11 @@ class RegisterActivity : ComponentActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if(requestCode == 777){
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                registerViewModel.onRegisterSelected()
+                forgotPWViewModel.onForgotPWSelected()
             }
             else {
             
             }
         }
     }
-    
 }

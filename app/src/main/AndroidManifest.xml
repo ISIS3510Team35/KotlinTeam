@@ -47,6 +47,11 @@
             android:label="fud"
             android:theme="@style/Theme.fud" />
         <activity
+            android:name=".ForgotPWActivity"
+            android:exported="true"
+            android:label="fud"
+            android:theme="@style/Theme.fud" />
+        <activity
             android:name=".SearchActivity"
             android:exported="true"
             android:label="fud"
