@@ -14,7 +14,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.edu.uniandes.fud.ForgotPWActivity
 import com.edu.uniandes.fud.HomeActivity
+import com.edu.uniandes.fud.RegisterActivity
 import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.delay
@@ -46,6 +48,7 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 	
 	init {
 		viewModelScope.launch {
+			repository.refreshData()
 			while (true) {
 				delay(1000) // Retraso de 1 segundo (1000 milisegundos)
 				val users = repository.users.first()
@@ -94,6 +97,16 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 				Toast.LENGTH_SHORT
 			).show()
 		}
+	}
+	
+	fun onForgotPWSelected() {
+		val intent = Intent(context, ForgotPWActivity::class.java)
+		context.startActivity(intent)
+	}
+	
+	fun onRegisterSelected() {
+		val intent = Intent(context, RegisterActivity::class.java)
+		context.startActivity(intent)
 	}
 
 	private fun requestLocationPermission() {

@@ -38,10 +38,13 @@ data class DatabaseProduct(
 
 @Entity
 data class DatabaseUser(
-    @PrimaryKey
-    var id: Int = 0,
-    var username: String = "",
-    var password: String = ""
+	@PrimaryKey
+	var id: Int = 0,
+	var username: String = "",
+	var name: String = "",
+	var number: String = "",
+	var password: String = "",
+	var documentId: String = ""
 )
 
 @Entity(primaryKeys = ["userId", "productId"])
@@ -88,7 +91,10 @@ fun List<DatabaseUser>.asDomainModel(): List<User> {
         User(
             id = it.id,
             username = it.username,
-            password = it.password
+            name = it.name,
+            number = it.number,
+            password = it.password,
+            documentId = it.documentId
         )
     }
 }

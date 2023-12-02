@@ -57,12 +57,15 @@ fun Login(align: Modifier, viewModel: LoginViewModel) {
 		verticalArrangement = Arrangement.Center
 	) {
 		HeaderImage(Modifier.align(Alignment.CenterHorizontally))
-		Spacer(modifier = Modifier.padding(16.dp))
+		Spacer(modifier = Modifier.padding(48.dp))
 		EmailField(email) { viewModel.onLoginChanged(it, password) }
 		Spacer(modifier = Modifier.padding(16.dp))
 		Passwordfield(password) { viewModel.onLoginChanged(email, it) }
-		Spacer(modifier = Modifier.padding(32.dp))
+		ForgotPasswordButton { viewModel.onForgotPWSelected() }
+		Spacer(modifier = Modifier.padding(24.dp))
 		LoginButton(loginEnable) { viewModel.onLoginSelected() }
+		Spacer(modifier = Modifier.padding(24.dp))
+		RegisterButton { viewModel.onRegisterSelected() }
 	}
 }
 
@@ -184,6 +187,38 @@ fun Passwordfield(password: String, onTextFieldChanged:(String) -> Unit) {
 
 
 @Composable
+fun ForgotPasswordButton(onForgotPWSelected: () -> Unit) {
+	Row(
+		modifier = Modifier.fillMaxWidth(),
+		horizontalArrangement = Arrangement.End
+	) {
+		TextButton(
+			onClick = {
+				onForgotPWSelected()
+			},
+			colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
+		) {
+			Text(
+				text = "Forgot Password?",
+				style = TextStyle(
+					fontFamily = Manrope,
+					fontSize = 14.sp,
+					letterSpacing = (-0.2).sp,
+					textAlign = TextAlign.End,
+					color = Color.Gray
+				)
+			)
+		}
+	}
+}
+
+
+
+
+
+
+
+@Composable
 fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
 	Button(
 		onClick = {
@@ -199,4 +234,38 @@ fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
 	) {
 		Text(text = "LOG IN")
 	}
+}
+
+
+@Composable
+fun RegisterButton(onRegisterSelected: () -> Unit) {
+    TextButton(
+        onClick = {
+			onRegisterSelected()
+        },
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.textButtonColors(contentColor = Color.Black)
+    ) {
+        Text(
+            text = "Don't have an account? ",
+            style = TextStyle(
+                fontFamily = Manrope,
+                fontSize = 14.sp,
+                letterSpacing = (-0.2).sp,
+                textAlign = TextAlign.Center,
+                color = Color.Black
+            )
+        )
+        Text(
+            text = "REGISTER",
+            style = TextStyle(
+                fontFamily = Manrope,
+				fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                letterSpacing = (-0.2).sp,
+                textAlign = TextAlign.Center,
+                color = Color(255, 165, 0) // Orange color
+            )
+        )
+    }
 }

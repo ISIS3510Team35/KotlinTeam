@@ -1,5 +1,6 @@
 package com.edu.uniandes.fud.repository
 
+import android.content.Context
 import android.util.Log
 import androidx.room.withTransaction
 import com.edu.uniandes.fud.database.DatabaseRestaurant
@@ -55,14 +56,22 @@ class DBRepository(private val database: DatabaseRoom) {
     }
     
     // Insert user
-    suspend fun insertUser(id: Int, username: String, password: String) {
-        FudNetService.setUser(id, username, password)
+    suspend fun insertUser(id: Int, username: String, name: String, number: String, password: String, documentId: String, context: Context) {
+        FudNetService.setUser(id, username, name, number, password, documentId, context)
     }
     
     // Insert favorite
     /*suspend fun insertFavorite(userId: Int, productId: Int) {
         FudNetService.sendFavorite(userId, productId)
     }*/
+    
+    suspend fun refreshUserData() {
+        Log.d("XD2","called1")
+        database.withTransaction {
+            val userList =  FudNetService.getUserList()
+            database.databaseDao().insertAllUsers(userList.asDatabaseModel())
+        }
+    }
     
     // Refresh data -> Restaurants-Products
     suspend fun refreshData() {

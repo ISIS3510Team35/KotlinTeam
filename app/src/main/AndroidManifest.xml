@@ -4,8 +4,13 @@
 
     <!--Internet Permission-->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -18,6 +23,9 @@
         android:theme="@style/Theme.fud"
         android:name=".FuDApplication"
         tools:targetApi="31" >
+        <receiver
+            android:name=".AlarmNotification"
+            android:enabled="true" />
         <activity
             android:name=".LoginActivity"
             android:exported="true"
@@ -35,6 +43,11 @@
             android:theme="@style/Theme.fud" />
         <activity
             android:name=".RegisterActivity"
+            android:exported="true"
+            android:label="fud"
+            android:theme="@style/Theme.fud" />
+        <activity
+            android:name=".ForgotPWActivity"
             android:exported="true"
             android:label="fud"
             android:theme="@style/Theme.fud" />

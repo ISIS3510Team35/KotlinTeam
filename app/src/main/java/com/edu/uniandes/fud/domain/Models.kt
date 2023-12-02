@@ -61,9 +61,12 @@ data class ProductUser(
  */
 
 data class User(
-    val id: Int,
-    val username: String,
-    val password: String
+	val id: Int,
+	val username: String,
+	val name: String,
+	val number: String,
+	val password: String,
+	val documentId: String
 ) {
 
 }

@@ -275,7 +275,7 @@ fun SearchBar(viewModel: HomeViewModel, context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardProduct(name: String, restaurantName: String, price: Double, image: String, id: Int) {
+fun CardProduct(name: String, restaurantName: String, price: Double, image: String, id: Int, viewModel: HomeViewModel) {
     Box(
         modifier = Modifier.width(220.dp),
         contentAlignment = Alignment.TopCenter
@@ -295,6 +295,7 @@ fun CardProduct(name: String, restaurantName: String, price: Double, image: Stri
                 containerColor = Color.White
             ),
             onClick = {
+                viewModel.sendFavReport(context)
                 val intent = Intent(context, ProductActivity::class.java)
                 intent.putExtra("productId", id.toString())
                 context.startActivity(intent)
@@ -475,7 +476,8 @@ fun CarousselTop3Product(viewModel: HomeViewModel) {
                 restaurantName = it.restaurant.name,
                 price = it.price,
                 image = it.image,
-                id = it.id
+                id = it.id,
+                viewModel = viewModel
             )
         }
     }
@@ -602,7 +604,8 @@ fun CarousselFavorites(viewModel: HomeViewModel) {
                 restaurantName = it.restaurant.name,
                 price = it.price,
                 image = it.image,
-                id = it.id
+                id = it.id,
+                viewModel = viewModel
             )
         }
     }
