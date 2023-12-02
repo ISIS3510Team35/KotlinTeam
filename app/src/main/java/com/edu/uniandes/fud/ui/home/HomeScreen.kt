@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import com.edu.uniandes.fud.AccountActivity
 import com.edu.uniandes.fud.ProductActivity
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.SearchActivity
@@ -93,7 +94,11 @@ fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
         navigationIcon = {
             IconButton(
                 modifier = Modifier.fillMaxHeight(),
-                onClick = { }
+                onClick = {
+                    val intent = Intent(context, AccountActivity::class.java)
+                    intent.putExtra("userId", viewModel.userId.value.toString())
+                    context.startActivity(intent)
+                }
             ) {
                 Image(
                     modifier = Modifier.padding(10.dp),
@@ -632,7 +637,8 @@ fun CarousselRecommended(viewModel: HomeViewModel) {
                 restaurantName = it.restaurant.name,
                 price = it.price,
                 image = it.image,
-                id = it.id
+                id = it.id,
+                viewModel = viewModel
             )
         }
     }

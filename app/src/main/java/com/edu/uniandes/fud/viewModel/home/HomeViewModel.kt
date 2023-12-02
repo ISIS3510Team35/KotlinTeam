@@ -56,6 +56,8 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
     private var promotionStats = false
 
     private val _userId = MutableLiveData<Int>()
+    val userId: LiveData<Int> = _userId
+
     private var favList = mutableListOf<ProductRestaurant>()
 
 

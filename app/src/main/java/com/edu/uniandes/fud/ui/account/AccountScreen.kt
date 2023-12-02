@@ -3,90 +3,182 @@ package com.edu.uniandes.fud.ui.account
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.ui.theme.Manrope
+import com.edu.uniandes.fud.ui.theme.OrangeSoft
+import com.edu.uniandes.fud.ui.theme.Typography
 import com.edu.uniandes.fud.ui.theme.backgroundSecondary
-import com.edu.uniandes.fud.ui.theme.buttonBackground
-import com.edu.uniandes.fud.ui.theme.buttonText
-import com.edu.uniandes.fud.ui.theme.textField
-import com.edu.uniandes.fud.ui.theme.textFieldBackground
 import com.edu.uniandes.fud.viewModel.account.AccountViewModel
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountScreen(viewModel: AccountViewModel) {
-    Box(
+    Scaffold(
+        containerColor = backgroundSecondary,
         modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundSecondary)
-            .padding(horizontal = 50.dp)
-    ) {
-        //Account(Modifier.align(Alignment.Center), viewModel)
+            .background(color = backgroundSecondary),
+        topBar = { CustomTopBar() }
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .wrapContentHeight(align = Alignment.CenterVertically)
+                .wrapContentWidth(align = Alignment.CenterHorizontally)
+                .background(backgroundSecondary)
+        ) {
+            item {
+                ImgName(viewModel)
+            }
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+            item {
+                NameField(viewModel)
+            }
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+            item {
+                NumberField(viewModel)
+            }
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+        }
+
     }
-
-}
-
-/*@Preview
-@Composable
-fun Account(align: Modifier, viewModel: AccountViewModel) {
-
-    val email: String by viewModel.email.observeAsState(initial = "")
-    val password: String by viewModel.password.observeAsState(initial = "")
-
-
-    Column(
-        modifier = Modifier.fillMaxHeight(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        HeaderImage(Modifier.align(Alignment.CenterHorizontally))
-        Spacer(modifier = Modifier.padding(48.dp))
-        EmailField(email) { viewModel.onForgotPWChanged(it, password, passwordConfirm) }
-        Spacer(modifier = Modifier.padding(16.dp))
-        PasswordField(password) { viewModel.onForgotPWChanged(email, it, passwordConfirm) }
-        Spacer(modifier = Modifier.padding(16.dp))
-        PasswordConfirmField(passwordConfirm) { viewModel.onForgotPWChanged(email, password, it) }
-        Spacer(modifier = Modifier.padding(24.dp))
-        ForgotPWButton(forgotPWEnable) { viewModel.onForgotPWSelected() }
-
-    }
-}*/
-
-
-@Composable
-fun HeaderImage(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.logo),
-        contentDescription = "Logo",
-        modifier = modifier
-            .fillMaxWidth()
-            .height(75.dp)
-    )
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmailField(email: String, onTextFieldChanged:(String) -> Unit) {
+fun CustomTopBar() {
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = OrangeSoft),
+        actions = {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(vertical = 5.dp)
+                        .height(30.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    shadowElevation = 5.dp,
+                    onClick = { }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxHeight(),
+                        horizontalArrangement = Arrangement.spacedBy(1.dp)
+                    ) {
+                        Image(
+                            modifier = Modifier.fillMaxHeight(),
+                            painter = painterResource(id = R.drawable.ic_location),
+                            contentDescription = "dashboard_search"
+                        )
+                        Image(
+                            modifier = Modifier.fillMaxHeight(),
+                            painter = painterResource(id = R.drawable.uniandes),
+                            contentDescription = "dashboard_search"
+                        )
+                    }
+                }
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min)
+            .background(color = OrangeSoft)
+            .padding(horizontal = 12.dp)
+            .padding(top = 5.dp)
+            .padding(top = 2.dp),
+        title = {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(vertical = 10.dp)
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    contentDescription = "FuD Logo"
+                )
+            }
+        }
+    )
+}
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+@Composable
+fun ImgName(viewModel: AccountViewModel) {
+
+    val user: User by viewModel.user.observeAsState(
+        initial = User(
+            id = 0,
+            username = "",
+            name = "",
+            number = "",
+            password = "",
+            documentId = ""
+        )
+    )
+
+    Column() {
+        Image(
+            painter = painterResource(R.drawable.person),
+            contentDescription = null,
+            modifier = Modifier.size(50.dp, 50.dp),
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = user.name,
+            style = TextStyle(
+                fontFamily = Manrope,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                letterSpacing = (-0.2).sp,
+                textAlign = TextAlign.Start,
+            )
+        )
+    }
+}
+
+@Composable
+fun NameField(viewModel: AccountViewModel) {
+
+    val user: User by viewModel.user.observeAsState(
+        initial = User(
+            id = 0,
+            username = "",
+            name = "",
+            number = "",
+            password = "",
+            documentId = ""
+        )
+    )
+
+    Column() {
         Text(
             "USER",
             style = TextStyle(
@@ -98,49 +190,49 @@ fun EmailField(email: String, onTextFieldChanged:(String) -> Unit) {
             )
         )
 
-        TextField(
-            value = email,
-            onValueChange = { onTextFieldChanged(it) },
+        Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-                .padding(start = 4.dp, end = 4.dp, top = 4.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            placeholder = { Text(text = "Type your username") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            singleLine = true,
-            maxLines = 1,
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = textField,
-                containerColor = textFieldBackground,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.person),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(20.dp),
-                    Color(red = 0, green = 0, blue = 0, alpha = 255)
-                )
-            }
-        )
+                .width(250.dp)
+                .padding(top = 10.dp)
+                .shadow(
+                    elevation = 5.dp,
+                    shape = RoundedCornerShape(20.dp)
+                ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            )
+        ) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = user.username,
+                style = Typography.bodyLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp),
+                textAlign = TextAlign.Start
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+        }
     }
 }
 
-
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordField(password: String, onTextFieldChanged:(String) -> Unit) {
+fun NumberField(viewModel: AccountViewModel) {
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    val user: User by viewModel.user.observeAsState(
+        initial = User(
+            id = 0,
+            username = "",
+            name = "",
+            number = "",
+            password = "",
+            documentId = ""
+        )
+    )
+
+    Column() {
         Text(
-            "PASSWORD",
+            "NUMBER",
             style = TextStyle(
                 fontFamily = Manrope,
                 fontWeight = FontWeight.Bold,
@@ -150,106 +242,28 @@ fun PasswordField(password: String, onTextFieldChanged:(String) -> Unit) {
             )
         )
 
-        TextField(
-            value = password,
-            onValueChange = { onTextFieldChanged(it) },
+        Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-                .padding(start = 4.dp, end = 4.dp, top = 4.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            placeholder = { Text(text = "Type your password") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            singleLine = true,
-            maxLines = 1,
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = textField,
-                containerColor = textFieldBackground,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            visualTransformation = PasswordVisualTransformation(),
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.lock),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(20.dp),
-                    Color(red = 0, green = 0, blue = 0, alpha = 255)
-                )
-            }
-        )
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PasswordConfirmField(password: String, onTextFieldChanged:(String) -> Unit) {
-
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(
-            "CONFIRM PASSWORD",
-            style = TextStyle(
-                fontFamily = Manrope,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                letterSpacing = (-0.2).sp,
-                textAlign = TextAlign.Start,
+                .width(250.dp)
+                .padding(top = 10.dp)
+                .shadow(
+                    elevation = 5.dp,
+                    shape = RoundedCornerShape(20.dp)
+                ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
             )
-        )
-
-        TextField(
-            value = password,
-            onValueChange = { onTextFieldChanged(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-                .padding(start = 4.dp, end = 4.dp, top = 4.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            placeholder = { Text(text = "Type your password") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            singleLine = true,
-            maxLines = 1,
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = textField,
-                containerColor = textFieldBackground,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            visualTransformation = PasswordVisualTransformation(),
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.lock),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(20.dp),
-                    Color(red = 0, green = 0, blue = 0, alpha = 255)
-                )
-            }
-        )
-    }
-}
-
-
-@Composable
-fun ForgotPWButton(forgotPWEnable: Boolean, onForgotPWSelected: () -> Unit) {
-    Button(
-        onClick = {
-            onForgotPWSelected()
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp, horizontal = 50.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = buttonBackground,
-            contentColor = buttonText
-        )
-    ) {
-        Text(text = "CHANGE PASSWORD")
+        ) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = user.number,
+                style = Typography.bodyLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp),
+                textAlign = TextAlign.Start
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+        }
     }
 }
