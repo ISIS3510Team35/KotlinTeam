@@ -41,6 +41,7 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.edu.uniandes.fud.ListActivity
 import com.edu.uniandes.fud.LoginActivity
+import com.edu.uniandes.fud.AccountActivity
 import com.edu.uniandes.fud.ProductActivity
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.RestaurantActivity
@@ -86,6 +87,9 @@ fun HomeScreen(viewModel: HomeViewModel) {
             }
             item {
                 CarousselFavorites(viewModel)
+            }
+            item {
+                CarousselRecommended(viewModel)
             }
         }
 
@@ -135,7 +139,8 @@ fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
             IconButton(
                 modifier = Modifier.fillMaxHeight(),
                 onClick = {
-                    val intent = Intent(context, LoginActivity::class.java)
+                    val intent = Intent(context, AccountActivity::class.java)
+                    intent.putExtra("userId", viewModel.userId.value.toString())
                     context.startActivity(intent)
                 }
             ) {
@@ -645,6 +650,34 @@ fun CarousselFavorites(viewModel: HomeViewModel) {
 
     Text(
         text = "Tus favoritos",
+        style = Typography.titleMedium,
+        modifier = Modifier.padding(horizontal = 17.dp)
+    )
+    LazyRow {
+        item {
+            Spacer(modifier = Modifier.width(10.dp))
+        }
+
+        items(favoriteList) {
+            CardProduct(
+                name = it.name,
+                restaurantName = it.restaurant.name,
+                price = it.price,
+                image = it.image,
+                id = it.id,
+                viewModel = viewModel
+            )
+        }
+    }
+}
+
+@Composable
+fun CarousselRecommended(viewModel: HomeViewModel) {
+
+    val favoriteList: List<ProductRestaurant> by viewModel.recommendedDishes.observeAsState(initial = emptyList())
+
+    Text(
+        text = "Recomendados para ti",
         style = Typography.titleMedium,
         modifier = Modifier.padding(horizontal = 17.dp)
     )

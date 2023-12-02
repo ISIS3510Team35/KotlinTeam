@@ -19,6 +19,7 @@ import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.domain.Favorite
 import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.domain.Restaurant
+import com.edu.uniandes.fud.network.FudNetService.Companion.getRecommendedCriteria
 import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -55,6 +56,9 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
     private val _favoriteDishes = MutableLiveData<List<ProductRestaurant>>()
     val favoriteDishes: LiveData<List<ProductRestaurant>> = _favoriteDishes
 
+    private val _recommendedDishes = MutableLiveData<List<ProductRestaurant>>()
+    val recommendedDishes: LiveData<List<ProductRestaurant>> = _recommendedDishes
+
     private var previousLocationInRange = false
     private val rangeLatitud = 4.6025
     private val rangeLongitud = -74.0648
@@ -63,6 +67,8 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
     private var promotionStats = false
 
     private val _userId = MutableLiveData<Int>()
+    val userId: LiveData<Int> = _userId
+
     private var favList = mutableListOf<ProductRestaurant>()
 
 
@@ -120,6 +126,7 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
 
                 _top3Products.value =
                     productsRestaurant.sortedBy { it.rating }.asReversed().subList(0, max)
+
                 _offerProducts.value =
                     productsRestaurant.sortedBy { it.price - it.offerPrice }.subList(0, max)
                 _textButtonHour.value =
@@ -135,6 +142,14 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                         restaurants.asReversed().sortedBy{ it.interactions }.asReversed().subList(0, max)
 
                 }
+
+                val favorites = repository.favorites.first()
+                val maxFav = favorites.groupingBy { it.productId }.eachCount().maxByOrNull { it.value }?.key
+                _favoriteDishes.postValue(productsRestaurant.filter { it.id == maxFav } )
+
+                val recCriteria = _userId.value?.let { getRecommendedCriteria(it) }
+                _recommendedDishes.postValue(productsRestaurant.filter { it.type == recCriteria }.sortedBy { it.rating }.asReversed().subList(0, max))
+
             }
 
 
