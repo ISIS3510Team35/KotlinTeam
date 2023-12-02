@@ -94,11 +94,9 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                 _offerProducts.value =
                     productsRestaurant.sortedBy { it.price - it.offerPrice }.subList(0, max)
 
-                val favorites = repository.favorites.first().filter { it.userId == _userId.value }
-                for (prod in favorites) {
-                    favList.add(productsRestaurant.first { prod.productId == it.id })
-                }
-                _favoriteDishes.postValue(favList.distinct())
+                val favorites = repository.favorites.first()
+                val maxFav = favorites.groupingBy { it.productId }.eachCount().maxByOrNull { it.value }?.key
+                _favoriteDishes.postValue(productsRestaurant.filter { it.id == maxFav } )
 
                 val recCriteria = _userId.value?.let { getRecommendedCriteria(it) }
                 _recommendedDishes.postValue(productsRestaurant.filter { it.type == recCriteria }.sortedBy { it.rating }.asReversed().subList(0, max))
