@@ -30,6 +30,8 @@ interface DatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllProducts(products: List<DatabaseProduct>) : LongArray
+
+
     
     //Product-List<Restaurant>
     @Query("SELECT * FROM DatabaseProduct JOIN DatabaseRestaurant ON DatabaseRestaurant.id = DatabaseProduct.restaurantId")

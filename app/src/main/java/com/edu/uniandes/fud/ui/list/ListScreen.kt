@@ -1,10 +1,14 @@
 package com.edu.uniandes.fud.ui.list
 
+import android.app.Activity
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,6 +31,7 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.edu.uniandes.fud.ProductActivity
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.ui.theme.Manrope
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
 import com.edu.uniandes.fud.ui.theme.Typography
@@ -35,31 +40,58 @@ import com.edu.uniandes.fud.viewModel.list.ListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@RequiresApi(api = Build.VERSION_CODES.O)
 fun ListScreen(viewModel: ListViewModel) {
+
+    val productsRestaurant: List<ProductRestaurant> by viewModel.products.observeAsState(initial = emptyList())
+
     Scaffold(
         containerColor = Color.White,
-        topBar = { CustomTopBar() }
+        topBar = { CustomTopBar(viewModel) }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier.padding(innerPadding)
-        ) {
 
-        }
-
-    }
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(innerPadding),
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(
+                        start = 12.dp,
+                        top = 16.dp,
+                        end = 12.dp,
+                        bottom = 16.dp
+                    ),
+                    content = {
+                        items(productsRestaurant.size) {index->
+                            CardProduct(productsRestaurant[index].name,
+                                productsRestaurant[index].restaurant.name,
+                                productsRestaurant[index].price,
+                                productsRestaurant[index].image,
+                                productsRestaurant[index].id,
+                                viewModel)
+                        }
+                    }
+                )
+            }
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(api = Build.VERSION_CODES.O)
 @Composable
-@Preview
-fun CustomTopBar() {
+fun CustomTopBar(viewModel: ListViewModel) {
+    val context = LocalContext.current
+    val titulo: String by viewModel.titulo.observeAsState(initial = "")
+
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = OrangeSoft),
         navigationIcon = {
             IconButton(
                 modifier = Modifier.fillMaxHeight(),
-                onClick = { }
+                onClick = {
+                    val activity: Activity = context as Activity
+                    activity.finish()
+                }
             ) {
                 Image(
                     modifier = Modifier.padding(10.dp),
@@ -72,7 +104,7 @@ fun CustomTopBar() {
             .fillMaxWidth()
             .background(color = OrangeSoft),
         title = {
-            Text(text = "Almuerzo")
+            Text(text = titulo)
         }
     )
 }
@@ -85,16 +117,18 @@ fun ElementGrid() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(api = Build.VERSION_CODES.O)
 @Composable
 fun CardProduct(name: String, restaurantName: String, price: Double, image: String, id: Int, viewModel: ListViewModel) {
     Box(
-        modifier = Modifier.width(220.dp),
+        modifier = Modifier
+            .fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
         val context = LocalContext.current
         Card(
             modifier = Modifier
-                .width(220.dp)
+                .fillMaxWidth()
                 .height(IntrinsicSize.Min)
                 .padding(top = 40.dp)
                 .padding(10.dp)

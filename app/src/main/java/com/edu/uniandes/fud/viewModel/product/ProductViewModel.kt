@@ -32,6 +32,7 @@ class ProductViewModel(repository: DBRepository) : ViewModel() {
                 _product.value = productsRestaurant.find { prod -> _productId.value == prod.id }
                 _top3Products.value = productsRestaurant.sortedBy { it.rating } //.subList(0, 3)
             }
+
         }
     }
 

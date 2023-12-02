@@ -5,9 +5,11 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,18 +18,27 @@ import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.domain.Favorite
 import com.edu.uniandes.fud.domain.ProductRestaurant
+import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 class HomeViewModel(private val context: Context, repository: DBRepository) : ViewModel() {
 
     private val _query = MutableLiveData<String>()
     val query: LiveData<String> = _query
 
+    private val _textButtonHour = MutableLiveData<String>()
+    val textButtonHour: LiveData<String> = _textButtonHour
+
     private val _top3Products = MutableLiveData<List<ProductRestaurant>>()
     val top3Products: LiveData<List<ProductRestaurant>> = _top3Products
+
+    private val _top3InteractedRestaurants = MutableLiveData<List<Restaurant>>()
+    val top3InteractedRestaurants: LiveData<List<Restaurant>> = _top3InteractedRestaurants
 
     private val _offerProducts = MutableLiveData<List<ProductRestaurant>>()
     val offerProducts: LiveData<List<ProductRestaurant>> = _offerProducts
@@ -75,11 +86,28 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
         _userId.value = userId
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    fun checkTimeRange(): String {
+        val time = LocalTime.now()
+        Log.d("TIME",time.toString())
+        Log.d("TIME",(time in LocalTime.of(4, 0)..LocalTime.of(10, 59)).toString())
+        return when (time) {
+            in LocalTime.of(4, 0)..LocalTime.of(10, 59) -> "Hora de Desayuno: Ver todos los platos"
+            in LocalTime.of(11, 0)..LocalTime.of(14, 59) -> "Hora de Almuerzo: Ver todos los platos"
+            else -> "Hora de Cena: Ver todos los platos"
+        }
+    }
+
+
     init {
         viewModelScope.launch {
+
+
+
             repository.productsRestaurant.collect { productsRestaurant ->
                 // Update View with the latest favorite news
                 var max = 3
+
                 Log.d("XD_P", productsRestaurant.toString())
                 if (productsRestaurant.size < 3) {
                     max = productsRestaurant.size
@@ -89,17 +117,35 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                     favList.add(productsRestaurant.first { prod.productId == it.id })
                 }
                 _favoriteDishes.postValue(favList.distinct())
+
                 _top3Products.value =
                     productsRestaurant.sortedBy { it.rating }.asReversed().subList(0, max)
                 _offerProducts.value =
                     productsRestaurant.sortedBy { it.price - it.offerPrice }.subList(0, max)
+                _textButtonHour.value =
+                    checkTimeRange()
+
+                repository.restaurants.collect {restaurants ->
+                    Log.d("JAJAJAJA",restaurants.toString())
+                    var max = 3
+                    if (restaurants.size < 3) {
+                        max = restaurants.size
+                    }
+                    _top3InteractedRestaurants.value =
+                        restaurants.asReversed().sortedBy{ it.interactions }.asReversed().subList(0, max)
+
+                }
             }
+
+
 
         }
 
         viewModelScope.launch {
             Log.d("XD1", "called0")
             repository.refreshData()
+            // in case there is a user
+            _userId.value?.let { repository.refreshRestaurantInteractedData(it) }
         }
 
         startLocationUpdates()
@@ -191,6 +237,7 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
 
 class HomeViewModelFactory(private val context: Context, private val repository: DBRepository) :
     ViewModelProvider.Factory {
+    @RequiresApi(api = Build.VERSION_CODES.O)
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

@@ -19,7 +19,8 @@ data class NetworkRestaurant(
     val id: Int,
     val name: String,
     val location: GeoPoint,
-    val image: String)
+    val image: String,
+    val interactions: Int = 0)
 
 @JsonClass(generateAdapter = true)
 data class NetworkProductContainer(val products: List<NetworkProduct>)
@@ -66,7 +67,8 @@ fun NetworkRestaurantContainer.asDomainModel(): List<Restaurant>{
             id = it.id,
             name = it.name,
             location = GeoPoint(it.location.latitude, it.location.longitude),
-            image = it.image)
+            image = it.image,
+            interactions = it.interactions)
     }
 }
 
@@ -77,7 +79,8 @@ fun NetworkRestaurantContainer.asDatabaseModel(): List<DatabaseRestaurant>{
             name = it.name,
             latitude = it.location.latitude,
             longitude = it.location.longitude,
-            image = it.image)
+            image = it.image,
+            interactions = it.interactions)
     }
 }
 

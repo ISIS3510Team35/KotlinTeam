@@ -2,7 +2,9 @@ package com.edu.uniandes.fud.ui.home
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -37,18 +39,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import com.edu.uniandes.fud.ListActivity
+import com.edu.uniandes.fud.LoginActivity
 import com.edu.uniandes.fud.ProductActivity
 import com.edu.uniandes.fud.R
+import com.edu.uniandes.fud.RestaurantActivity
 import com.edu.uniandes.fud.SearchActivity
 import com.edu.uniandes.fud.domain.ProductRestaurant
+import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.ui.theme.Gold
 import com.edu.uniandes.fud.ui.theme.Manrope
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
+import com.edu.uniandes.fud.ui.theme.Red
 import com.edu.uniandes.fud.ui.theme.Typography
 import com.edu.uniandes.fud.viewModel.home.HomeViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(api = Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
 
@@ -65,7 +73,10 @@ fun HomeScreen(viewModel: HomeViewModel) {
                 SearchBar(viewModel, context)
             }
             item {
-                CarousselMealType(viewModel)
+                ButtonHour(viewModel, context)
+            }
+            item {
+                CarousselMealType(viewModel, context)
             }
             item {
                 CarousselTop3Product(viewModel)
@@ -81,20 +92,56 @@ fun HomeScreen(viewModel: HomeViewModel) {
     }
 }
 
+@Composable
+@RequiresApi(api = Build.VERSION_CODES.O)
+fun ButtonHour(viewModel: HomeViewModel, context: Context){
+    val textHourButton: String by viewModel.textButtonHour.observeAsState(initial = "")
+    Button(
+        onClick = {
+            val intent = Intent(context, ListActivity::class.java)
+            intent.putExtra("tipo", "hourProducts")
+            context.startActivity(intent)
+        },
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 17.dp)
+            .padding(bottom = 8.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Red,
+            contentColor = Color.White
+        ),
+    ) {
+        Text(textHourButton,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                )
+        Icon(
+            painter = painterResource(id = R.drawable.baseline_arrow_forward_24),
+            contentDescription = "Go",
+            modifier = Modifier.size(20.dp)
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@RequiresApi(api = Build.VERSION_CODES.O)
 fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = OrangeSoft),
         navigationIcon = {
             IconButton(
                 modifier = Modifier.fillMaxHeight(),
-                onClick = { }
+                onClick = {
+                    val intent = Intent(context, LoginActivity::class.java)
+                    context.startActivity(intent)
+                }
             ) {
                 Image(
                     modifier = Modifier.padding(10.dp),
-                    painter = painterResource(id = R.drawable.ic_menu),
+                    painter = painterResource(id = R.drawable.baseline_exit_to_app_24),
                     contentDescription = "dashboard_search"
                 )
             }
@@ -133,7 +180,8 @@ fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
                         if (isLocationInRange.value) {
                             Image(
                                 modifier = Modifier
-                                    .fillMaxHeight(),
+                                    .fillMaxHeight()
+                                    .padding(end=1.dp),
                                 painter = painterResource(id = R.drawable.uniandes),
                                 contentDescription = "dashboard_search"
                             )
@@ -168,6 +216,7 @@ fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
+@RequiresApi(api = Build.VERSION_CODES.O)
 fun SearchBar(viewModel: HomeViewModel, context: Context) {
 
 
@@ -260,7 +309,6 @@ fun SearchBar(viewModel: HomeViewModel, context: Context) {
         ) {
             Icon(
                 painterResource(id = iconRight),
-                modifier = Modifier.padding(2.dp),
                 contentDescription = null
             )
         }
@@ -272,6 +320,7 @@ fun SearchBar(viewModel: HomeViewModel, context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@RequiresApi(api = Build.VERSION_CODES.O)
 fun CardProduct(name: String, restaurantName: String, price: Double, image: String, id: Int, viewModel: HomeViewModel) {
     Box(
         modifier = Modifier.width(220.dp),
@@ -357,6 +406,7 @@ fun CardProduct(name: String, restaurantName: String, price: Double, image: Stri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@RequiresApi(api = Build.VERSION_CODES.O)
 fun CardProductOffer(
     name: String,
     id: Int,
@@ -453,6 +503,7 @@ fun CardProductOffer(
 }
 
 @Composable
+@RequiresApi(api = Build.VERSION_CODES.O)
 fun CarousselTop3Product(viewModel: HomeViewModel) {
 
     val top3Products: List<ProductRestaurant> by viewModel.top3Products.observeAsState(initial = emptyList())
@@ -480,8 +531,10 @@ fun CarousselTop3Product(viewModel: HomeViewModel) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardTypeMeal(title: String, picture: Int) {
+@RequiresApi(api = Build.VERSION_CODES.O)
+fun CardTypeMeal(title: String, image: String, id:Int, context: Context) {
     Card(
         modifier = Modifier
             .width(220.dp)
@@ -493,7 +546,13 @@ fun CardTypeMeal(title: String, picture: Int) {
             ),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
-        )
+        ),
+        onClick = {
+            val intent = Intent(context, RestaurantActivity::class.java)
+            intent.putExtra("restaurantId", id.toString())
+            context.startActivity(intent)
+        },
+
     ) {
         Text(
             text = title,
@@ -501,7 +560,8 @@ fun CardTypeMeal(title: String, picture: Int) {
                 .fillMaxWidth()
                 .padding(top = 15.dp, start = 15.dp, end = 15.dp)
         )
-        Image(
+        AsyncImage(
+            model = image,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 12.dp)
@@ -510,7 +570,7 @@ fun CardTypeMeal(title: String, picture: Int) {
                     elevation = 5.dp,
                     shape = RoundedCornerShape(10.dp)
                 ),
-            painter = painterResource(picture),
+            placeholder = painterResource(R.drawable.loading),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
@@ -518,9 +578,14 @@ fun CardTypeMeal(title: String, picture: Int) {
 }
 
 @Composable
-fun CarousselMealType(viewModel: HomeViewModel) {
+@RequiresApi(api = Build.VERSION_CODES.O)
+fun CarousselMealType(viewModel: HomeViewModel, context: Context) {
+
+    val top3InteractedRestaurants: List<Restaurant> by viewModel.top3InteractedRestaurants.observeAsState(initial = emptyList())
+
+
     Text(
-        text = "Categorías",
+        text = "Restaurantes más visitados por ti",
         style = Typography.titleMedium,
         modifier = Modifier.padding(horizontal = 17.dp)
     )
@@ -528,22 +593,14 @@ fun CarousselMealType(viewModel: HomeViewModel) {
         item {
             Spacer(modifier = Modifier.width(10.dp))
         }
-        item {
-            CardTypeMeal("Desayuno", R.drawable.breakfast)
-        }
-        item {
-            CardTypeMeal("Almuerzo", R.drawable.band_paisa)
-        }
-        item {
-            CardTypeMeal("Cena", R.drawable.cena)
-        }
-        item {
-            Spacer(modifier = Modifier.width(15.dp))
+        items(top3InteractedRestaurants) {
+            CardTypeMeal(it.name, it.image, it.id, context)
         }
     }
 }
 
 @Composable
+@RequiresApi(api = Build.VERSION_CODES.O)
 fun CarousselProductOffers(viewModel: HomeViewModel) {
 
     val offerProducts: List<ProductRestaurant> by viewModel.offerProducts.observeAsState(initial = emptyList())
@@ -581,6 +638,7 @@ fun CarousselProductOffers(viewModel: HomeViewModel) {
 }
 
 @Composable
+@RequiresApi(api = Build.VERSION_CODES.O)
 fun CarousselFavorites(viewModel: HomeViewModel) {
 
     val favoriteList: List<ProductRestaurant> by viewModel.favoriteDishes.observeAsState(initial = emptyList())

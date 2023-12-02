@@ -5,6 +5,10 @@ import android.util.Log
 import android.widget.Toast
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -13,6 +17,8 @@ interface FudNetService {
     //@GET("restaurants")
     //suspend fun getRestaurantList(): NetworkRestaurantContainer
     companion object {
+
+
         
         suspend fun getRestaurantList() : NetworkRestaurantContainer{
             Log.v("XD1","CALLED")
@@ -46,6 +52,46 @@ interface FudNetService {
                 condition.await()
                 Log.v("XD1",restaurants.toString())
                 return NetworkRestaurantContainer(restaurants)
+            }
+
+        }
+
+
+        suspend fun getInteractedRestaurantList(userId: Int) : NetworkRestaurantContainer{
+            Log.v("XD1","CALLED")
+            val db = Firebase.firestore
+            val restaurants : Deferred<NetworkRestaurantContainer> = GlobalScope.async { getRestaurantList() }
+            val restaurantsInteracted : MutableList<NetworkRestaurant> = mutableListOf()
+
+            val lock = ReentrantLock()
+            val condition = lock.newCondition()
+
+            db.collection("User_Interact")
+                .get()
+                .addOnSuccessListener { userInteractions ->
+                    GlobalScope.launch {
+                        val restaurantsList: List<NetworkRestaurant> = restaurants.await().restaurants
+                        for (restaurant in restaurantsList) {
+                            var count : Int = 0
+                            for (userInteraction in userInteractions){
+                                if(restaurant.id == userInteraction.data["restaurant_id"] && userId == userInteraction.data["user_id"])
+                                    count +=1
+                            }
+                            restaurantsInteracted.add(
+                                NetworkRestaurant(restaurant.id, restaurant.name, restaurant.location, restaurant.image, count)
+                            )
+                        }
+                        lock.withLock {
+                            condition.signal()
+                        }
+                    }
+                }
+
+            lock.withLock {
+                condition.await()
+                Log.v("XD2",restaurantsInteracted.toString())
+
+                return NetworkRestaurantContainer(restaurantsInteracted)
             }
 
         }
@@ -316,6 +362,31 @@ interface FudNetService {
                     Toast.makeText(
                         context,
                         "Fallo en el envío del reporte (Starting Time) $e",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+        }
+
+        fun sendUserRestaurantInteraction(idUser: Int, idRestaurant: Int, context: Context) {
+            val db = Firebase.firestore
+            val report = hashMapOf(
+                "restaurant_id" to idRestaurant,
+                "user_id" to idUser,
+                "provider" to "KotlinTeam",
+            )
+
+            db.collection("User_Interact")
+                .add(report)
+                .addOnSuccessListener { Toast.makeText(
+                    context,
+                    "User_Id: $idUser Res_Id $idRestaurant",
+                    Toast.LENGTH_SHORT
+                )}
+                .addOnFailureListener { e ->
+                    Toast.makeText(
+                        context,
+                        "Fallo el envío del reporte (Time Spent) $e",
                         Toast.LENGTH_LONG
                     ).show()
                 }

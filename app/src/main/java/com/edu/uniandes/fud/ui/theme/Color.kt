@@ -22,3 +22,5 @@ val backgroundSecondary = Color(0xFFFFF7EB)
 val OrangeSoft = Color(0xFFFFF7EB)
 val Orange = Color(0xFFFF922D)
 val Gold = Color(0xFFCC9D24)
+
+val Red = Color(0xFFEE584C)
