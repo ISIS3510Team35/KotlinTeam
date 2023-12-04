@@ -50,6 +50,49 @@ interface FudNetService {
 
         }
 
+
+        suspend fun getInteractedRestaurantList(userId: Int) : NetworkRestaurantContainer{
+            Log.v("XD1","CALLED")
+            val db = Firebase.firestore
+            val restaurants : Deferred<NetworkRestaurantContainer> = GlobalScope.async { getRestaurantList() }
+            val restaurantsInteracted : MutableList<NetworkRestaurant> = mutableListOf()
+
+            val lock = ReentrantLock()
+            val condition = lock.newCondition()
+
+            db.collection("User_Interact")
+                .get()
+                .addOnSuccessListener { userInteractions ->
+                    GlobalScope.launch {
+                        val restaurantsList: List<NetworkRestaurant> = restaurants.await().restaurants
+                        for (restaurant in restaurantsList) {
+                            var count : Int = 0
+                            for (userInteraction in userInteractions){
+                                Log.d("DAN",userId.toString()+" "+userInteraction.data["restaurant_id"].toString().toInt()+" "+restaurant.id.toString()+" "+userInteraction.data["user_id"].toString().toInt())
+                                if(restaurant.id == userInteraction.data["restaurant_id"].toString().toInt() && userId == userInteraction.data["user_id"].toString().toInt()) {
+                                    count += 1
+                                    Log.d("FER", userId.toString() + " " + restaurant.id.toString())
+                                }
+                            }
+                            restaurantsInteracted.add(
+                                NetworkRestaurant(restaurant.id, restaurant.name, restaurant.location, restaurant.image, count)
+                            )
+                        }
+                        lock.withLock {
+                            condition.signal()
+                        }
+                    }
+                }
+
+            lock.withLock {
+                condition.await()
+                Log.v("XD2",restaurantsInteracted.toString())
+
+                return NetworkRestaurantContainer(restaurantsInteracted)
+            }
+
+        }
+
         suspend fun getProductList() : NetworkProductContainer{
             val db = Firebase.firestore
             val products : MutableList<NetworkProduct> = mutableListOf()

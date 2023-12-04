@@ -93,6 +93,19 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                     productsRestaurant.sortedBy { it.rating }.asReversed().subList(0, max)
                 _offerProducts.value =
                     productsRestaurant.sortedBy { it.price - it.offerPrice }.subList(0, max)
+                _textButtonHour.value =
+                    checkTimeRange()
+
+                repository.restaurants.collect { restaurants ->
+                    Log.d("JAJAJAJA",restaurants.toString())
+                    var max = 3
+                    if (restaurants.size < 3) {
+                        max = restaurants.size
+                    }
+                    _top3InteractedRestaurants.value =
+                        restaurants.sortedBy{ it.interactions }.asReversed().subList(0, max)
+
+                }
             }
 
         }

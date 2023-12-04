@@ -3,6 +3,7 @@ package com.edu.uniandes.fud.database
 import android.app.Application
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.edu.uniandes.fud.FuDApplication
 import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -88,6 +89,7 @@ abstract class DatabaseRoom: RoomDatabase(){
         }
         suspend fun populateDatabase(database: DatabaseRoom) {
             DBRepository(database).refreshData()
+            DBRepository(database).refreshRestaurantInteractedData(FuDApplication.getIdUser())
         }
     }
 
