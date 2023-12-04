@@ -2,6 +2,9 @@ package com.edu.uniandes.fud.viewModel.forgotPW
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -12,9 +15,12 @@ import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.LoginActivity
 import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ForgotPWViewModel(private val context: Context, repository: DBRepository) : ViewModel() {
 	
@@ -116,31 +122,66 @@ class ForgotPWViewModel(private val context: Context, repository: DBRepository) 
 			).show()
 		}
 	}
+
+// Inside ForgotPWViewModel class
 	
-	private fun updateUser(context: Context) {
+	fun updateUser(context: Context) {
+		// Check for network connectivity
+		if (!isNetworkConnected(context)) {
+			Toast.makeText(context, "You are offline. Please check your internet connection.", Toast.LENGTH_SHORT).show()
+			return
+		}
+		
 		val user = getUserDocumentId()
 		
 		if (user != null) {
 			viewModelScope.launch {
-				com.edu.uniandes.fud.network.FudNetService.updateUser(
-					user.id,
-					user.username,
-					user.name,
-					user.number,
-					_password.value ?: "",
-					user.documentId,
-					context
-				)
+				val result = withContext(Dispatchers.IO) {
+					// Background work using async
+					async {
+						com.edu.uniandes.fud.network.FudNetService.updateUser(
+							user.id,
+							user.username,
+							user.name,
+							user.number,
+							_password.value ?: "",
+							user.documentId,
+							context
+						)
+					}
+				}
+				
+				// Continue with your logic, e.g., start the LoginActivity
+				val intent = Intent(context, LoginActivity::class.java)
+				context.startActivity(intent)
 			}
-			// Continue with your logic, e.g., start the HomeActivity
-			val intent = Intent(context, LoginActivity::class.java)
-			context.startActivity(intent)
 		} else {
 			// Handle the case where the user is null (not found)
 			Log.e("XD_Register", "User not found for email: ${_email.value}")
 			// You might want to show a message to the user or handle it in some way
 		}
 	}
+	
+	private fun isNetworkConnected(context: Context): Boolean {
+		val connectivityManager =
+			context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			val networkCapabilities = connectivityManager.activeNetwork ?: return false
+			val activeNetwork =
+				connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+			
+			return when {
+				activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+				activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+				else -> false
+			}
+		} else {
+			val activeNetworkInfo = connectivityManager.activeNetworkInfo
+			return activeNetworkInfo != null && activeNetworkInfo.isConnected
+		}
+	}
+
 	
 	fun getUserDocumentId(): User? {
 		// Get the current user's ID based on the entered email

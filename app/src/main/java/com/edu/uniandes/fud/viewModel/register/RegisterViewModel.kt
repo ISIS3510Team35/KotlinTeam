@@ -5,6 +5,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -17,9 +20,11 @@ import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.HomeActivity
 import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 
@@ -100,35 +105,63 @@ class RegisterViewModel(private val context: Context, repository: DBRepository) 
 	
 	fun onRegisterSelected() {
 		if (isValidUser(_email.value, _name.value, _number.value, _password.value, _passwordConfirm.value) == ValidationResult.Success) {
-			if (ContextCompat.checkSelfPermission(
-					context,
-					Manifest.permission.ACCESS_FINE_LOCATION
-				) != PackageManager.PERMISSION_GRANTED
-			) {
-				requestLocationPermission()
+			if (isNetworkConnected(context)) {
+				if (ContextCompat.checkSelfPermission(
+						context,
+						Manifest.permission.ACCESS_FINE_LOCATION
+					) != PackageManager.PERMISSION_GRANTED
+				) {
+					requestLocationPermission()
+				} else {
+					newUser(context)
+				}
 			} else {
-				newUser(context)
+				showOfflineToast()
 			}
-		}
-		else if (isValidUser(_email.value, _name.value, _number.value, _password.value, _passwordConfirm.value) == ValidationResult.UserFound) {
+		} else if (isValidUser(_email.value, _name.value, _number.value, _password.value, _passwordConfirm.value) == ValidationResult.UserFound) {
 			Toast.makeText(
 				context,
 				"Invalid Username",
 				Toast.LENGTH_SHORT
 			).show()
-		}
-		else if (isValidUser(_email.value, _name.value, _number.value, _password.value, _passwordConfirm.value) == ValidationResult.PasswordMismatch) {
+		} else if (isValidUser(_email.value, _name.value, _number.value, _password.value, _passwordConfirm.value) == ValidationResult.PasswordMismatch) {
 			Toast.makeText(
 				context,
-				"The passwords does not match",
+				"The passwords do not match",
 				Toast.LENGTH_SHORT
 			).show()
 		}
 	}
 	
+	private fun showOfflineToast() {
+		Toast.makeText(context, "You are offline. Please check your internet connection.", Toast.LENGTH_SHORT).show()
+	}
+	
+	// Check for network connectivity
+	private fun isNetworkConnected(context: Context): Boolean {
+		val connectivityManager =
+			context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			val networkCapabilities = connectivityManager.activeNetwork ?: return false
+			val activeNetwork =
+				connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+			
+			return when {
+				activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+				activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+				else -> false
+			}
+		} else {
+			val activeNetworkInfo = connectivityManager.activeNetworkInfo
+			return activeNetworkInfo != null && activeNetworkInfo.isConnected
+		}
+	}
+	
 	private fun newUser(context: Context) {
 		val newUserId = getNextAvailableUserId()
-		viewModelScope.launch {
+		
+		viewModelScope.launch(Dispatchers.IO) {
 			com.edu.uniandes.fud.network.FudNetService.setUser(
 				newUserId,
 				_email.value.toString(),
@@ -138,13 +171,18 @@ class RegisterViewModel(private val context: Context, repository: DBRepository) 
 				generateDocumentId(newUserId.toString()),
 				context
 			)
+			
+			withContext(Dispatchers.Main) {
+				// This block is executed on the main thread
+				Log.d("XD_Register", "Users: ${_allUsers.value}")
+				// Continue with your logic, e.g., start the HomeActivity
+				val intent = Intent(context, HomeActivity::class.java)
+				intent.putExtra("userId", newUserId.toString())
+				context.startActivity(intent)
+			}
 		}
-		Log.d("XD_Register", "Users: ${_allUsers.value}")
-		// Continue with your logic, e.g., start the HomeActivity
-		val intent = Intent(context, HomeActivity::class.java)
-		intent.putExtra("userId", newUserId.toString())
-		context.startActivity(intent)
 	}
+
 	
 	fun generateDocumentId(input: String): String {
 		val messageDigest = MessageDigest.getInstance("SHA-256")

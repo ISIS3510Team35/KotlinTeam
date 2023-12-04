@@ -18,6 +18,7 @@ import com.edu.uniandes.fud.domain.Favorite
 import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.network.FudNetService.Companion.getRecommendedCriteria
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -170,18 +171,26 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
         val threshold = 0.05 // Cambia el valor según la precisión deseada
         return latDiff < threshold && lonDiff < threshold
     }
-
+    
     fun sendPromoReport(context: Context) {
         viewModelScope.launch {
-            promotionStats = true
-            com.edu.uniandes.fud.network.FudNetService.sendFavPromoReport(
-                favouriteStats,
-                promotionStats,
-                context
-            )
+            val promoJob = async {
+                promotionStats = true
+                com.edu.uniandes.fud.network.FudNetService.sendFavPromoReport(
+                    favouriteStats,
+                    promotionStats,
+                    context
+                )
+            }
+            
+            // You can do other work here while waiting for the network request to complete
+            
+            promoJob.await() // Wait for the network request to complete
+            
+            // Reset stats after the request is done
+            favouriteStats = false
+            promotionStats = false
         }
-        favouriteStats = false
-        promotionStats = false
     }
 
     fun sendFavReport(context: Context) {

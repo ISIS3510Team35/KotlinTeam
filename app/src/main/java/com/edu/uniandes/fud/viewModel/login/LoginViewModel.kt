@@ -19,9 +19,11 @@ import com.edu.uniandes.fud.HomeActivity
 import com.edu.uniandes.fud.RegisterActivity
 import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginViewModel(private val context: Context, repository: DBRepository) : ViewModel() {
 	
@@ -47,12 +49,17 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 	
 	
 	init {
-		viewModelScope.launch {
+		viewModelScope.launch(Dispatchers.Default) {
 			repository.refreshData()
 			while (true) {
-				delay(1000) // Retraso de 1 segundo (1000 milisegundos)
+				delay(1000) // 1-second delay
 				val users = repository.users.first()
-				_allUsers.value = users
+				
+				// Update LiveData on the main thread
+				withContext(Dispatchers.Main) {
+					_allUsers.value = users
+				}
+				
 				if (users.isNotEmpty()) {
 					Log.d("XD_login", "Users: ${_allUsers.value}")
 					break
@@ -62,6 +69,7 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 			}
 		}
 	}
+
 
 
 	
