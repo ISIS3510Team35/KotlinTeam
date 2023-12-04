@@ -22,12 +22,26 @@ class RestaurantActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val id = this.intent.getStringExtra("restaurantId")
         restaurantViewModel.setInitialRestaurant(this.intent.getStringExtra("restaurantId").orEmpty().toInt())
+
+        var context : Context = this.applicationContext
+        lifecycleScope.launch {
+            if (id != null) {
+                com.edu.uniandes.fud.network.FudNetService.sendUserRestaurantInteraction(
+                    FuDApplication.getIdUser(),
+                    id.toInt(),
+                    context
+                )
+            }
+        }
+
         setContent {
             MobileAppTheme {
                 RestaurantScreen(restaurantViewModel)
             }
         }
+
     }
     
     override fun onStart() {
@@ -49,6 +63,7 @@ class RestaurantActivity : ComponentActivity() {
                 "Restaurant Screen",
                 context
             )
+
         }
     }
 }

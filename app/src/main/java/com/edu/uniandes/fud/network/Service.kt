@@ -5,19 +5,30 @@ import android.util.Log
 import android.widget.Toast
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Date
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 interface FudNetService {
     //@GET("restaurants")
     //suspend fun getRestaurantList(): NetworkRestaurantContainer
     companion object {
+
+
         
         suspend fun getRestaurantList() : NetworkRestaurantContainer{
             Log.v("XD1","CALLED")
+        suspend fun getRestaurantList(): NetworkRestaurantContainer {
+            Log.v("XD1", "CALLED")
             val db = Firebase.firestore
-            val restaurants : MutableList<NetworkRestaurant> = mutableListOf()
+            val restaurants: MutableList<NetworkRestaurant> = mutableListOf()
             val i = 0
 
             val lock = ReentrantLock()
@@ -26,7 +37,7 @@ interface FudNetService {
             db.collection("Restaurant")
                 .get()
                 .addOnSuccessListener { restaurantsFirebase ->
-                    for (restaurantFb in restaurantsFirebase ) {
+                    for (restaurantFb in restaurantsFirebase) {
                         restaurants.add(
                             i,
                             NetworkRestaurant(
@@ -44,7 +55,7 @@ interface FudNetService {
 
             lock.withLock {
                 condition.await()
-                Log.v("XD1",restaurants.toString())
+                Log.v("XD1", restaurants.toString())
                 return NetworkRestaurantContainer(restaurants)
             }
 
@@ -68,11 +79,8 @@ interface FudNetService {
                         for (restaurant in restaurantsList) {
                             var count : Int = 0
                             for (userInteraction in userInteractions){
-                                Log.d("DAN",userId.toString()+" "+userInteraction.data["restaurant_id"].toString().toInt()+" "+restaurant.id.toString()+" "+userInteraction.data["user_id"].toString().toInt())
-                                if(restaurant.id == userInteraction.data["restaurant_id"].toString().toInt() && userId == userInteraction.data["user_id"].toString().toInt()) {
-                                    count += 1
-                                    Log.d("FER", userId.toString() + " " + restaurant.id.toString())
-                                }
+                                if(restaurant.id == userInteraction.data["restaurant_id"] && userId == userInteraction.data["user_id"])
+                                    count +=1
                             }
                             restaurantsInteracted.add(
                                 NetworkRestaurant(restaurant.id, restaurant.name, restaurant.location, restaurant.image, count)
@@ -93,9 +101,9 @@ interface FudNetService {
 
         }
 
-        suspend fun getProductList() : NetworkProductContainer{
+        suspend fun getProductList(): NetworkProductContainer {
             val db = Firebase.firestore
-            val products : MutableList<NetworkProduct> = mutableListOf()
+            val products: MutableList<NetworkProduct> = mutableListOf()
             val i = 0
 
             val lock = ReentrantLock()
@@ -104,7 +112,7 @@ interface FudNetService {
             db.collection("Product")
                 .get()
                 .addOnSuccessListener { productsFirebase ->
-                    for (productFb in productsFirebase ) {
+                    for (productFb in productsFirebase) {
                         products.add(
                             i,
                             NetworkProduct(
@@ -129,20 +137,20 @@ interface FudNetService {
 
             lock.withLock {
                 condition.await()
-                Log.v("XD2",products.toString())
+                Log.v("XD2", products.toString())
                 return NetworkProductContainer(products)
             }
 
         }
-    
-        suspend fun getUserList() : NetworkUserContainer{
+
+        suspend fun getUserList(): NetworkUserContainer {
             val db = Firebase.firestore
-            val users : MutableList<NetworkUser> = mutableListOf()
+            val users: MutableList<NetworkUser> = mutableListOf()
             val i = 0
-        
+
             val lock = ReentrantLock()
             val condition = lock.newCondition()
-        
+
             db.collection("User")
                 .get()
                 .addOnSuccessListener { usersFirebase ->
@@ -163,18 +171,18 @@ interface FudNetService {
                         condition.signal()
                     }
                 }
-        
+
             lock.withLock {
                 condition.await()
-                Log.v("XD2",users.toString())
+                Log.v("XD2", users.toString())
                 return NetworkUserContainer(users)
             }
-        
+
         }
 
-        suspend fun getFavoritesList() : NetworkFavoriteContainer{
+        suspend fun getFavoritesList(): NetworkFavoriteContainer {
             val db = Firebase.firestore
-            val favorites : MutableList<NetworkFavorite> = mutableListOf()
+            val favorites: MutableList<NetworkFavorite> = mutableListOf()
             val i = 0
 
             val lock = ReentrantLock()
@@ -183,7 +191,7 @@ interface FudNetService {
             db.collection("Favourites")
                 .get()
                 .addOnSuccessListener { favorites_firebase ->
-                    for (favorite_fb in favorites_firebase ) {
+                    for (favorite_fb in favorites_firebase) {
                         favorites.add(
                             i,
                             NetworkFavorite(
@@ -199,10 +207,51 @@ interface FudNetService {
 
             lock.withLock {
                 condition.await()
-                Log.v("XD2",favorites.toString())
+                Log.v("XD2", favorites.toString())
                 return NetworkFavoriteContainer(favorites)
             }
 
+        }
+
+        suspend fun getRecommendedCriteria(id: Int): String {
+            val db = Firebase.firestore
+
+            val lock = ReentrantLock()
+            val condition = lock.newCondition()
+
+            val veganSize = suspendCancellableCoroutine<Int> { continuation ->
+                db.collection("Filter_Analytics")
+                    .whereEqualTo("Vegano", true)
+                    .whereEqualTo("idUser", id)
+                    .get()
+                    .addOnSuccessListener { veganFb ->
+                        continuation.resume(veganFb.size())
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resumeWithException(exception)
+                    }
+            }
+
+            val vegetSize = suspendCancellableCoroutine<Int> { continuation ->
+                db.collection("Filter_Analytics")
+                    .whereEqualTo("Vegetariano", true)
+                    .whereEqualTo("idUser", id)
+                    .get()
+                    .addOnSuccessListener { vegetFb ->
+                        continuation.resume(vegetFb.size())
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resumeWithException(exception)
+                    }
+            }
+
+            Log.v("Tamanio vegano", veganSize.toString())
+            Log.v("Tamanio veget", vegetSize.toString())
+            if (veganSize < vegetSize) {
+                return "Vegetariano"
+            } else {
+                return "Vegano"
+            }
         }
     
         suspend fun setUser(id: Int, username: String, name: String, number: String, password: String, documentId: String, context: Context) {
@@ -234,11 +283,11 @@ interface FudNetService {
                     ).show()
                 }
         }
-    
+
         suspend fun updateUser(id: Int, username: String, name: String, number: String, password: String, documentId: String, context: Context) {
-        
+
             val db = Firebase.firestore
-        
+
             val updatedUser = hashMapOf(
                 "id" to id,
                 "username" to username,
@@ -247,7 +296,7 @@ interface FudNetService {
                 "password" to password,
                 "documentId" to documentId
             )
-        
+
             db.collection("User")
                 .document(documentId)
                 .set(updatedUser)
@@ -266,8 +315,8 @@ interface FudNetService {
                     ).show()
                 }
         }
-    
-    
+
+
         suspend fun sendFavorite(userId: Int, productId: Int, context: Context){
             val db = Firebase.firestore
             val favoriteMap = hashMapOf(
@@ -276,11 +325,13 @@ interface FudNetService {
             )
             db.collection("Favourites")
                 .add(favoriteMap)
-                .addOnSuccessListener { Toast.makeText(
-                    context,
-                    "¡Añadido a favoritos!",
-                    Toast.LENGTH_LONG
-                ).show() }
+                .addOnSuccessListener {
+                    Toast.makeText(
+                        context,
+                        "¡Añadido a favoritos!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
                 .addOnFailureListener { e ->
                     Toast.makeText(
                         context,
@@ -290,7 +341,12 @@ interface FudNetService {
                 }
         }
 
-        suspend fun sendFilterReport(veggie : Boolean, vegan : Boolean, price : Boolean, context: Context){
+        suspend fun sendFilterReport(
+            veggie: Boolean,
+            vegan: Boolean,
+            price: Boolean,
+            context: Context
+        ) {
             val db = Firebase.firestore
             val report = hashMapOf(
                 "Price" to price,
@@ -301,11 +357,13 @@ interface FudNetService {
             )
             db.collection("Filter_Analytics")
                 .add(report)
-                .addOnSuccessListener { Toast.makeText(
-                    context,
-                    "Reporte (Filter_Analytics) Enviado Exitosamente",
-                    Toast.LENGTH_LONG
-                ).show() }
+                .addOnSuccessListener {
+                    Toast.makeText(
+                        context,
+                        "Reporte (Filter_Analytics) Enviado Exitosamente",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
                 .addOnFailureListener { e ->
                     Toast.makeText(
                         context,
@@ -314,8 +372,8 @@ interface FudNetService {
                     ).show()
                 }
         }
-    
-        suspend fun sendFavPromoReport(favourite : Boolean, promotion : Boolean, context: Context){
+
+        suspend fun sendFavPromoReport(favourite: Boolean, promotion: Boolean, context: Context) {
             val db = Firebase.firestore
             val report = hashMapOf(
                 "favourite" to favourite,
@@ -325,11 +383,13 @@ interface FudNetService {
             )
             db.collection("Fav_Promo_Analytics")
                 .add(report)
-                .addOnSuccessListener { Toast.makeText(
-                    context,
-                    "Reporte (Fav_Promo_Analytics) Enviado Exitosamente",
-                    Toast.LENGTH_LONG
-                ).show() }
+                .addOnSuccessListener {
+                    Toast.makeText(
+                        context,
+                        "Reporte (Fav_Promo_Analytics) Enviado Exitosamente",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
                 .addOnFailureListener { e ->
                     Toast.makeText(
                         context,
@@ -339,7 +399,7 @@ interface FudNetService {
                 }
         }
 
-        suspend fun sendStartingApplicationTime(timeElapsed : Long, now: Long, context: Context){
+        suspend fun sendStartingApplicationTime(timeElapsed: Long, now: Long, context: Context) {
             val db = Firebase.firestore
             val report = hashMapOf(
                 "time" to timeElapsed,
@@ -350,15 +410,42 @@ interface FudNetService {
 
             db.collection("StartingTime")
                 .add(report)
-                .addOnSuccessListener { Toast.makeText(
-                    context,
-                    "Starting Time "+timeElapsed+"ms",
-                    Toast.LENGTH_SHORT
-                ).show() }
+                .addOnSuccessListener {
+                    Toast.makeText(
+                        context,
+                        "Starting Time " + timeElapsed + "ms",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 .addOnFailureListener { e ->
                     Toast.makeText(
                         context,
                         "Fallo en el envío del reporte (Starting Time) $e",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+        }
+
+        fun sendUserRestaurantInteraction(idUser: Int, idRestaurant: Int, context: Context) {
+            val db = Firebase.firestore
+            val report = hashMapOf(
+                "restaurant_id" to idRestaurant,
+                "user_id" to idUser,
+                "provider" to "KotlinTeam",
+            )
+
+            db.collection("User_Interact")
+                .add(report)
+                .addOnSuccessListener { Toast.makeText(
+                    context,
+                    "User_Id: $idUser Res_Id $idRestaurant",
+                    Toast.LENGTH_SHORT
+                )}
+                .addOnFailureListener { e ->
+                    Toast.makeText(
+                        context,
+                        "Fallo el envío del reporte (Time Spent) $e",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -372,7 +459,7 @@ interface FudNetService {
                 "screen" to screen,
                 "provider" to "KotlinTeam",
             )
-            
+
             db.collection("Time_Spent_Analytics")
                 .add(report)
                 .addOnSuccessListener { Toast.makeText(
@@ -387,11 +474,10 @@ interface FudNetService {
                         Toast.LENGTH_LONG
                     ).show()
                 }
-            
+
         }
 	}
 }
-
 // Single entry point with Firebase does not make much sense
 object FudNetwork{
 

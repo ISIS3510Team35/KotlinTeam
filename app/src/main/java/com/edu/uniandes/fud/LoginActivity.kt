@@ -34,9 +34,12 @@ class LoginActivity : ComponentActivity() {
     
     override fun onStart() {
         super.onStart()
+
         startTime = System.currentTimeMillis()
+
         val now : Long = System.currentTimeMillis()
         val elapsedTime : Long = now - FuDApplication.getTimeStart()
+
         var context : Context = this.applicationContext
         reportFullyDrawn()
         
@@ -55,7 +58,9 @@ class LoginActivity : ComponentActivity() {
         //throw RuntimeException("Test Crash")
         
     }
-    
+
+
+
     override fun onStop() {
         super.onStop()
         // Guarda la marca de tiempo cuando la pantalla se detiene
@@ -72,6 +77,8 @@ class LoginActivity : ComponentActivity() {
             )
         }
     }
+
+
     
     override fun onRequestPermissionsResult(
         requestCode: Int,

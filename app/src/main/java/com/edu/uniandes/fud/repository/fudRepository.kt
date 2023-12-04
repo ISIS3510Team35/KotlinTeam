@@ -43,6 +43,10 @@ class DBRepository(private val database: DatabaseRoom) {
             originalList -> originalList.asDomainModel()
     }
 
+    var mostInteractedProductsRestaurant: Flow<List<ProductRestaurant>> = database.databaseDao().getProductsRestaurant().map {
+            originalList -> originalList.asDomainModel()
+    }
+
     val restaurantsProducts: Flow<List<RestaurantProduct>> = database.databaseDao().getRestaurantsProducts().map {
             originalList -> originalList.asDomainModel()
     }
@@ -72,6 +76,13 @@ class DBRepository(private val database: DatabaseRoom) {
             database.databaseDao().insertAllUsers(userList.asDatabaseModel())
         }
     }
+
+    suspend fun refreshRestaurantInteractedData(userId : Int){
+        database.withTransaction {
+            val restaurantList =  FudNetService.getInteractedRestaurantList(userId)
+            database.databaseDao().insertAllRestaurants(restaurantList.asDatabaseModel())
+        }
+    }
     
     // Refresh data -> Restaurants-Products
     suspend fun refreshData() {
@@ -84,5 +95,7 @@ class DBRepository(private val database: DatabaseRoom) {
             database.databaseDao().insertRestaurantsAndProductsAndUserAndFavorites(productsList.asDatabaseModel(), restaurantList.asDatabaseModel(), userList.asDatabaseModel(), favoritesList.asDatabaseModel())
         }
     }
+
+
     
 }

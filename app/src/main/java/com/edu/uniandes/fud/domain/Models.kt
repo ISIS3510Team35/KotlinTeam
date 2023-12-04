@@ -7,6 +7,7 @@ data class Restaurant(
     val name:String,
     val location: GeoPoint,
     val image: String,
+	val interactions: Int = 0
 )
 
 data class RestaurantProduct(
@@ -14,6 +15,7 @@ data class RestaurantProduct(
     val name:String,
     val location: GeoPoint,
     val image: String,
+	val interactions: Int = 0,
     val products: List<Product>
 )
 
