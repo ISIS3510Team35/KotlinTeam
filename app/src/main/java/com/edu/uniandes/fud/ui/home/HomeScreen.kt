@@ -39,9 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
-import com.edu.uniandes.fud.ListActivity
-import com.edu.uniandes.fud.LoginActivity
 import com.edu.uniandes.fud.AccountActivity
+import com.edu.uniandes.fud.ListActivity
 import com.edu.uniandes.fud.ProductActivity
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.RestaurantActivity
@@ -672,6 +671,8 @@ fun CarousselFavorites(viewModel: HomeViewModel) {
     }
 }
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CarousselRecommended(viewModel: HomeViewModel) {
 

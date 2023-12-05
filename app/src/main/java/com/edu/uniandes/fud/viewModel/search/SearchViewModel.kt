@@ -55,8 +55,6 @@ class SearchViewModel(repository: DBRepository) : ViewModel() {
     private val _colorBackIcon = MutableLiveData<Color>()
     val colorBackIcon: LiveData<Color> = _colorBackIcon
 
-    val dbRepository = repository
-
     var veggieStats = false
     var veganStats  = false
     var priceStats  = false

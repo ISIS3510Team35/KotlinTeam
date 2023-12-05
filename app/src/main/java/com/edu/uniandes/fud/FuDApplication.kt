@@ -30,6 +30,8 @@ class FuDApplication : Application(), ImageLoaderFactory {
             this.idUser = idUser
         }
 
+
+
         fun getIdUser(): Int{
             return idUser
         }

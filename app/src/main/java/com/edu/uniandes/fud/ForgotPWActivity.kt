@@ -66,9 +66,6 @@ class ForgotPWActivity : ComponentActivity() {
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 forgotPWViewModel.onForgotPWSelected()
             }
-            else {
-            
-            }
         }
     }
 }

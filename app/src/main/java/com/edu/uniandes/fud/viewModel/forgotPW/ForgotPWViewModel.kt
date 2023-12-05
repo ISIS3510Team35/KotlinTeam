@@ -17,7 +17,9 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class ForgotPWViewModel(private val context: Context, repository: DBRepository) : ViewModel() {
-	
+
+
+
 	private val _documentId = MutableLiveData<String>()
 	val documentId: LiveData<String> = _documentId
 	

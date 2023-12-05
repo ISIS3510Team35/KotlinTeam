@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 
 class ProductActivity : ComponentActivity() {
 
-    private val newWordActivityRequestCode = 1
     private var startTime: Long = 0
     private val productViewModel: ProductViewModel by viewModels {
         ProductViewModelFactory((application as FuDApplication).repository)

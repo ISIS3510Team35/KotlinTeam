@@ -2,10 +2,12 @@ package com.edu.uniandes.fud
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.edu.uniandes.fud.ui.register.RegisterScreen
 import com.edu.uniandes.fud.ui.theme.MobileAppTheme
@@ -54,6 +56,7 @@ class RegisterActivity : ComponentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -63,9 +66,6 @@ class RegisterActivity : ComponentActivity() {
         if(requestCode == 777){
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 registerViewModel.onRegisterSelected()
-            }
-            else {
-            
             }
         }
     }

@@ -20,7 +20,6 @@ class ProductViewModel(repository: DBRepository) : ViewModel() {
 
     private val _productId = MutableLiveData<Int>()
 
-    val dbRepository = repository
 
     fun setInitialProduct(productId: Int) {
         _productId.value = productId

@@ -20,7 +20,6 @@ class AccountViewModel(repository: DBRepository) : ViewModel() {
 
     private var userInfo: LruCache<String, String> = LruCache(4)
 
-    val dbRepository = repository
 
     fun setInitialUser(userId: Int) {
         _userId.value = userId
@@ -30,9 +29,6 @@ class AccountViewModel(repository: DBRepository) : ViewModel() {
         if (userInfo[infoName] == null){
             userInfo.put(infoName, infoVal)
         }
-    }
-    fun getInfo(infoKey: String) : String {
-        return if (userInfo[infoKey] != null) userInfo[infoKey]!! else ""
     }
 
     init {

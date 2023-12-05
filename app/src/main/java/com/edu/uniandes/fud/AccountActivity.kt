@@ -13,7 +13,6 @@ import com.edu.uniandes.fud.viewModel.account.AccountViewModelFactory
 import kotlinx.coroutines.launch
 
 class AccountActivity : ComponentActivity() {
-    private val newWordActivityRequestCode = 1
     private var startTime: Long = 0
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as FuDApplication).repository)
