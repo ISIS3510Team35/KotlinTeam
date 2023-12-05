@@ -20,7 +20,6 @@ class ProductViewModel(repository: DBRepository) : ViewModel() {
 
     private val _productId = MutableLiveData<Int>()
 
-    val dbRepository = repository
 
     fun setInitialProduct(productId: Int) {
         _productId.value = productId
@@ -32,6 +31,7 @@ class ProductViewModel(repository: DBRepository) : ViewModel() {
                 _product.value = productsRestaurant.find { prod -> _productId.value == prod.id }
                 _top3Products.value = productsRestaurant.sortedBy { it.rating } //.subList(0, 3)
             }
+
         }
     }
 

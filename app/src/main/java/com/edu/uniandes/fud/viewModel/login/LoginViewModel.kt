@@ -110,10 +110,7 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 	}
 
 	private fun requestLocationPermission() {
-		if(ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, Manifest.permission.ACCESS_FINE_LOCATION)){
-			
-		}
-		else {
+		if(! ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, Manifest.permission.ACCESS_FINE_LOCATION)){
 			ActivityCompat.requestPermissions(context, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 777)
 		}
 	}

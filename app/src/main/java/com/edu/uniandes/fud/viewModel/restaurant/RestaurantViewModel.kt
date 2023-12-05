@@ -17,7 +17,6 @@ class RestaurantViewModel(repository: DBRepository) : ViewModel() {
 
     private val _restaurantId = MutableLiveData<Int>()
 
-    val dbRepository = repository
 
     fun setInitialRestaurant(restaurantId: Int) {
         _restaurantId.value = restaurantId

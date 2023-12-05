@@ -36,7 +36,6 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.edu.uniandes.fud.ProductActivity
 import com.edu.uniandes.fud.R
-import com.edu.uniandes.fud.RestaurantActivity
 import com.edu.uniandes.fud.domain.Product
 import com.edu.uniandes.fud.domain.RestaurantProduct
 import com.edu.uniandes.fud.ui.theme.Gold
@@ -340,8 +339,8 @@ fun ElementSearch(restaurantName: String, restaurantAdress: String, restaurantIm
             containerColor = Color.White,
         ),
         onClick = {
-            val intent = Intent(context, RestaurantActivity::class.java)
-            context.startActivity(intent)
+             //val intent = Intent(context, RestaurantActivity::class.java)
+             // context.startActivity(intent)
         }
 
     ){

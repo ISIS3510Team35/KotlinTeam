@@ -18,10 +18,22 @@ class FuDApplication : Application(), ImageLoaderFactory {
     val repository by lazy { DBRepository(database) }
 
     companion object {
+        private var idUser = -1
         private var timeStart: Long = 0
         private var reportSent: Boolean = false
+        const val MY_CHANNEL_ID = "MyChannel"
         fun getTimeStart(): Long {
             return timeStart;
+        }
+
+        fun setIdUser(idUser:Int){
+            this.idUser = idUser
+        }
+
+
+
+        fun getIdUser(): Int{
+            return idUser
         }
 
         fun setTimeStart(millis: Long) {
@@ -36,14 +48,19 @@ class FuDApplication : Application(), ImageLoaderFactory {
             return reportSent
         }
     }
-
-
-
+    
+    
+    
     override fun onCreate() {
         setTimeStart(System.currentTimeMillis())
         super.onCreate()
-
+        
+        val alarmNotification = AlarmNotification()
+        alarmNotification.createChannel(this)
+        alarmNotification.scheduleNotification(this)
     }
+
+
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader(this).newBuilder()

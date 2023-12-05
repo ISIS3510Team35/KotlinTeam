@@ -3,6 +3,7 @@ package com.edu.uniandes.fud.database
 import android.app.Application
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.edu.uniandes.fud.FuDApplication
 import com.edu.uniandes.fud.repository.DBRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -30,6 +31,8 @@ interface DatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllProducts(products: List<DatabaseProduct>) : LongArray
+
+
     
     //Product-List<Restaurant>
     @Query("SELECT * FROM DatabaseProduct JOIN DatabaseRestaurant ON DatabaseRestaurant.id = DatabaseProduct.restaurantId")
@@ -88,6 +91,7 @@ abstract class DatabaseRoom: RoomDatabase(){
         }
         suspend fun populateDatabase(database: DatabaseRoom) {
             DBRepository(database).refreshData()
+            DBRepository(database).refreshRestaurantInteractedData(FuDApplication.getIdUser())
         }
     }
 

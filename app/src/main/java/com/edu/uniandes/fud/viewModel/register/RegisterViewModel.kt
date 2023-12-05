@@ -5,8 +5,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
@@ -51,8 +53,7 @@ class RegisterViewModel(private val context: Context, repository: DBRepository) 
 	
 	private val _passwordAuth = MutableLiveData<String>()
 	val passwordAuth: LiveData<String> = _passwordAuth
-	
-	val dbRepository = repository
+
 	
 	
 	init {
@@ -98,6 +99,7 @@ class RegisterViewModel(private val context: Context, repository: DBRepository) 
 	
 	
 	
+	@RequiresApi(Build.VERSION_CODES.O)
 	fun onRegisterSelected() {
 		if (isValidUser(_email.value, _name.value, _number.value, _password.value, _passwordConfirm.value) == ValidationResult.Success) {
 			if (ContextCompat.checkSelfPermission(
@@ -126,6 +128,7 @@ class RegisterViewModel(private val context: Context, repository: DBRepository) 
 		}
 	}
 	
+	@RequiresApi(Build.VERSION_CODES.O)
 	private fun newUser(context: Context) {
 		val newUserId = getNextAvailableUserId()
 		viewModelScope.launch {
@@ -171,10 +174,7 @@ class RegisterViewModel(private val context: Context, repository: DBRepository) 
 	
 	
 	private fun requestLocationPermission() {
-		if(ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, Manifest.permission.ACCESS_FINE_LOCATION)){
-			
-		}
-		else {
+		if(! ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, Manifest.permission.ACCESS_FINE_LOCATION)){
 			ActivityCompat.requestPermissions(context, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 777)
 		}
 	}

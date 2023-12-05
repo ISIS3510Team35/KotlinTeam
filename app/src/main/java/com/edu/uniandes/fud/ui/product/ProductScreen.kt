@@ -277,6 +277,24 @@ fun ProductNameDesc(viewModel: ProductViewModel) {
         )
         Spacer(modifier = Modifier.height(10.dp))
     }
+
+    Row {
+        var buttonEnabled by remember { mutableStateOf(true) }
+        Button(
+            onClick = {
+                // sendFavorite(product.id)
+                // buttonEnabled = false
+            },
+            // enabled = buttonEnabled,
+            modifier = Modifier
+                .weight(1f)
+                .padding(10.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+        )
+        {
+            Text("Añadir Favorito")
+        }
+    }
 }
 
 @Composable

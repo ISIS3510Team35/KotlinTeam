@@ -3,6 +3,7 @@ package com.edu.uniandes.fud.repository
 import android.content.Context
 import android.util.Log
 import androidx.room.withTransaction
+import com.edu.uniandes.fud.FuDApplication
 import com.edu.uniandes.fud.database.DatabaseRestaurant
 import com.edu.uniandes.fud.database.DatabaseRoom
 import com.edu.uniandes.fud.database.asDomainModel
@@ -43,6 +44,10 @@ class DBRepository(private val database: DatabaseRoom) {
             originalList -> originalList.asDomainModel()
     }
 
+    var mostInteractedProductsRestaurant: Flow<List<ProductRestaurant>> = database.databaseDao().getProductsRestaurant().map {
+            originalList -> originalList.asDomainModel()
+    }
+
     val restaurantsProducts: Flow<List<RestaurantProduct>> = database.databaseDao().getRestaurantsProducts().map {
             originalList -> originalList.asDomainModel()
     }
@@ -72,17 +77,30 @@ class DBRepository(private val database: DatabaseRoom) {
             database.databaseDao().insertAllUsers(userList.asDatabaseModel())
         }
     }
+
+    suspend fun refreshRestaurantInteractedData(userId : Int){
+        database.withTransaction {
+            val restaurantList =  FudNetService.getInteractedRestaurantList(userId)
+            database.databaseDao().insertAllRestaurants(restaurantList.asDatabaseModel())
+        }
+    }
     
     // Refresh data -> Restaurants-Products
     suspend fun refreshData() {
         Log.d("XD1","called1")
         database.withTransaction {
-            val restaurantList = FudNetService.getRestaurantList()
+            val restaurantList = if (FuDApplication.getIdUser()>-1) {
+                FudNetService.getInteractedRestaurantList(FuDApplication.getIdUser())
+            } else {
+                FudNetService.getRestaurantList()
+            }
             val productsList = FudNetService.getProductList()
             val userList =  FudNetService.getUserList()
             val favoritesList = FudNetService.getFavoritesList()
             database.databaseDao().insertRestaurantsAndProductsAndUserAndFavorites(productsList.asDatabaseModel(), restaurantList.asDatabaseModel(), userList.asDatabaseModel(), favoritesList.asDatabaseModel())
         }
     }
+
+
     
 }
