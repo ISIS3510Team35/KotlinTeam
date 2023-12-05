@@ -145,8 +145,9 @@ fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
                 }
             ) {
                 Image(
-                    modifier = Modifier.padding(10.dp),
-                    painter = painterResource(id = R.drawable.baseline_exit_to_app_24),
+                    modifier = Modifier
+                        .padding(5.dp),
+                    painter = painterResource(id = R.drawable.baseline_account_circle_24),
                     contentDescription = "dashboard_search"
                 )
             }
@@ -186,7 +187,7 @@ fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
                             Image(
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .padding(end=1.dp),
+                                    .padding(start=1.dp),
                                 painter = painterResource(id = R.drawable.uniandes),
                                 contentDescription = "dashboard_search"
                             )

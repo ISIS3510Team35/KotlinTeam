@@ -20,11 +20,6 @@ interface FudNetService {
     //@GET("restaurants")
     //suspend fun getRestaurantList(): NetworkRestaurantContainer
     companion object {
-
-
-        
-        suspend fun getRestaurantList() : NetworkRestaurantContainer{
-            Log.v("XD1","CALLED")
         suspend fun getRestaurantList(): NetworkRestaurantContainer {
             Log.v("XD1", "CALLED")
             val db = Firebase.firestore

@@ -107,9 +107,6 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
 
     init {
         viewModelScope.launch {
-
-
-
             repository.productsRestaurant.collect { productsRestaurant ->
                 // Update View with the latest favorite news
                 var max = 3
@@ -118,10 +115,13 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                 if (productsRestaurant.size < 3) {
                     max = productsRestaurant.size
                 }
-                val favorites = repository.favorites.first().filter { it.userId == _userId.value }
-                for (prod in favorites) {
-                    favList.add(productsRestaurant.first { prod.productId == it.id })
-                }
+
+                //val favorites = repository.favorites.first().filter { it.userId == _userId.value }
+
+                //for (prod in favorites) {
+                //    favList.add(productsRestaurant.first { prod.productId == it.id })
+                //}
+
                 _favoriteDishes.postValue(favList.distinct())
 
                 _top3Products.value =
@@ -132,28 +132,27 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                 _textButtonHour.value =
                     checkTimeRange()
 
-                repository.restaurants.collect {restaurants ->
-                    Log.d("JAJAJAJA",restaurants.toString())
+                val favorites = repository.favorites.first()
+                val maxFav =
+                    favorites.groupingBy { it.productId }.eachCount().maxByOrNull { it.value }?.key
+                _favoriteDishes.postValue(productsRestaurant.filter { it.id == maxFav })
+
+                val recCriteria = _userId.value?.let { getRecommendedCriteria(it) }
+                _recommendedDishes.postValue(productsRestaurant.filter { it.type == recCriteria }
+                    .sortedBy { it.rating }.asReversed().subList(0, max))
+
+                repository.restaurants.collect { restaurants ->
+                    Log.d("JAJAJAJA", restaurants.toString())
                     var max = 3
                     if (restaurants.size < 3) {
                         max = restaurants.size
                     }
                     _top3InteractedRestaurants.value =
-                        restaurants.asReversed().sortedBy{ it.interactions }.asReversed().subList(0, max)
+                        restaurants.asReversed().sortedBy { it.interactions }.asReversed()
+                            .subList(0, max)
 
                 }
-
-                val favorites = repository.favorites.first()
-                val maxFav = favorites.groupingBy { it.productId }.eachCount().maxByOrNull { it.value }?.key
-                _favoriteDishes.postValue(productsRestaurant.filter { it.id == maxFav } )
-
-                val recCriteria = _userId.value?.let { getRecommendedCriteria(it) }
-                _recommendedDishes.postValue(productsRestaurant.filter { it.type == recCriteria }.sortedBy { it.rating }.asReversed().subList(0, max))
-
             }
-
-
-
         }
 
         viewModelScope.launch {

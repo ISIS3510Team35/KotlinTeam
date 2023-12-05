@@ -10,27 +10,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="78c37400-0f62-4d7f-8a92-07a825ca247f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/baseline_arrow_forward_24.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/baseline_exit_to_app_24.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/baseline_account_circle_24.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/FuDApplication.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/FuDApplication.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/HomeActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/HomeActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ListActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ListActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/LoginActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/LoginActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/RestaurantActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/RestaurantActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/database/DatabaseEntity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/database/DatabaseEntity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/database/Room.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/database/Room.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/domain/Models.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/domain/Models.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/network/DataTransferObjects.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/network/DataTransferObjects.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/network/Service.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/network/Service.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/repository/fudRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/repository/fudRepository.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/home/HomeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/home/HomeScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/list/ListScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/list/ListScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/theme/Color.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/ui/theme/Color.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/home/HomeViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/home/HomeViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/list/ListViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/list/ListViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/product/ProductViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/edu/uniandes/fud/viewModel/product/ProductViewModel.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,30 +113,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;PROJECT_TRUSTED_KEY&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Daniel/UNIANDES/7. SEMESTRE/Moviles/FuD/app/src/main/res/drawable&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;live.edit.configurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "PROJECT_TRUSTED_KEY": "true",
+    "ResourceManagerPrefKey.ResourceType": "DRAWABLE",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "last_opened_file_path": "D:/Daniel/UNIANDES/7. SEMESTRE/Moviles/FuD/app/src/main/res/drawable",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.17",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "live.edit.configurable"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.android.tools.idea.sqlite.queryhistory&quot;: [
-      &quot;SELECT * FROM DatabaseUser&quot;,
-      &quot;SELECT * FROM DatabaseRestaurant&quot;,
-      &quot;SELECT * FROM DatabaseDish JOIN DatabaseRestaurant ON DatabaseRestaurant.id = DatabaseDish.restaurantId&quot;
+  "keyToStringList": {
+    "com.android.tools.idea.sqlite.queryhistory": [
+      "SELECT * FROM DatabaseUser",
+      "SELECT * FROM DatabaseRestaurant",
+      "SELECT * FROM DatabaseDish JOIN DatabaseRestaurant ON DatabaseRestaurant.id = DatabaseDish.restaurantId"
     ]
   }
-}</component>
+}]]></component>
   <component name="PsdUISettings">
     <option name="MODULE_TAB" value="Properties" />
     <option name="LAST_EDITED_SIGNING_CONFIG" value="debug" />

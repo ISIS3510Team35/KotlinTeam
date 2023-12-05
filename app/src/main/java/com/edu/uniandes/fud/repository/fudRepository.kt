@@ -3,6 +3,7 @@ package com.edu.uniandes.fud.repository
 import android.content.Context
 import android.util.Log
 import androidx.room.withTransaction
+import com.edu.uniandes.fud.FuDApplication
 import com.edu.uniandes.fud.database.DatabaseRestaurant
 import com.edu.uniandes.fud.database.DatabaseRoom
 import com.edu.uniandes.fud.database.asDomainModel
@@ -88,7 +89,11 @@ class DBRepository(private val database: DatabaseRoom) {
     suspend fun refreshData() {
         Log.d("XD1","called1")
         database.withTransaction {
-            val restaurantList = FudNetService.getRestaurantList()
+            val restaurantList = if (FuDApplication.getIdUser()>-1) {
+                FudNetService.getInteractedRestaurantList(FuDApplication.getIdUser())
+            } else {
+                FudNetService.getRestaurantList()
+            }
             val productsList = FudNetService.getProductList()
             val userList =  FudNetService.getUserList()
             val favoritesList = FudNetService.getFavoritesList()
