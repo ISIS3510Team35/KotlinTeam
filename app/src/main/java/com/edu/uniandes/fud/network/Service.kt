@@ -21,7 +21,7 @@ interface FudNetService {
     //suspend fun getRestaurantList(): NetworkRestaurantContainer
     companion object {
         suspend fun getRestaurantList(): NetworkRestaurantContainer {
-            Log.v("XD1", "CALLED")
+            Log.v("RES_XD", "CALLED_RESTAURANT_SIMPLE")
             val db = Firebase.firestore
             val restaurants: MutableList<NetworkRestaurant> = mutableListOf()
             val i = 0
@@ -73,10 +73,19 @@ interface FudNetService {
                         val restaurantsList: List<NetworkRestaurant> = restaurants.await().restaurants
                         for (restaurant in restaurantsList) {
                             var count : Int = 0
+
                             for (userInteraction in userInteractions){
-                                if(restaurant.id == userInteraction.data["restaurant_id"] && userId == userInteraction.data["user_id"])
-                                    count +=1
+                                Log.v("RES_XD",restaurant.id.toString()+" "+userInteraction.data["restaurant_id"].toString()+" "+userId+" "+userInteraction.data["user_id"].toString().toInt())
+                                if(restaurant.id == userInteraction.data["restaurant_id"].toString().toInt() && userId == userInteraction.data["user_id"].toString().toInt()) {
+                                    Log.v("RES_XD", "COUNT $count")
+
+                                    count += 1
+                                }
                             }
+
+
+
+
                             restaurantsInteracted.add(
                                 NetworkRestaurant(restaurant.id, restaurant.name, restaurant.location, restaurant.image, count)
                             )

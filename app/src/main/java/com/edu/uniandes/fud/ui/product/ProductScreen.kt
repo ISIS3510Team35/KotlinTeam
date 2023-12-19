@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.RestaurantActivity
@@ -43,10 +44,9 @@ import com.google.firebase.firestore.GeoPoint
 fun ProductScreen(viewModel: ProductViewModel) {
     Scaffold(
         containerColor = Color.White,
-        modifier = Modifier
-            .background(color = Color.White),
         topBar = { CustomTopBar() }
     ) { innerPadding ->
+        BarXD()
         LazyColumn(
             modifier = Modifier.padding(innerPadding)
         ) {
@@ -121,7 +121,8 @@ fun CustomTopBar() {
             .background(color = OrangeSoft)
             .padding(horizontal = 12.dp)
             .padding(top = 5.dp)
-            .padding(top = 2.dp),
+            .padding(top = 2.dp)
+            .zIndex(5f),
         title = {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Image(

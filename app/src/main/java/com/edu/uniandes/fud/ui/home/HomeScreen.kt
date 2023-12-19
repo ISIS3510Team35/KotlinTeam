@@ -25,7 +25,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -35,11 +37,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.edu.uniandes.fud.AccountActivity
+import com.edu.uniandes.fud.FuDApplication
 import com.edu.uniandes.fud.ListActivity
 import com.edu.uniandes.fud.ProductActivity
 import com.edu.uniandes.fud.R
@@ -52,8 +56,58 @@ import com.edu.uniandes.fud.ui.theme.Manrope
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
 import com.edu.uniandes.fud.ui.theme.Red
 import com.edu.uniandes.fud.ui.theme.Typography
+import com.edu.uniandes.fud.ui.theme.backgroundSecondary
 import com.edu.uniandes.fud.viewModel.home.HomeViewModel
 
+
+@Composable
+@Preview
+fun BarXD(){
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val connectivity: Boolean by FuDApplication.connected.observeAsState(initial = true)
+    if (!connectivity) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .zIndex(1f)
+                .background(backgroundSecondary)
+                .absoluteOffset(x = 0.dp, y = 600.dp)
+                // Applying a graphics layer to create the fixed effect
+                .graphicsLayer {
+                    translationX = 0f // Adjust as needed
+                    translationY = 0f // Adjust as needed
+                }
+        ) {
+            Button(
+                onClick = {
+                },
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 17.dp)
+                    .padding(vertical = 8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                ),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_crisis_alert_24),
+                    contentDescription = "Go",
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    "No hay Conexión a Internet",
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(start = 10.dp)
+                )
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -63,15 +117,19 @@ fun HomeScreen(viewModel: HomeViewModel) {
     val context = LocalContext.current
 
     Scaffold(
-        containerColor = Color.White,
-        topBar = { CustomTopBar(viewModel, context) }
+        containerColor = Color.Transparent,
+        topBar = {
+
+            CustomTopBar(viewModel, context) }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding)
         ) {
+
             item {
                 SearchBar(viewModel, context)
             }
+
             item {
                 ButtonHour(viewModel, context)
             }
@@ -92,6 +150,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
             }
         }
 
+        BarXD()
     }
 }
 
@@ -186,7 +245,7 @@ fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
                             Image(
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .padding(start=1.dp),
+                                    .padding(start = 1.dp),
                                 painter = painterResource(id = R.drawable.uniandes),
                                 contentDescription = "dashboard_search"
                             )
@@ -202,7 +261,8 @@ fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
             .background(color = OrangeSoft)
             .padding(horizontal = 12.dp)
             .padding(top = 5.dp)
-            .padding(top = 2.dp),
+            .padding(top = 2.dp)
+            .zIndex(5f),
         title = {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Image(
@@ -210,6 +270,7 @@ fun CustomTopBar(viewModel: HomeViewModel, context: Context) {
                     modifier = Modifier
                         .align(Alignment.Center)
                         .padding(vertical = 10.dp)
+                        .zIndex(5f)
                         .fillMaxWidth()
                         .fillMaxHeight(),
                     contentDescription = "FuD Logo"

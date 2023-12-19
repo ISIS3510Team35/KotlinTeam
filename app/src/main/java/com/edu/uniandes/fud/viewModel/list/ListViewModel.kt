@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 
@@ -42,30 +43,30 @@ class ListViewModel(private val context: Context, repository: DBRepository) : Vi
     }
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             // desayuno
             Log.d("XD_TITULO",checkTimeRange().toString())
             when (checkTimeRange()){
                 0 -> {
-                        _titulo.value = "Desayuno"
+                        _titulo.postValue("Desayuno")
                         repository.productsRestaurant.collect { prod ->
                             Log.d("XD_TITULO",prod.filter{ it.category == "Desayuno" }.toString())
-                            _products.value = prod.filter{ it.category == "Desayuno" }
+                            _products.postValue(prod.filter{ it.category == "Desayuno" })
                         }
 
 
                     }
                 1 -> {
-                    _titulo.value = "Almuerzo"
+                    _titulo.postValue( "Almuerzo" )
                     repository.productsRestaurant.collect { prod ->
-                        _products.value = prod.filter { it.category == "Almuerzo" }
+                        _products.postValue( prod.filter { it.category == "Almuerzo" } )
                     }
 
                 }
                 2 -> {
-                    _titulo.value = "Cena"
+                    _titulo.postValue( "Cena" )
                     repository.productsRestaurant.collect { prod ->
-                        _products.value = prod.filter { it.category == "Cena" }
+                        _products.postValue( prod.filter { it.category == "Cena" } )
                     }
 
                 }

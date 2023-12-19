@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -32,7 +33,7 @@ class AccountViewModel(repository: DBRepository) : ViewModel() {
     }
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch() {
             repository.users.collect { fudUsers ->
                 _user.value = fudUsers.find { usr -> _userId.value == usr.id }
                 _user.value?.let { addInfo("id", it.id.toString()) }

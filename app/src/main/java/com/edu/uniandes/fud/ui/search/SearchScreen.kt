@@ -38,6 +38,7 @@ import com.edu.uniandes.fud.ProductActivity
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.domain.Product
 import com.edu.uniandes.fud.domain.RestaurantProduct
+import com.edu.uniandes.fud.ui.theme.BarXD
 import com.edu.uniandes.fud.ui.theme.Gold
 import com.edu.uniandes.fud.ui.theme.Orange
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
@@ -57,6 +58,7 @@ fun SearchScreen(viewModel: SearchViewModel){
         containerColor = Color.White,
         topBar = { CustomTopBar() }
     ){ innerPadding ->
+        BarXD()
         Column (
             modifier = Modifier.padding(innerPadding)
         ) {
@@ -139,7 +141,8 @@ fun CustomTopBar(){
             .background(color = OrangeSoft)
             .padding(horizontal = 12.dp)
             .padding(top = 5.dp)
-            .padding(top = 2.dp),
+            .padding(top = 2.dp)
+            .zIndex(5f),
         title = {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Image(

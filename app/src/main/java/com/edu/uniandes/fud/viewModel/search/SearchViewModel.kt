@@ -61,7 +61,7 @@ class SearchViewModel(repository: DBRepository) : ViewModel() {
 
     fun onSearchChange(query: String) {
         _query.value = query
-        viewModelScope.launch {
+        viewModelScope.launch() {
             repository.productsRestaurant.collect { productsRestaurant ->
                 // Update View with the latest favorite news
                 val productRestaurants: List<ProductRestaurant> = productsRestaurant.filter {
@@ -161,7 +161,7 @@ class SearchViewModel(repository: DBRepository) : ViewModel() {
 
 
     fun applyFilters(context: Context) {
-        viewModelScope.launch {
+        viewModelScope.launch() {
             com.edu.uniandes.fud.network.FudNetService.sendFilterReport(
                 veggieStats,
                 veganStats,
@@ -180,14 +180,14 @@ class SearchViewModel(repository: DBRepository) : ViewModel() {
 
     init {
         this.repository = repository
-        viewModelScope.launch {
+        viewModelScope.launch() {
             repository.productsRestaurant.collect { productsRestaurant ->
                 // Update View with the latest favorite news
                 _results.value = getAsRestaurantProduct(productsRestaurant.filter { _query.value.orEmpty() !="" && it.name.startsWith(_query.value.orEmpty(), true)})
             }
             getLastKnownLocation()
         }
-        viewModelScope.launch {
+        viewModelScope.launch() {
             Log.d("XD2","called0")
             repository.refreshData()
         }

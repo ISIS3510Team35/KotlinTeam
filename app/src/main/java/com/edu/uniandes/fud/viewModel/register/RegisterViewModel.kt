@@ -19,6 +19,7 @@ import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.HomeActivity
 import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -57,7 +58,7 @@ class RegisterViewModel(private val context: Context, repository: DBRepository) 
 	
 	
 	init {
-		viewModelScope.launch {
+		viewModelScope.launch() {
 			repository.refreshData()
 			while (true) {
 				delay(1000) // Retraso de 1 segundo (1000 milisegundos)
@@ -131,7 +132,7 @@ class RegisterViewModel(private val context: Context, repository: DBRepository) 
 	@RequiresApi(Build.VERSION_CODES.O)
 	private fun newUser(context: Context) {
 		val newUserId = getNextAvailableUserId()
-		viewModelScope.launch {
+		viewModelScope.launch() {
 			com.edu.uniandes.fud.network.FudNetService.setUser(
 				newUserId,
 				_email.value.toString(),

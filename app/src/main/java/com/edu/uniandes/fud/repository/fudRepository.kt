@@ -28,7 +28,8 @@ class DBRepository(private val database: DatabaseRoom) {
                 id = restaurant.id,
                 name = restaurant.name,
                 location = GeoPoint(restaurant.latitude, restaurant.longitude),
-                image = restaurant.image)
+                image = restaurant.image,
+                interactions = restaurant.interactions)
             modifiedRestaurant
         }
 
@@ -59,6 +60,7 @@ class DBRepository(private val database: DatabaseRoom) {
     val favorites: Flow<List<Favorite>> = database.databaseDao().getFavorites().map {
             originalList -> originalList.asDomainModel()
     }
+
     
     // Insert user
     suspend fun insertUser(id: Int, username: String, name: String, number: String, password: String, documentId: String, context: Context) {
@@ -93,12 +95,15 @@ class DBRepository(private val database: DatabaseRoom) {
                 FudNetService.getInteractedRestaurantList(FuDApplication.getIdUser())
             } else {
                 FudNetService.getRestaurantList()
+
             }
+
             val productsList = FudNetService.getProductList()
             val userList =  FudNetService.getUserList()
             val favoritesList = FudNetService.getFavoritesList()
             database.databaseDao().insertRestaurantsAndProductsAndUserAndFavorites(productsList.asDatabaseModel(), restaurantList.asDatabaseModel(), userList.asDatabaseModel(), favoritesList.asDatabaseModel())
         }
+
     }
 
 

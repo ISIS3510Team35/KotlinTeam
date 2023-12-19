@@ -32,6 +32,7 @@ import coil.compose.AsyncImage
 import com.edu.uniandes.fud.ProductActivity
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.domain.ProductRestaurant
+import com.edu.uniandes.fud.ui.theme.BarXD
 import com.edu.uniandes.fud.ui.theme.Manrope
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
 import com.edu.uniandes.fud.ui.theme.Typography
@@ -49,7 +50,7 @@ fun ListScreen(viewModel: ListViewModel) {
         containerColor = Color.White,
         topBar = { CustomTopBar(viewModel) }
     ) { innerPadding ->
-
+        BarXD()
                 LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -102,7 +103,8 @@ fun CustomTopBar(viewModel: ListViewModel) {
         },
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = OrangeSoft),
+            .background(color = OrangeSoft)
+            .zIndex(5f),
         title = {
             Text(text = titulo)
         }

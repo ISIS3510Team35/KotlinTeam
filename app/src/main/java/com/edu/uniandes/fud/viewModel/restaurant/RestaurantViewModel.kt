@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.domain.RestaurantProduct
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -19,11 +20,11 @@ class RestaurantViewModel(repository: DBRepository) : ViewModel() {
 
 
     fun setInitialRestaurant(restaurantId: Int) {
-        _restaurantId.value = restaurantId
+        _restaurantId.postValue(restaurantId)
     }
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch() {
             repository.restaurantsProducts.collect() { restaurantProducts ->
                 _restaurant.value = restaurantProducts.find { rest -> _restaurantId.value == rest.id }
             }

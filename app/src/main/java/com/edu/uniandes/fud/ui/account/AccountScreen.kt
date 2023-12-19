@@ -18,8 +18,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.domain.User
+import com.edu.uniandes.fud.ui.theme.BarXD
 import com.edu.uniandes.fud.ui.theme.Manrope
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
 import com.edu.uniandes.fud.ui.theme.Typography
@@ -35,6 +37,7 @@ fun AccountScreen(viewModel: AccountViewModel) {
             .background(color = backgroundSecondary),
         topBar = { CustomTopBar() }
     ) { innerPadding ->
+        BarXD()
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
@@ -113,7 +116,8 @@ fun CustomTopBar() {
             .background(color = OrangeSoft)
             .padding(horizontal = 12.dp)
             .padding(top = 5.dp)
-            .padding(top = 2.dp),
+            .padding(top = 2.dp)
+            .zIndex(5f),
         title = {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Image(

@@ -19,6 +19,7 @@ import com.edu.uniandes.fud.HomeActivity
 import com.edu.uniandes.fud.RegisterActivity
 import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -47,7 +48,7 @@ class LoginViewModel(private val context: Context, repository: DBRepository) : V
 	
 	
 	init {
-		viewModelScope.launch {
+		viewModelScope.launch() {
 			repository.refreshData()
 			while (true) {
 				delay(1000) // Retraso de 1 segundo (1000 milisegundos)

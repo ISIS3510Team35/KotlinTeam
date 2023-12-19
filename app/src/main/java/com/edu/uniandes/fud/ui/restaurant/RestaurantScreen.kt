@@ -25,6 +25,7 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.edu.uniandes.fud.R
 import com.edu.uniandes.fud.domain.RestaurantProduct
+import com.edu.uniandes.fud.ui.theme.BarXD
 import com.edu.uniandes.fud.ui.theme.Manrope
 import com.edu.uniandes.fud.ui.theme.OrangeSoft
 import com.edu.uniandes.fud.ui.theme.Typography
@@ -36,10 +37,9 @@ import com.google.firebase.firestore.GeoPoint
 fun RestaurantScreen(viewModel: RestaurantViewModel) {
     Scaffold(
         containerColor = Color.White,
-        modifier = Modifier
-            .background(color = Color.White),
         topBar = { CustomTopBar() }
     ) { innerPadding ->
+        BarXD()
         LazyColumn(
             modifier = Modifier.padding(innerPadding)
         ) {
@@ -114,7 +114,8 @@ fun CustomTopBar() {
             .background(color = OrangeSoft)
             .padding(horizontal = 12.dp)
             .padding(top = 5.dp)
-            .padding(top = 2.dp),
+            .padding(top = 2.dp)
+            .zIndex(5f),
         title = {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Image(

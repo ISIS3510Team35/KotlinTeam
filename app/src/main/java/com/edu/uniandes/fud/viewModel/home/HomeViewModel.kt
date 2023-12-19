@@ -21,6 +21,7 @@ import com.edu.uniandes.fud.domain.ProductRestaurant
 import com.edu.uniandes.fud.domain.Restaurant
 import com.edu.uniandes.fud.network.FudNetService.Companion.getRecommendedCriteria
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -73,11 +74,11 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
 
 
     fun onSearchChange(query: String) {
-        _query.value = query
+        _query.postValue( query)
         if (query.isNotEmpty())
-            _iconRight.value = R.drawable.ic_next
+            _iconRight.postValue( R.drawable.ic_next )
         else
-            _iconRight.value = R.drawable.ic_sliders
+            _iconRight.postValue( R.drawable.ic_sliders )
     }
 
     fun isReadyToChange(): Boolean {
@@ -89,7 +90,7 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
     }
 
     fun setInitialUserId(userId: Int) {
-        _userId.value = userId
+        _userId.postValue( userId )
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -106,7 +107,7 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
 
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.productsRestaurant.collect { productsRestaurant ->
                 // Update View with the latest favorite news
                 var max = 3
@@ -124,13 +125,11 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
 
                 _favoriteDishes.postValue(favList.distinct())
 
-                _top3Products.value =
-                    productsRestaurant.sortedBy { it.rating }.asReversed().subList(0, max)
+                _top3Products.postValue(productsRestaurant.sortedBy { it.rating }.asReversed().subList(0, max))
 
-                _offerProducts.value =
-                    productsRestaurant.sortedBy { it.price - it.offerPrice }.subList(0, max)
-                _textButtonHour.value =
-                    checkTimeRange()
+                _offerProducts.postValue(
+                    productsRestaurant.sortedBy { it.price - it.offerPrice }.subList(0, max))
+                _textButtonHour.postValue(checkTimeRange() )
 
                 val favorites = repository.favorites.first()
                 val maxFav =
@@ -141,21 +140,22 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                 _recommendedDishes.postValue(productsRestaurant.filter { it.type == recCriteria }
                     .sortedBy { it.rating }.asReversed().subList(0, max))
 
-                repository.restaurants.collect { restaurants ->
-                    Log.d("JAJAJAJA", restaurants.toString())
-                    var max = 3
-                    if (restaurants.size < 3) {
-                        max = restaurants.size
-                    }
-                    _top3InteractedRestaurants.value =
-                        restaurants.asReversed().sortedBy { it.interactions }.asReversed()
-                            .subList(0, max)
+                repository.restaurants.collect() { restaurants ->
+                        Log.d("RES_XD", "HOME_VIEW $restaurants")
+                        var max = 3
+                        if (restaurants.size < 3) {
+                            max = restaurants.size
+                        }
+                        _top3InteractedRestaurants.postValue(
+                            restaurants.asReversed().sortedBy { it.interactions }.asReversed()
+                                .subList(0, max) )
 
                 }
+
             }
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch() {
             Log.d("XD1", "called0")
             repository.refreshData()
             // in case there is a user
@@ -173,7 +173,7 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
 
         val locationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
-                viewModelScope.launch {
+                viewModelScope.launch() {
                     locationChannel.send(location)
                 }
             }
@@ -190,7 +190,7 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
             locationListener
         )
 
-        viewModelScope.launch {
+        viewModelScope.launch() {
             for (location in locationChannel) {
                 val latitude = location.latitude
                 val longitude = location.longitude
@@ -203,7 +203,7 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                    _isLocationInRange.value = currentLocationInRange
+                    _isLocationInRange.postValue( currentLocationInRange )
                     // Loguea el cambio de ubicación
                     Log.d("XD_Location", "Location changed: ${isLocationInRange.value}")
                     previousLocationInRange = currentLocationInRange
@@ -222,7 +222,7 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
     }
 
     fun sendPromoReport(context: Context) {
-        viewModelScope.launch {
+        viewModelScope.launch() {
             promotionStats = true
             com.edu.uniandes.fud.network.FudNetService.sendFavPromoReport(
                 favouriteStats,
@@ -235,7 +235,7 @@ class HomeViewModel(private val context: Context, repository: DBRepository) : Vi
     }
 
     fun sendFavReport(context: Context) {
-        viewModelScope.launch {
+        viewModelScope.launch() {
             favouriteStats = true
             com.edu.uniandes.fud.network.FudNetService.sendFavPromoReport(
                 favouriteStats,

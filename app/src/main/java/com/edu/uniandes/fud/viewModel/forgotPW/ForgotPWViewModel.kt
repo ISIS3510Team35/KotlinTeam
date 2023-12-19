@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.edu.uniandes.fud.LoginActivity
 import com.edu.uniandes.fud.domain.User
 import com.edu.uniandes.fud.repository.DBRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -49,7 +50,7 @@ class ForgotPWViewModel(private val context: Context, repository: DBRepository) 
 	
 	
 	init {
-		viewModelScope.launch {
+		viewModelScope.launch() {
 			repository.refreshData()
 			while (true) {
 				delay(1000) // Retraso de 1 segundo (1000 milisegundos)
@@ -123,7 +124,7 @@ class ForgotPWViewModel(private val context: Context, repository: DBRepository) 
 		val user = getUserDocumentId()
 		
 		if (user != null) {
-			viewModelScope.launch {
+			viewModelScope.launch() {
 				com.edu.uniandes.fud.network.FudNetService.updateUser(
 					user.id,
 					user.username,
